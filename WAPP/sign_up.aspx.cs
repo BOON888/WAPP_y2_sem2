@@ -29,11 +29,11 @@ namespace WAPP
                 lblMessage.Text = "⚠ Please fill in all required fields!";
                 return;
             }
-
-            string connStr = ConfigurationManager.ConnectionStrings["SeaLearnerConnectionString"].ConnectionString;
+  
+            string connString = ConfigurationManager.ConnectionStrings["SeaLearnerConnection"].ConnectionString;
             bool success = false;
 
-            using (SqlConnection conn = new SqlConnection(connStr))
+            using (SqlConnection conn = new SqlConnection(connString))
             {
                 conn.Open();
                 SqlTransaction transaction = conn.BeginTransaction();

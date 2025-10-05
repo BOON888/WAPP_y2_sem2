@@ -31,9 +31,9 @@ namespace WAPP
                 rptAds.DataBind();
             }
 
-            string connectionString = ConfigurationManager.ConnectionStrings["SeaLearnerDB"].ConnectionString;
+            string connString = ConfigurationManager.ConnectionStrings["SeaLearnerConnection"].ConnectionString;
 
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlConnection conn = new SqlConnection(connString))
             {
                 conn.Open();
 
