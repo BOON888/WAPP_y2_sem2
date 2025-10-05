@@ -21,9 +21,9 @@ namespace WAPP
                 return;
             }
 
-            string connStr = ConfigurationManager.ConnectionStrings["SeaLearnerDB"].ConnectionString;
+            string connString = ConfigurationManager.ConnectionStrings["SeaLearnerConnection"].ConnectionString;
 
-            using (SqlConnection conn = new SqlConnection(connStr))
+            using (SqlConnection conn = new SqlConnection(connString))
             {
                 string query = "SELECT Role FROM users WHERE Email = @Email AND Password = @Password";
                 SqlCommand cmd = new SqlCommand(query, conn);

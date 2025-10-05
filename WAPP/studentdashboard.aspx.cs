@@ -7,7 +7,7 @@ namespace WAPP
 {
     public partial class StudentDashboard : System.Web.UI.Page
     {
-        string connStr = ConfigurationManager.ConnectionStrings["SeaLearnerConnectionString"].ConnectionString;
+        string connString = ConfigurationManager.ConnectionStrings["SeaLearnerConnection"].ConnectionString;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -31,7 +31,7 @@ namespace WAPP
         {
             int studentId = Convert.ToInt32(Session["StudentID"]);
 
-            using (SqlConnection conn = new SqlConnection(connStr))
+            using (SqlConnection conn = new SqlConnection(connString))
             {
                 conn.Open();
 
@@ -55,7 +55,7 @@ namespace WAPP
         {
             int studentId = Convert.ToInt32(Session["StudentID"]);
 
-            using (SqlConnection conn = new SqlConnection(connStr))
+            using (SqlConnection conn = new SqlConnection(connString))
             {
                 conn.Open();
 
@@ -110,7 +110,7 @@ namespace WAPP
                 int studentId = Convert.ToInt32(Session["StudentID"]);
                 int courseId = Convert.ToInt32(e.CommandArgument);
 
-                using (SqlConnection conn = new SqlConnection(connStr))
+                using (SqlConnection conn = new SqlConnection(connString))
                 {
                     conn.Open();
 
