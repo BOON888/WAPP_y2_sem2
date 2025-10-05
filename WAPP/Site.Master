@@ -6,7 +6,7 @@
 <head runat="server">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><%: Page.Title %> </title>
+    <title><%: Page.Title %> - My ASP.NET Application</title>
 
     <asp:PlaceHolder runat="server">
         <%: Scripts.Render("~/bundles/modernizr") %>
@@ -40,8 +40,8 @@
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark" style="background-color:#001eff;">
             <div class="container">
                 <p>
-                <a class="navbar-brand" runat="server" href="~/public_dashboard" style="font-size:24px;">
-                    Sea Learner <img src="/Image/logo.png" alt="Sealearner" style="height:20px;"/>
+                <a class="navbar-brand" runat="server" href="~/" style="font-size:24px;">
+                    Sealearner <img src="/Image/logo.png" alt="Sealearner" style="height:20px;"/>
                 </a>
                 </p>
                 <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
