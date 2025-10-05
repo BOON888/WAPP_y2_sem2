@@ -7,11 +7,11 @@ using System.Web.UI.WebControls;
 
 namespace WAPP
 {
-    public partial class educatordashboard : System.Web.UI.Page
-    {
-        protected void Page_Load(object sender, EventArgs e)
-        {
+	public partial class educatordashboard1 : System.Web.UI.Page
+	{
+		protected void Page_Load(object sender, EventArgs e)
+		{
 
-        }
-    }
+		}
+	}
 }

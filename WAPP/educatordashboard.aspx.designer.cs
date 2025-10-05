@@ -7,11 +7,9 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace WAPP
-{
-
-
-    public partial class educatordashboard
-    {
+namespace WAPP {
+    
+    
+    public partial class educatordashboard1 {
     }
 }
