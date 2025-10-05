@@ -100,10 +100,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="About.aspx" />
-    <Content Include="App_Data\Database1.mdf" />
-    <Content Include="App_Data\Database1_log.ldf">
-      <DependentUpon>Database1.mdf</DependentUpon>
-    </Content>
     <Content Include="App_Data\sealearner.mdf" />
     <Content Include="App_Data\sealearner_log.ldf">
       <DependentUpon>sealearner.mdf</DependentUpon>
