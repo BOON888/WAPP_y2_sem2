@@ -3,149 +3,172 @@
     Inherits="WAPP.StudentDashboard" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
-
     <style>
-        .container {
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f9f9fb;
+        }
+
+        .dashboard-container {
+            background-color: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            width: 90%;
             max-width: 1100px;
-            margin: auto;
-            padding: 30px;
-            font-family: Arial;
+            margin: 60px auto;
         }
 
         .welcome {
-            color: #3732d0;
-            font-size: 24px;
-            font-weight: bold;
+            color: #111827;
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 20px;
         }
 
         .stats {
             display: flex;
             gap: 20px;
-            margin: 20px 0;
             flex-wrap: wrap;
+            margin-bottom: 40px;
         }
 
         .card {
-            background: white;
+            background-color: #f9fafb;
             border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            padding: 20px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+            padding: 25px;
             flex: 1;
             text-align: center;
             min-width: 250px;
         }
 
         .card h3 {
-            color: #3732d0;
+            color: #001eff;
+            margin-bottom: 10px;
+        }
+
+        .card asp\:Label {
+            font-size: 20px;
+            color: #111827;
+            font-weight: 600;
         }
 
         .section {
             margin-top: 40px;
         }
 
-        /* 🟣 Horizontal Scroll Container */
+        .section h2 {
+            color: #111827;
+            margin-bottom: 20px;
+        }
+
+        /* Course list horizontal scroll */
         .course-list {
             display: flex;
             gap: 20px;
             overflow-x: auto;
-            overflow-y: hidden;
             padding-bottom: 15px;
             scroll-snap-type: x mandatory;
             -webkit-overflow-scrolling: touch;
         }
 
         .course-card {
-            background: white;
-            border: 1px solid #ddd;
+            background-color: #ffffff;
+            border: 1px solid #d1d5db;
             border-radius: 10px;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.05);
             padding: 20px;
             width: 300px;
             min-height: 250px;
-            box-sizing: border-box;
             flex-shrink: 0;
             scroll-snap-align: start;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
         }
 
         .course-card h4 {
-            margin: 0 0 8px;
-            color: #000;
+            color: #111827;
             font-size: 18px;
+            margin-bottom: 8px;
         }
 
         .course-card p {
-            margin: 0 0 10px;
-            color: #666;
+            color: #6b7280;
             font-size: 14px;
+            margin-bottom: 10px;
         }
 
         .btn {
-            background-color: #3732d0;
+            background-color: #001eff;
             color: white;
-            border: none;
-            padding: 8px 12px;
+            border: 1px solid #001eff;
             border-radius: 6px;
-            cursor: pointer;
+            padding: 10px;
             width: 100%;
-            margin-top: auto; /* ensures alignment at bottom */
+            font-size: 15px;
+            cursor: pointer;
+            margin-top: auto;
+            transition: all 0.3s ease;
         }
 
         .btn:hover {
-            background-color: #2926a6;
+            background-color: white;
+            color: #001eff;
         }
 
-        /* ✅ Scrollbar style for modern look */
+        /* Scrollbar styling */
         .course-list::-webkit-scrollbar {
             height: 8px;
         }
 
         .course-list::-webkit-scrollbar-thumb {
-            background-color: #3732d0;
+            background-color: #001eff;
             border-radius: 4px;
         }
 
         .course-list::-webkit-scrollbar-track {
             background: #f0f0f0;
         }
+
         .searchBox {
             padding: 8px 10px;
-            border: 1px solid #ccc;
+            border: 1px solid #d1d5db;
             border-radius: 6px;
             min-width: 220px;
             font-size: 14px;
+            background-color: #f9fafb;
         }
-
     </style>
 
-    <div class="container">
+    <div class="dashboard-container">
         <p class="welcome">Welcome back, <asp:Label ID="lblStudentName" runat="server" /> 👋</p>
 
         <!-- Stats -->
         <div class="stats">
             <div class="card">
                 <h3>Coins</h3>
-                <asp:Label ID="lblCoins" runat="server" Text="0" Font-Size="Large"></asp:Label>
+                <asp:Label ID="lblCoins" runat="server" Text="0"></asp:Label>
             </div>
             <div class="card">
                 <h3>Badges</h3>
-                <asp:Label ID="lblBadges" runat="server" Text="0" Font-Size="Large"></asp:Label>
+                <asp:Label ID="lblBadges" runat="server" Text="0"></asp:Label>
             </div>
             <div class="card">
                 <h3>Completed Courses</h3>
-                <asp:Label ID="lblCoursesCompleted" runat="server" Text="0" Font-Size="Large"></asp:Label>
+                <asp:Label ID="lblCoursesCompleted" runat="server" Text="0"></asp:Label>
             </div>
         </div>
 
-        <!-- 🔹 Incomplete Courses -->
+        <!-- Incomplete Courses -->
         <div class="section">
             <h2>Incomplete Courses</h2>
             <div class="course-list">
                 <asp:Repeater ID="rptIncompleteCourses" runat="server">
                     <ItemTemplate>
-                        <div class="course-card" style="border-color: darkblue; background:#bde9fa;">
+                        <div class="course-card" style="background:#bde9fa; border-color:darkblue;">
                             <h4><%# Eval("Title") %></h4>
                             <p>By <%# Eval("EducatorName") %></p>
                             <p><strong>⌛ On Going</strong></p>
@@ -157,17 +180,13 @@
             </div>
         </div>
 
-        <!-- 🟢 Public Courses -->
+        <!-- Public Courses -->
         <div class="section">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
                 <h2>Public Courses</h2>
-
-                <!-- 🔍 Search Bar -->
-                <div style="display: flex; gap: 10px;">
-                    <asp:TextBox ID="txtSearchPublic" runat="server" CssClass="searchBox" 
-                        Placeholder="Search public courses..." />
-                    <asp:Button ID="btnSearchPublic" runat="server" Text="Search" CssClass="btn"
-                        OnClick="btnSearchPublic_Click" />
+                <div style="display:flex; gap:10px;">
+                    <asp:TextBox ID="txtSearchPublic" runat="server" CssClass="searchBox" Placeholder="Search public courses..." />
+                    <asp:Button ID="btnSearchPublic" runat="server" Text="Search" CssClass="btn" OnClick="btnSearchPublic_Click" />
                 </div>
             </div>
 
@@ -187,17 +206,13 @@
             </div>
         </div>
 
-        <!-- 🔵 Private Courses -->
+        <!-- Private Courses -->
         <div class="section">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
                 <h2>Private Courses</h2>
-
-                <!-- 🔍 Search Bar -->
-                <div style="display: flex; gap: 10px;">
-                    <asp:TextBox ID="txtSearchPrivate" runat="server" CssClass="searchBox"
-                        Placeholder="Search private courses..." />
-                    <asp:Button ID="btnSearchPrivate" runat="server" Text="Search" CssClass="btn"
-                        OnClick="btnSearchPrivate_Click" />
+                <div style="display:flex; gap:10px;">
+                    <asp:TextBox ID="txtSearchPrivate" runat="server" CssClass="searchBox" Placeholder="Search private courses..." />
+                    <asp:Button ID="btnSearchPrivate" runat="server" Text="Search" CssClass="btn" OnClick="btnSearchPrivate_Click" />
                 </div>
             </div>
 
@@ -218,13 +233,13 @@
             </div>
         </div>
 
-        <!-- 🟩 Completed Courses -->
+        <!-- Completed Courses -->
         <div class="section">
             <h2>Completed Courses</h2>
             <div class="course-list">
                 <asp:Repeater ID="rptCompletedCourses" runat="server">
                     <ItemTemplate>
-                        <div class="course-card" style="border-color: green; background:#eafbea;">
+                        <div class="course-card" style="background:#eafbea; border-color:green;">
                             <h4><%# Eval("Title") %></h4>
                             <p>By <%# Eval("EducatorName") %></p>
                             <p><strong>✅ Completed</strong></p>
@@ -235,4 +250,5 @@
                 </asp:Repeater>
             </div>
         </div>
+    </div>
 </asp:Content>
