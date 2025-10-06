@@ -130,13 +130,8 @@
     <Content Include="Image\ben.jpg" />
     <Content Include="Image\promo1.jpg" />
     <Content Include="Image\promo2.jpg" />
-<<<<<<< Updated upstream
     <Content Include="Image\default_profile.png" />
     <Content Include="profile.aspx" />
-=======
-    <Content Include="PrivateCourse.aspx" />
-    <Content Include="PublicCourse.aspx" />
->>>>>>> Stashed changes
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.esm.js" />
@@ -236,30 +231,14 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-<<<<<<< Updated upstream
     <Compile Include="profile.aspx.cs">
       <DependentUpon>profile.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="profile.aspx.designer.cs">
       <DependentUpon>profile.aspx</DependentUpon>
-=======
-    <Compile Include="PrivateCourse.aspx.cs">
-      <DependentUpon>PrivateCourse.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="PrivateCourse.aspx.designer.cs">
-      <DependentUpon>PrivateCourse.aspx</DependentUpon>
->>>>>>> Stashed changes
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PublicCourse.aspx.cs">
-      <DependentUpon>PublicCourse.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="PublicCourse.aspx.designer.cs">
-      <DependentUpon>PublicCourse.aspx</DependentUpon>
-    </Compile>
     <Compile Include="public_dashboard.aspx.cs">
       <DependentUpon>public_dashboard.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
