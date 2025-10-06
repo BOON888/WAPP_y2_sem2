@@ -55,6 +55,12 @@
                         <li id="navSignUp" runat="server" class="nav-item" style="border:1px solid white; background-color: white; border-radius: 10px;">
                             <a class="nav-link" runat="server" href="~/sign_up" style="color:black">Sign-Up</a>
                         </li>
+                        <li id="navUserProfile" runat="server" class="nav-item d-flex align-items-center" style="margin-right:15px;">
+                            <a href="~/profile.aspx" runat="server" class="d-flex align-items-center text-decoration-none text-white">
+                                <asp:Image ID="imgProfileHeader" runat="server" Width="35px" Height="35px" Style="border-radius:10px; margin-right:8px; border:none;" />
+                                <asp:Label ID="lblUserFullName" runat="server" Font-Bold="True"></asp:Label>
+                            </a>
+                        </li>
                         <li id="navLogout" runat="server" class="nav-item" style="border:1px solid white; background-color: white; border-radius: 10px;">
                             <asp:LinkButton ID="btnLogout" runat="server" CssClass="nav-link" OnClick="Logout_Click" style="color:black;">Logout</asp:LinkButton>
                         </li>

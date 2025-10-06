@@ -29,11 +29,6 @@
             color: #001eff;
         }
 
-        .btn-outline:hover {
-            background-color: #001eff;
-            color: white;
-        }
-
         .btn:hover {
             opacity: 0.9;
         }
@@ -160,9 +155,15 @@
         <h2 style="font-size: medium; color: #374151;">
             Dive into a world of knowledge with our comprehensive learning platform. Whether you're a student seeking to expand your horizons or an educator ready to share your expertise, Sea Learner provides the tools and community to make learning engaging and effective.
         </h2>
-        <div style="margin-top: 20px;">
-            <button class="btn">Login to Continue</button>
-            <button class="btn btn-outline">Join Sea Learner</button>
+        <div style="margin-top: 20px; text-align:center;">
+            <ul style="list-style-type:none; padding:0; margin:0; display:flex; justify-content:center; gap:15px;">
+                <li>
+                    <a class="btn" href="sign_in">Sign-in to Continue</a>
+                </li>
+                <li>
+                    <a class="btn btn-outline" href="sign_up">Join Sea Learner</a>
+                </li>
+            </ul>
         </div>
     </div>
 
