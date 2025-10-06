@@ -9,9 +9,14 @@ namespace WAPP
 {
 	public partial class educatordashboard1 : System.Web.UI.Page
 	{
-		protected void Page_Load(object sender, EventArgs e)
-		{
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (Session["UserId"] == null)
+            {
+                Response.Redirect("~/sign_in");
+            }
+            lblWelcome.Text = "Welcome, " + Session["FullName"];
+        }
 
-		}
-	}
+    }
 }

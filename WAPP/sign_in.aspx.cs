@@ -8,6 +8,11 @@ namespace WAPP
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            // Optional: clear any existing session if returning to login
+            if (!IsPostBack)
+            {
+                Session.Clear();
+            }
         }
 
         protected void btnSignIn_Click(object sender, EventArgs e)
@@ -18,6 +23,7 @@ namespace WAPP
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
             {
                 lblError.Text = "Please enter both email and password.";
+                lblError.ForeColor = System.Drawing.Color.Red;
                 return;
             }
 
@@ -25,18 +31,26 @@ namespace WAPP
 
             using (SqlConnection conn = new SqlConnection(connString))
             {
-                string query = "SELECT Role FROM users WHERE Email = @Email AND Password = @Password";
+                string query = "SELECT * FROM Users WHERE Email = @Email AND Password = @Password";
                 SqlCommand cmd = new SqlCommand(query, conn);
                 cmd.Parameters.AddWithValue("@Email", email);
                 cmd.Parameters.AddWithValue("@Password", password);
 
                 conn.Open();
-                object roleObj = cmd.ExecuteScalar();
+                SqlDataReader reader = cmd.ExecuteReader();
 
-                if (roleObj != null)
+                if (reader.Read())
                 {
-                    string role = roleObj.ToString().ToLower();
+                    // ✅ Store user info in session
+                    Session["UserId"] = reader["Id"].ToString();
+                    Session["FullName"] = reader["FullName"].ToString();
+                    Session["Email"] = reader["Email"].ToString();
+                    Session["Role"] = reader["Role"].ToString();
+                    Session["ProfilePicture"] = reader["ProfilePicture"].ToString();
 
+                    string role = reader["Role"].ToString().ToLower();
+
+                    // ✅ Redirect based on role
                     if (role == "student")
                     {
                         Response.Redirect("~/studentdashboard");
@@ -45,15 +59,23 @@ namespace WAPP
                     {
                         Response.Redirect("~/educatordashboard");
                     }
+                    else if (role == "admin")
+                    {
+                        Response.Redirect("~/admin_dashboard");
+                    }
                     else
                     {
                         lblError.Text = "Unknown role detected.";
+                        lblError.ForeColor = System.Drawing.Color.Red;
                     }
                 }
                 else
                 {
                     lblError.Text = "Invalid email or password.";
+                    lblError.ForeColor = System.Drawing.Color.Red;
                 }
+
+                reader.Close();
             }
         }
     }

@@ -14,12 +14,20 @@ namespace WAPP
             {
                 navSignIn.Visible = true;
                 navSignUp.Visible = true;
+                navLogout.Visible = false;
             }
             else
             {
                 navSignIn.Visible = false;
                 navSignUp.Visible = false;
+                navLogout.Visible = true;
             }
+        }
+        protected void Logout_Click(object sender, EventArgs e)
+        {
+            Session.Clear();           // Remove all session data
+            Session.Abandon();         // End the session
+            Response.Redirect("~/public_dashboard");
         }
     }
 }

@@ -55,6 +55,9 @@
                         <li id="navSignUp" runat="server" class="nav-item" style="border:1px solid white; background-color: white; border-radius: 10px;">
                             <a class="nav-link" runat="server" href="~/sign_up" style="color:black">Sign-Up</a>
                         </li>
+                        <li id="navLogout" runat="server" class="nav-item" style="border:1px solid white; background-color: white; border-radius: 10px;">
+                            <asp:LinkButton ID="btnLogout" runat="server" CssClass="nav-link" OnClick="Logout_Click" style="color:black;">Logout</asp:LinkButton>
+                        </li>
                     </ul>
                 </div>
             </div>
