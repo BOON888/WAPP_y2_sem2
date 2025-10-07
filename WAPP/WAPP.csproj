@@ -125,6 +125,7 @@
     <Content Include="Default.aspx" />
     <Content Include="educatordashboard.aspx" />
     <Content Include="favicon.ico" />
+    <Content Include="Feedback.aspx" />
     <Content Include="Global.asax" />
     <Content Include="Image\logo.png" />
     <Content Include="Image\ben.jpg" />
@@ -230,6 +231,13 @@
     </Compile>
     <Compile Include="educatordashboard.aspx.designer.cs">
       <DependentUpon>educatordashboard.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Feedback.aspx.cs">
+      <DependentUpon>Feedback.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Feedback.aspx.designer.cs">
+      <DependentUpon>Feedback.aspx</DependentUpon>
     </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
