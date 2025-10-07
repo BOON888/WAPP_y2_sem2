@@ -14,7 +14,6 @@ namespace WAPP
                 Session.Clear();
             }
         }
-
         protected void btnSignIn_Click(object sender, EventArgs e)
         {
             string email = txtEmail.Text.Trim();
@@ -31,51 +30,68 @@ namespace WAPP
 
             using (SqlConnection conn = new SqlConnection(connString))
             {
-                string query = "SELECT * FROM Users WHERE Email = @Email AND Password = @Password";
-                SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@Email", email);
-                cmd.Parameters.AddWithValue("@Password", password);
-
                 conn.Open();
-                SqlDataReader reader = cmd.ExecuteReader();
+
+                // 🔹 Step 1: Try to find user in Users table
+                string userQuery = "SELECT * FROM Users WHERE Email = @Email AND Password = @Password";
+                SqlCommand userCmd = new SqlCommand(userQuery, conn);
+                userCmd.Parameters.AddWithValue("@Email", email);
+                userCmd.Parameters.AddWithValue("@Password", password);
+
+                SqlDataReader reader = userCmd.ExecuteReader();
 
                 if (reader.Read())
                 {
-                    // ✅ Store user info in session
+                    // ✅ Set sessions for student/educator
                     Session["UserId"] = reader["Id"].ToString();
-                    Session["FullName"] = reader["FullName"].ToString();
+                    Session["FullName"] = reader["FullName"].ToString();  // make sure always set
                     Session["Email"] = reader["Email"].ToString();
-                    Session["Role"] = reader["Role"].ToString();
+                    Session["Role"] = reader["Role"].ToString().ToLower();
                     Session["ProfilePicture"] = reader["ProfilePicture"].ToString();
 
                     string role = reader["Role"].ToString().ToLower();
+                    reader.Close();
 
-                    // ✅ Redirect based on role
+                    // Redirect by role
                     if (role == "student")
-                    {
-                        Response.Redirect("~/studentdashboard");
-                    }
+                        Response.Redirect("~/studentdashboard.aspx");
                     else if (role == "educator")
-                    {
-                        Response.Redirect("~/educatordashboard");
-                    }
-                    else if (role == "admin")
-                    {
-                        Response.Redirect("~/admin_dashboard");
-                    }
+                        Response.Redirect("~/educatordashboard.aspx");
                     else
-                    {
                         lblError.Text = "Unknown role detected.";
-                        lblError.ForeColor = System.Drawing.Color.Red;
-                    }
                 }
                 else
                 {
-                    lblError.Text = "Invalid email or password.";
-                    lblError.ForeColor = System.Drawing.Color.Red;
-                }
+                    reader.Close();
 
-                reader.Close();
+                    // 🔹 Step 2: If not found in Users, check Admin table
+                    string adminQuery = "SELECT * FROM Admin WHERE Email = @Email AND Password = @Password";
+                    SqlCommand adminCmd = new SqlCommand(adminQuery, conn);
+                    adminCmd.Parameters.AddWithValue("@Email", email);
+                    adminCmd.Parameters.AddWithValue("@Password", password);
+
+                    SqlDataReader adminReader = adminCmd.ExecuteReader();
+
+                    if (adminReader.Read())
+                    {
+                        // ✅ Ensure all required sessions are set
+                        Session["UserId"] = adminReader["Id"].ToString();
+                        Session["Email"] = adminReader["Email"].ToString();
+                        Session["Role"] = "admin";
+                        Session["FullName"] = "Administrator"; // <-- this fixes your null issue
+
+                        adminReader.Close();
+
+                        // Redirect to admin dashboard
+                        Response.Redirect("~/admin_dashboard.aspx");
+                    }
+                    else
+                    {
+                        adminReader.Close();
+                        lblError.Text = "Invalid email or password.";
+                        lblError.ForeColor = System.Drawing.Color.Red;
+                    }
+                }
             }
         }
     }
