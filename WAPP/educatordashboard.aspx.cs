@@ -27,10 +27,9 @@ namespace WAPP
 
                 if (_educatorId <= 0)
                 {
-                    // Demo fallback - matches your DB screenshot where educatorId like 3000 exists
                     _educatorId = 3000;
                     Session["EducatorID"] = _educatorId;
-                    Session["EducatorName"] = "Demo Educator";
+                    Session["EducatorName"] = "Educator";
                 }
 
                 lblEducatorName.Text = Session["EducatorName"] != null ? Session["EducatorName"].ToString() : "Educator";
