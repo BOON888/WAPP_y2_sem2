@@ -144,18 +144,28 @@ namespace WAPP
         protected void btnSearchPublic_Click(object sender, EventArgs e)
         {
             string keyword = txtSearchPublic.Text.Trim();
+            // Redirect user to PublicCourse.aspx with optional search keyword
             if (!string.IsNullOrEmpty(keyword))
             {
-                Response.Redirect("SearchResults.aspx?type=public&keyword=" + Server.UrlEncode(keyword));
+                Response.Redirect("PublicCourse.aspx?keyword=" + Server.UrlEncode(keyword));
+            }
+            else
+            {
+                Response.Redirect("PublicCourse.aspx");
             }
         }
 
         protected void btnSearchPrivate_Click(object sender, EventArgs e)
         {
             string keyword = txtSearchPrivate.Text.Trim();
+            // Redirect user to PrivateCourse.aspx with optional search keyword
             if (!string.IsNullOrEmpty(keyword))
             {
-                Response.Redirect("SearchResults.aspx?type=private&keyword=" + Server.UrlEncode(keyword));
+                Response.Redirect("PrivateCourse.aspx?keyword=" + Server.UrlEncode(keyword));
+            }
+            else
+            {
+                Response.Redirect("PrivateCourse.aspx");
             }
         }
     }
