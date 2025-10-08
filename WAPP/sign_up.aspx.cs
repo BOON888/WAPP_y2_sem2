@@ -20,16 +20,16 @@ namespace WAPP
         {
             if (txtPassword.Text != txtConfirmPassword.Text)
             {
-                lblMessage.Text = "⚠ Passwords do not match!";
+                lblMessage.Text = "Passwords do not match!";
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(txtFullName.Text) || string.IsNullOrWhiteSpace(txtEmail.Text))
             {
-                lblMessage.Text = "⚠ Please fill in all required fields!";
+                lblMessage.Text = "Please fill in all required fields!";
                 return;
             }
-  
+
             string connString = ConfigurationManager.ConnectionStrings["SeaLearnerConnection"].ConnectionString;
             bool success = false;
 
@@ -40,9 +40,12 @@ namespace WAPP
 
                 try
                 {
-                    string insertUserQuery = @"INSERT INTO Users (FullName, Email, Password, Role, Age, Gender)
-                                   OUTPUT INSERTED.Id
-                                   VALUES (@FullName, @Email, @Password, @Role, @Age, @Gender)";
+                    // Insert into Users table with father and mother columns
+                    string insertUserQuery = @"INSERT INTO Users 
+                        (FullName, Email, Password, Role, Age, Gender, father, mother)
+                        OUTPUT INSERTED.Id
+                        VALUES (@FullName, @Email, @Password, @Role, @Age, @Gender, @Father, @Mother)";
+
                     SqlCommand cmdUser = new SqlCommand(insertUserQuery, conn, transaction);
                     cmdUser.Parameters.AddWithValue("@FullName", txtFullName.Text.Trim());
                     cmdUser.Parameters.AddWithValue("@Email", txtEmail.Text.Trim());
@@ -66,14 +69,18 @@ namespace WAPP
                     cmdUser.Parameters.AddWithValue("@Age", age);
                     cmdUser.Parameters.AddWithValue("@Gender", gender);
 
-                    // Insert into Users table and get new UserId
+                    // New fields for father and mother
+                    cmdUser.Parameters.AddWithValue("@Father", txtFatherName.Text.Trim());
+                    cmdUser.Parameters.AddWithValue("@Mother", txtMotherName.Text.Trim());
+
+                    // Execute and retrieve new UserId
                     int userId = Convert.ToInt32(cmdUser.ExecuteScalar());
 
                     // Insert into Student or Educator table
                     if (rblRole.SelectedValue == "student")
                     {
                         string insertStudentQuery = @"INSERT INTO Student (UserId, School, InterestSubject)
-                                      VALUES (@UserId, @School, @InterestSubject)";
+                                                      VALUES (@UserId, @School, @InterestSubject)";
                         SqlCommand cmdStudent = new SqlCommand(insertStudentQuery, conn, transaction);
                         cmdStudent.Parameters.AddWithValue("@UserId", userId);
                         cmdStudent.Parameters.AddWithValue("@School", txtSchool.Text.Trim());
@@ -83,7 +90,7 @@ namespace WAPP
                     else if (rblRole.SelectedValue == "educator")
                     {
                         string insertEducatorQuery = @"INSERT INTO Educator (UserId, EducationQualification, GraduatedUniversity)
-                                       VALUES (@UserId, @EducationQualification, @GraduatedUniversity)";
+                                                       VALUES (@UserId, @EducationQualification, @GraduatedUniversity)";
                         SqlCommand cmdEducator = new SqlCommand(insertEducatorQuery, conn, transaction);
                         cmdEducator.Parameters.AddWithValue("@UserId", userId);
                         cmdEducator.Parameters.AddWithValue("@EducationQualification", ddlQualification.SelectedValue);
@@ -102,7 +109,7 @@ namespace WAPP
                 }
             }
 
-            // Redirect only after the transaction is properly completed and disposed
+            // Redirect only after successful transaction
             if (success)
             {
                 Response.Redirect("sign_in.aspx?message=AccountCreated");

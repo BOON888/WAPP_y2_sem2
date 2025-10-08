@@ -165,6 +165,24 @@
             <label for="txtConfirmPassword">Confirm Password</label>
             <asp:TextBox ID="txtConfirmPassword" TextMode="Password" runat="server" CssClass="input" placeholder="Confirm your password"></asp:TextBox>
         </div>
+        
+        <div>
+            <label for="txtSecurityReminder" style="text-align:left">Password Recovery Questions</label>
+        </div>
+            
+        <div class="form-group">
+            <label for="txtFatherName">Father Name</label>
+            <asp:TextBox ID="txtFatherName" runat="server" CssClass="input" placeholder="Enter your father name"></asp:TextBox>
+        </div>
+
+        <div class="form-group">
+            <label for="txtMontherName">Mother Name</label>
+            <asp:TextBox ID="txtMotherName" runat="server" CssClass="input" placeholder="Enter your mother name"></asp:TextBox>
+        </div>
+
+        <div>
+            <label for="txtIdentity" style="text-align:left">Role Selection and Information</label>
+        </div>
 
         <div class="role-group">
             <label>I am a:</label>
