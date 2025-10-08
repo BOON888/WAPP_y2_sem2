@@ -13,5 +13,10 @@ namespace WAPP
         {
 
         }
+
+        protected void RadioButtonList1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

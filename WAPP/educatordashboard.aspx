@@ -103,10 +103,17 @@
         /* scrollbar small style */
         .course-list::-webkit-scrollbar { height:8px; }
         .course-list::-webkit-scrollbar-thumb { background:#cfd8ff; border-radius:6px; }
+        .auto-style1 {
+            color: #111827;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-align: left;
+        }
     </style>
 
     <div class="dashboard-container">
-        <p class="welcome">Welcome back, <asp:Label ID="lblEducatorName" runat="server" />!</p>
+        <p class="auto-style1">Welcome back, <asp:Label ID="lblEducatorName" runat="server" />!</p>
         <div class="sub">Manage your courses and inspire students</div>
 
         <!-- stats -->
