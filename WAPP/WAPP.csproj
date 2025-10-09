@@ -104,6 +104,7 @@
     <Content Include="App_Data\sealearner_log.ldf">
       <DependentUpon>sealearner.mdf</DependentUpon>
     </Content>
+    <Content Include="community.aspx" />
     <Content Include="communityPage.aspx" />
     <Content Include="Contact.aspx" />
     <Content Include="Content\bootstrap-grid.css" />
@@ -200,6 +201,7 @@
     <Content Include="Site.Master" />
     <Content Include="StudentDashboard.aspx" />
     <Content Include="StudentProfile.aspx" />
+    <Content Include="tem_dashboard.aspx" />
     <Content Include="ViewSwitcher.ascx" />
     <Content Include="Web.config" />
     <Content Include="Bundle.config" />
@@ -215,6 +217,13 @@
       <DependentUpon>About.aspx</DependentUpon>
     </Compile>
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="community.aspx.cs">
+      <DependentUpon>community.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="community.aspx.designer.cs">
+      <DependentUpon>community.aspx</DependentUpon>
+    </Compile>
     <Compile Include="communityPage.aspx.cs">
       <DependentUpon>communityPage.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -344,6 +353,13 @@
     </Compile>
     <Compile Include="StudentProfile.aspx.designer.cs">
       <DependentUpon>StudentProfile.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="tem_dashboard.aspx.cs">
+      <DependentUpon>tem_dashboard.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="tem_dashboard.aspx.designer.cs">
+      <DependentUpon>tem_dashboard.aspx</DependentUpon>
     </Compile>
     <Compile Include="ViewSwitcher.ascx.cs">
       <DependentUpon>ViewSwitcher.ascx</DependentUpon>
