@@ -29,7 +29,7 @@ namespace WAPP
 
                     string query = @"
                         SELECT c.Id, c.Title, e.EducationQualification AS EducatorName,
-                               ISNULL(c.CoinReward, 50) AS CoinReward
+                               ISNULL(c.Coin, 50) AS Coin
                         FROM Course c
                         JOIN Educator e ON c.EducatorId = e.Id
                         WHERE c.CourseType = 'Private'";
@@ -38,7 +38,7 @@ namespace WAPP
                         query += " AND (c.Title LIKE @kw OR e.EducationQualification LIKE @kw)";
 
                     if (!string.IsNullOrEmpty(coinFilter))
-                        query += " AND ISNULL(c.CoinReward, 50) <= @coinFilter";
+                        query += " AND ISNULL(c.Coin, 50) <= @coinFilter";
 
                     SqlCommand cmd = new SqlCommand(query, conn);
 
