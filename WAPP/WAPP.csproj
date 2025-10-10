@@ -137,6 +137,7 @@
     <Content Include="Image\promo2.jpg" />
     <Content Include="Image\default_profile.png" />
     <Content Include="Leaderboard.aspx" />
+    <Content Include="my_post.aspx" />
     <Content Include="profile.aspx" />
     <Content Include="PrivateCourse.aspx" />
     <Content Include="PublicCourse.aspx" />
@@ -282,6 +283,13 @@
     </Compile>
     <Compile Include="Leaderboard.aspx.designer.cs">
       <DependentUpon>Leaderboard.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="my_post.aspx.cs">
+      <DependentUpon>my_post.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="my_post.aspx.designer.cs">
+      <DependentUpon>my_post.aspx</DependentUpon>
     </Compile>
     <Compile Include="profile.aspx.cs">
       <DependentUpon>profile.aspx</DependentUpon>
