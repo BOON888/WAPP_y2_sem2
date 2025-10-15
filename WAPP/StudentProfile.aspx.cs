@@ -33,11 +33,20 @@ namespace WAPP
             {
                 conn.Open();
                 string query = @"
-                    SELECT u.FullName, u.Email, u.Age, u.Gender, u.ProfilePicture,
-                           s.School, s.InterestSubject, s.Coins, s.BadgesEarned
-                    FROM Users u
-                    JOIN Student s ON u.Id = s.UserId
-                    WHERE u.Id = @uid";
+            SELECT 
+                s.Id AS StudentId,      
+                u.FullName, 
+                u.Email, 
+                u.Age, 
+                u.Gender, 
+                u.ProfilePicture,
+                s.School, 
+                s.InterestSubject, 
+                s.Coins, 
+                s.BadgesEarned
+            FROM Users u
+            JOIN Student s ON u.Id = s.UserId
+            WHERE u.Id = @uid";
 
                 SqlCommand cmd = new SqlCommand(query, conn);
                 cmd.Parameters.AddWithValue("@uid", userId);
@@ -45,7 +54,9 @@ namespace WAPP
 
                 if (dr.Read())
                 {
+                    // ✅ Display User Info
                     lblUserName.Text = dr["FullName"].ToString();
+                    lblStudentId.Text = dr["StudentId"].ToString(); // 👈 Student ID from DB
                     txtFullName.Text = dr["FullName"].ToString();
                     txtEmail.Text = dr["Email"].ToString();
                     txtSchool.Text = dr["School"].ToString();
@@ -59,17 +70,12 @@ namespace WAPP
                     lblCoins.Text = dr["Coins"].ToString();
                     lblBadges.Text = dr["BadgesEarned"].ToString();
 
-                    // ✅ Read from Users.ProfilePicture
+                    // ✅ Load Profile Picture
                     string profilePic = dr["ProfilePicture"].ToString();
-                    System.Diagnostics.Debug.WriteLine("Profile picture filename: " + profilePic);
                     if (string.IsNullOrEmpty(profilePic))
-                    {
                         imgProfile.ImageUrl = ResolveUrl("~/Image/default_profile2.png");
-                    }
                     else
-                    {
                         imgProfile.ImageUrl = ResolveUrl("~/Image/" + profilePic);
-                    }
                 }
                 dr.Close();
             }
