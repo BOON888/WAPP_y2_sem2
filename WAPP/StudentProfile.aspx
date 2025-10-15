@@ -222,8 +222,36 @@
             object-fit: cover;
             display: block;
         }
-    </style>
+        .back-container {
+            width: 95%;
+            max-width: 1000px;
+            margin: 30px auto -30px auto;
+            display: flex;
+            justify-content: flex-start;
+        }
 
+        .btn-back {
+            background-color: #e5e7eb;
+            color: #111827;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.3s;
+            font-size: 14px;
+        }
+
+        .btn-back:hover {
+            background-color: #d1d5db;
+        }
+    </style>
+    <div class="back-container">
+        <asp:Button ID="btnBackDashboard" runat="server" 
+            Text="← Back to Dashboard" 
+            CssClass="btn-back" 
+            OnClick="btnBackDashboard_Click" />
+    </div>
     <div class="profile-container">
         <div class="profile-header">
             <div class="profile-info">
@@ -243,6 +271,8 @@
 
             <!-- 🔹 Smooth scroll button -->
             <button type="button" class="btn-edit" onclick="scrollToEdit()">Edit Profile</button>
+
+            
         </div>
 
         <!-- 🔹 Anchor target for smooth scroll -->

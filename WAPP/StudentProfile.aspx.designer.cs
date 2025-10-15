@@ -15,6 +15,15 @@ namespace WAPP
     {
 
         /// <summary>
+        /// btnBackDashboard control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnBackDashboard;
+
+        /// <summary>
         /// imgProfile control.
         /// </summary>
         /// <remarks>
