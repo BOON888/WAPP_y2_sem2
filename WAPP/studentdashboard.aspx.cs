@@ -13,17 +13,57 @@ namespace WAPP
         {
             if (!IsPostBack)
             {
-                if (Session["StudentID"] == null)
+                // 🔹 Ensure the user is logged in and is a student
+                if (Session["UserId"] == null || Session["Role"] == null || Session["Role"].ToString().ToLower() != "student")
                 {
-                    Session["StudentID"] = 2000;              // matches student.id   //temp
-                    Session["StudentName"] = "Alice Tan";     // matches users.fullName  //temp
-                    //Response.Redirect("Login.aspx");
-                    //return;
+                    Response.Redirect("sign_in.aspx");
+                    return;
                 }
 
-                lblStudentName.Text = Session["StudentName"].ToString();
+                // 🔹 Ensure StudentID is available
+                if (Session["StudentID"] == null)
+                {
+                    LoadStudentID();  // get Student.Id based on current UserId
+                }
+
+                // 🔹 If still missing (database error or mismatch), show safe defaults
+                if (Session["StudentID"] == null)
+                {
+                    lblStudentName.Text = "Unknown Student";
+                    lblCoins.Text = "0";
+                    lblBadges.Text = "0";
+                    lblCoursesCompleted.Text = "0";
+                    return;
+                }
+
+                // ✅ Show current student name from session
+                lblStudentName.Text = Session["FullName"]?.ToString() ?? "Unnamed";
+
+                // ✅ Load latest stats & course data
                 LoadStudentStats();
                 LoadCourses();
+            }
+        }
+
+
+        // ✅ Get StudentID based on logged-in user
+        private void LoadStudentID()
+        {
+            int userId = Convert.ToInt32(Session["UserId"]);
+
+            using (SqlConnection conn = new SqlConnection(connString))
+            {
+                conn.Open();
+
+                SqlCommand cmd = new SqlCommand("SELECT Id FROM Student WHERE UserId = @uid", conn);
+                cmd.Parameters.AddWithValue("@uid", userId);
+
+                object result = cmd.ExecuteScalar();
+                if (result != null)
+                {
+                    Session["StudentID"] = Convert.ToInt32(result);
+                    Session["StudentName"] = Session["FullName"];
+                }
             }
         }
 
@@ -35,9 +75,11 @@ namespace WAPP
             {
                 conn.Open();
 
+                // 🔹 Load coins and badges
                 SqlCommand cmd = new SqlCommand("SELECT Coins, BadgesEarned FROM Student WHERE Id=@id", conn);
                 cmd.Parameters.AddWithValue("@id", studentId);
                 SqlDataReader dr = cmd.ExecuteReader();
+
                 if (dr.Read())
                 {
                     lblCoins.Text = dr["Coins"].ToString();
@@ -45,6 +87,7 @@ namespace WAPP
                 }
                 dr.Close();
 
+                // 🔹 Load completed course count
                 SqlCommand cmd2 = new SqlCommand("SELECT COUNT(*) FROM StudentCourseProgress WHERE StudentId=@id AND Status='Completed'", conn);
                 cmd2.Parameters.AddWithValue("@id", studentId);
                 lblCoursesCompleted.Text = cmd2.ExecuteScalar().ToString();
@@ -59,7 +102,7 @@ namespace WAPP
             {
                 conn.Open();
 
-                // 🔹 Incomplete Courses
+                // Incomplete Courses
                 SqlDataAdapter daIncomplete = new SqlDataAdapter(
                     @"SELECT c.Id, c.Title, e.EducationQualification AS EducatorName
                       FROM Course c 
@@ -141,32 +184,17 @@ namespace WAPP
                 }
             }
         }
+
         protected void btnSearchPublic_Click(object sender, EventArgs e)
         {
             string keyword = txtSearchPublic.Text.Trim();
-            // Redirect user to PublicCourse.aspx with optional search keyword
-            if (!string.IsNullOrEmpty(keyword))
-            {
-                Response.Redirect("PublicCourse.aspx?keyword=" + Server.UrlEncode(keyword));
-            }
-            else
-            {
-                Response.Redirect("PublicCourse.aspx");
-            }
+            Response.Redirect("PublicCourse.aspx" + (!string.IsNullOrEmpty(keyword) ? "?keyword=" + Server.UrlEncode(keyword) : ""));
         }
 
         protected void btnSearchPrivate_Click(object sender, EventArgs e)
         {
             string keyword = txtSearchPrivate.Text.Trim();
-            // Redirect user to PrivateCourse.aspx with optional search keyword
-            if (!string.IsNullOrEmpty(keyword))
-            {
-                Response.Redirect("PrivateCourse.aspx?keyword=" + Server.UrlEncode(keyword));
-            }
-            else
-            {
-                Response.Redirect("PrivateCourse.aspx");
-            }
+            Response.Redirect("PrivateCourse.aspx" + (!string.IsNullOrEmpty(keyword) ? "?keyword=" + Server.UrlEncode(keyword) : ""));
         }
     }
 }

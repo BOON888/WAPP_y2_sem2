@@ -14,12 +14,13 @@ namespace WAPP
         {
             if (!IsPostBack)
             {
-                if (Session["UserId"] == null)
+                // 🔹 Ensure the user is logged in
+                if (Session["UserId"] == null || Session["Role"] == null || Session["Role"].ToString().ToLower() != "student")
                 {
                     Response.Redirect("sign_in.aspx");
                     return;
                 }
-                
+
                 LoadProfile();
                 LoadStatsAndBadges();
             }
@@ -33,20 +34,20 @@ namespace WAPP
             {
                 conn.Open();
                 string query = @"
-            SELECT 
-                s.Id AS StudentId,      
-                u.FullName, 
-                u.Email, 
-                u.Age, 
-                u.Gender, 
-                u.ProfilePicture,
-                s.School, 
-                s.InterestSubject, 
-                s.Coins, 
-                s.BadgesEarned
-            FROM Users u
-            JOIN Student s ON u.Id = s.UserId
-            WHERE u.Id = @uid";
+                    SELECT 
+                        s.Id AS StudentId,      
+                        u.FullName, 
+                        u.Email, 
+                        u.Age, 
+                        u.Gender, 
+                        u.ProfilePicture,
+                        s.School, 
+                        s.InterestSubject, 
+                        s.Coins, 
+                        s.BadgesEarned
+                    FROM Users u
+                    JOIN Student s ON u.Id = s.UserId
+                    WHERE u.Id = @uid";
 
                 SqlCommand cmd = new SqlCommand(query, conn);
                 cmd.Parameters.AddWithValue("@uid", userId);
@@ -56,7 +57,7 @@ namespace WAPP
                 {
                     // ✅ Display User Info
                     lblUserName.Text = dr["FullName"].ToString();
-                    lblStudentId.Text = dr["StudentId"].ToString(); // 👈 Student ID from DB
+                    lblStudentId.Text = dr["StudentId"].ToString();
                     txtFullName.Text = dr["FullName"].ToString();
                     txtEmail.Text = dr["Email"].ToString();
                     txtSchool.Text = dr["School"].ToString();
@@ -70,12 +71,16 @@ namespace WAPP
                     lblCoins.Text = dr["Coins"].ToString();
                     lblBadges.Text = dr["BadgesEarned"].ToString();
 
-                    // ✅ Load Profile Picture
+                    // ✅ Profile picture
                     string profilePic = dr["ProfilePicture"].ToString();
-                    if (string.IsNullOrEmpty(profilePic))
-                        imgProfile.ImageUrl = ResolveUrl("~/Image/default_profile2.png");
-                    else
-                        imgProfile.ImageUrl = ResolveUrl("~/Image/" + profilePic);
+                    imgProfile.ImageUrl = string.IsNullOrEmpty(profilePic)
+                        ? ResolveUrl("~/Image/default_profile2.png")
+                        : ResolveUrl("~/Image/" + profilePic);
+
+                    // ✅ Sync sessions (for dashboard use)
+                    Session["StudentID"] = dr["StudentId"].ToString();
+                    Session["FullName"] = dr["FullName"].ToString();
+                    Session["ProfilePicture"] = dr["ProfilePicture"].ToString();
                 }
                 dr.Close();
             }
@@ -93,7 +98,7 @@ namespace WAPP
             string fileName = null;
             if (fileUploadProfile.HasFile)
             {
-                // ✅ Generate unique file name to avoid overwriting
+                // ✅ Generate unique file name
                 string extension = Path.GetExtension(fileUploadProfile.FileName);
                 fileName = "profile_" + userId + "_" + DateTime.Now.Ticks + extension;
 
@@ -108,6 +113,7 @@ namespace WAPP
             {
                 conn.Open();
 
+                // ✅ Update Users table
                 string queryUser = @"
                     UPDATE Users 
                     SET FullName = @name, Age = @age, Gender = @gender
@@ -123,6 +129,7 @@ namespace WAPP
                     cmdUser.Parameters.AddWithValue("@pic", fileName);
                 cmdUser.ExecuteNonQuery();
 
+                // ✅ Update Student table
                 string queryStudent = @"
                     UPDATE Student 
                     SET School = @school, InterestSubject = @subject 
@@ -133,6 +140,11 @@ namespace WAPP
                 cmdStudent.Parameters.AddWithValue("@subject", subject);
                 cmdStudent.Parameters.AddWithValue("@uid", userId);
                 cmdStudent.ExecuteNonQuery();
+
+                // ✅ Update session data so dashboard sees new info instantly
+                Session["FullName"] = fullName;
+                if (fileName != null)
+                    Session["ProfilePicture"] = fileName;
 
                 lblMessage.Text = "✅ Profile updated successfully!";
                 LoadProfile(); // refresh updated info
@@ -169,9 +181,18 @@ namespace WAPP
             }
         }
 
+        // ✅ Back to Dashboard
         protected void btnBackDashboard_Click(object sender, EventArgs e)
         {
-            Response.Redirect("~/StudentDashboard.aspx");
+            // make sure sessions are still active
+            if (Session["UserId"] != null && Session["Role"]?.ToString().ToLower() == "student")
+            {
+                Response.Redirect("~/StudentDashboard.aspx");
+            }
+            else
+            {
+                Response.Redirect("~/sign_in.aspx");
+            }
         }
     }
 }
