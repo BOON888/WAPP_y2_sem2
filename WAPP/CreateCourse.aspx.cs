@@ -63,18 +63,24 @@ namespace WAPP
             {
                 conn.Open();
                 string sql = @"INSERT INTO Course (Title, EducatorId, CourseType, Status) 
-                               VALUES (@title, @eid, @type, @status); SELECT CAST(SCOPE_IDENTITY() AS INT);";
+                       VALUES (@title, @eid, @type, @status); 
+                       SELECT CAST(SCOPE_IDENTITY() AS INT);";
+
                 using (SqlCommand cmd = new SqlCommand(sql, conn))
                 {
-                    cmd.Parameters.AddWithValue("@title", "Enter Course Title");
+                    // Add all parameters before executing
+                    cmd.Parameters.AddWithValue("@title", ""); // empty string instead of "Enter Course Title"
                     cmd.Parameters.AddWithValue("@eid", Convert.ToInt32(Session["EducatorID"]));
                     cmd.Parameters.AddWithValue("@type", "public");
                     cmd.Parameters.AddWithValue("@status", "Draft");
+
+                    // Execute and return new Course ID
                     int id = Convert.ToInt32(cmd.ExecuteScalar());
                     return id;
                 }
             }
         }
+
 
         private void LoadCourseInfoToUI()
         {
