@@ -110,11 +110,14 @@
 
         .input {
             width: 100%;
-            padding: 8px 10px;
+            max-width: 100%;
+            padding: 10px 12px;
             border: 1px solid #d1d5db;
             border-radius: 8px;
             margin-bottom: 10px;
             box-sizing: border-box;
+            font-size: 15px;
+            resize: vertical; /* allow resizing if multiline */
         }
 
         .btn-primary {
@@ -203,6 +206,7 @@
                 <h3>Course Information</h3>
                 <div class="muted">Basic details about your course</div>
 
+                <h3>Course Title</h3>
                 <asp:TextBox ID="txtCourseTitle" runat="server" CssClass="input" placeholder="Enter course title"></asp:TextBox>
 
                 <asp:RadioButtonList ID="rblCourseType" runat="server" CssClass="muted" RepeatDirection="Vertical">
@@ -214,30 +218,6 @@
                 <asp:Label ID="lblCourseInfoMsg" runat="server" />
             </div>
 
-            <!-- Course Lessons -->
-            <div class="section">
-                <h3>Course Lessons</h3>
-                <div class="muted">Add lessons to your course</div>
-
-                <asp:ListView ID="lvLessons" runat="server">
-                    <ItemTemplate>
-                        <div class="lesson-item">
-                            <div>
-                                <div style="font-weight: 700">Lesson <%# Eval("LessonNumber") %>: <%# Eval("LessonTitle") %></div>
-                                <div class="lesson-meta"><%# Convert.ToBoolean(Eval("HasQuiz")) ? "Has quiz" : "No quiz" %></div>
-                            </div>
-                            <div>
-                                <asp:LinkButton ID="lnkEdit" runat="server" CommandName="EditLesson" CommandArgument='<%# Eval("Id") %>' CssClass="small-btn">Edit</asp:LinkButton>
-                                <asp:LinkButton ID="lnkDelete" runat="server" CommandName="DeleteLesson" CommandArgument='<%# Eval("Id") %>' CssClass="small-btn danger">Delete</asp:LinkButton>
-                            </div>
-                        </div>
-                    </ItemTemplate>
-                    <EmptyDataTemplate>
-                        <div style="color: #6b7280;">No lessons added yet. Create your first lesson below.</div>
-                    </EmptyDataTemplate>
-                </asp:ListView>
-            </div>
-
             <!-- Add / Edit Lesson -->
             <div class="section">
                 <h3>Add New Lesson</h3>
@@ -246,10 +226,10 @@
                 <asp:HiddenField ID="hfEditingLessonId" runat="server" />
 
                 <label>Lesson Title</label>
-                <asp:TextBox ID="txtNewLessonTitle" runat="server" CssClass="input" placeholder="Enter lesson title" />
+                <asp:TextBox ID="txtNewLessonTitle" runat="server" CssClass="input" placeholder="Enter lesson title" Width="100%" />
 
                 <label>Lesson Content (or upload file)</label>
-                <asp:TextBox ID="txtNewLessonContent" runat="server" CssClass="input" TextMode="MultiLine" Rows="4" placeholder="Enter lesson content..."></asp:TextBox>
+                <asp:TextBox ID="txtNewLessonContent" runat="server" CssClass="input" TextMode="MultiLine" Rows="4" placeholder="Enter lesson content..." Width="100%"></asp:TextBox>
                 <asp:FileUpload ID="fuLessonFile" runat="server" />
 
                 <div style="margin-top: 10px;">
@@ -302,6 +282,30 @@
                         </div>
                     </div>
                 </asp:Panel>
+            </div>
+
+            <!-- Course Lessons -->
+            <div class="section">
+                <h3>Course Lessons</h3>
+                <div class="muted">Add lessons to your course</div>
+
+                <asp:ListView ID="lvLessons" runat="server">
+                    <ItemTemplate>
+                        <div class="lesson-item">
+                            <div>
+                                <div style="font-weight: 700">Lesson <%# Eval("LessonNumber") %>: <%# Eval("LessonTitle") %></div>
+                                <div class="lesson-meta"><%# Convert.ToBoolean(Eval("HasQuiz")) ? "Has quiz" : "No quiz" %></div>
+                            </div>
+                            <div>
+                                <asp:LinkButton ID="lnkEdit" runat="server" CommandName="EditLesson" CommandArgument='<%# Eval("Id") %>' CssClass="small-btn">Edit</asp:LinkButton>
+                                <asp:LinkButton ID="lnkDelete" runat="server" CommandName="DeleteLesson" CommandArgument='<%# Eval("Id") %>' CssClass="small-btn danger">Delete</asp:LinkButton>
+                            </div>
+                        </div>
+                    </ItemTemplate>
+                    <EmptyDataTemplate>
+                        <div style="color: #6b7280;">No lessons added yet. Create your first lesson below.</div>
+                    </EmptyDataTemplate>
+                </asp:ListView>
             </div>
 
             <!-- Publish -->

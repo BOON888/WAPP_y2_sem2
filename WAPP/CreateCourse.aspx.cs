@@ -66,7 +66,7 @@ namespace WAPP
                                VALUES (@title, @eid, @type, @status); SELECT CAST(SCOPE_IDENTITY() AS INT);";
                 using (SqlCommand cmd = new SqlCommand(sql, conn))
                 {
-                    cmd.Parameters.AddWithValue("@title", "Untitled Course");
+                    cmd.Parameters.AddWithValue("@title", "Enter Course Title");
                     cmd.Parameters.AddWithValue("@eid", Convert.ToInt32(Session["EducatorID"]));
                     cmd.Parameters.AddWithValue("@type", "public");
                     cmd.Parameters.AddWithValue("@status", "Draft");
