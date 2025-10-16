@@ -214,7 +214,6 @@
                     <asp:ListItem Value="private">Private (Requires coins to access)</asp:ListItem>
                 </asp:RadioButtonList>
 
-                <asp:Button ID="btnSaveCourseInfo" runat="server" Text="Save Course Info" CssClass="btn-outline" OnClick="btnSaveCourseInfo_Click" />
                 <asp:Label ID="lblCourseInfoMsg" runat="server" />
             </div>
 

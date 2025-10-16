@@ -105,24 +105,7 @@ namespace WAPP
             }
         }
 
-        protected void btnSaveCourseInfo_Click(object sender, EventArgs e)
-        {
-            if (Session["NewCourseId"] == null) return;
-            int cid = Convert.ToInt32(Session["NewCourseId"]);
-            using (SqlConnection conn = new SqlConnection(connStr))
-            {
-                conn.Open();
-                using (SqlCommand cmd = new SqlCommand("UPDATE Course SET Title=@title, CourseType=@type WHERE Id=@id", conn))
-                {
-                    cmd.Parameters.AddWithValue("@title", txtCourseTitle.Text.Trim());
-                    cmd.Parameters.AddWithValue("@type", rblCourseType.SelectedValue ?? "public");
-                    cmd.Parameters.AddWithValue("@id", cid);
-                    cmd.ExecuteNonQuery();
-                }
-            }
-            lblCourseInfoMsg.Text = "Course info saved.";
-            lblCourseInfoMsg.ForeColor = System.Drawing.Color.Green;
-        }
+        
 
         protected void btnOpenQuiz_Click(object sender, EventArgs e)
         {
