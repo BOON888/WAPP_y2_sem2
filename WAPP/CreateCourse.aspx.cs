@@ -105,7 +105,7 @@ namespace WAPP
             }
         }
 
-        
+
 
         protected void btnOpenQuiz_Click(object sender, EventArgs e)
         {
@@ -414,22 +414,46 @@ namespace WAPP
         {
             if (Session["NewCourseId"] == null) return;
             int cid = Convert.ToInt32(Session["NewCourseId"]);
+
             using (SqlConnection conn = new SqlConnection(connStr))
             {
                 conn.Open();
-                using (SqlCommand cmd = new SqlCommand("UPDATE Course SET Status=@status, Title=@title, CourseType=@type WHERE Id=@id", conn))
+
+                string sql = "UPDATE Course SET Status=@status, Title=@title, CourseType=@type, Coin=@coin WHERE Id=@id";
+                using (SqlCommand cmd = new SqlCommand(sql, conn))
                 {
                     cmd.Parameters.AddWithValue("@status", "Published");
                     cmd.Parameters.AddWithValue("@title", txtCourseTitle.Text.Trim());
                     cmd.Parameters.AddWithValue("@type", rblCourseType.SelectedValue ?? "public");
+
+                    // Handle course price for private courses
+                    decimal coursePrice = 0;
+                    if (rblCourseType.SelectedValue == "private")
+                    {
+                        if (int.TryParse(txtCoursePrice.Text.Trim(), out int parsedPrice) && parsedPrice >= 10 && parsedPrice <= 250)
+                        {
+                            coursePrice = parsedPrice; // still stored as decimal for DB
+                        }
+                        else
+                        {
+                            lblMessage.Text = "Please enter a valid whole number between 10 and 250.";
+                            lblMessage.ForeColor = System.Drawing.Color.Red;
+                            return;
+                        }
+                    }
+
+                    // Public courses default to 0
+                    cmd.Parameters.AddWithValue("@coin", coursePrice);
                     cmd.Parameters.AddWithValue("@id", cid);
+
                     cmd.ExecuteNonQuery();
                 }
             }
 
-            // clear session draft so next time a new draft is created
+            // Clear session draft so next time a new draft is created
             Session.Remove("NewCourseId");
             Response.Redirect("Educator_dashboard.aspx");
         }
+
     }
 }

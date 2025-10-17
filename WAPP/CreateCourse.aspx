@@ -3,6 +3,23 @@
     Inherits="WAPP.CreateCourse" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const list = document.getElementById("<%= rblCourseType.ClientID %>");
+            const priceBox = document.getElementById("<%= priceContainer.ClientID %>");
+
+            if (!list || !priceBox) return; // prevent null reference
+
+            function togglePrice() {
+                const selected = list.querySelector("input:checked")?.value;
+                priceBox.style.display = (selected === "private") ? "block" : "none";
+            }
+
+            list.addEventListener("change", togglePrice);
+            togglePrice();
+        });
+    </script>
+
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
@@ -214,6 +231,21 @@
                     <asp:ListItem Value="private">Private (Requires coins to access)</asp:ListItem>
                 </asp:RadioButtonList>
 
+                <!-- Price box for Private courses -->
+                <div id="priceContainer" runat="server" style="display: none; margin-top: 10px;">
+                    <label>Set Course Price (10 - 250 coins)</label>
+                    <asp:TextBox ID="txtCoursePrice" runat="server" CssClass="input" placeholder="Enter course price" />
+                    <asp:RegularExpressionValidator
+                        ID="revCoursePrice"
+                        runat="server"
+                        ControlToValidate="txtCoursePrice"
+                        ValidationExpression="^(1\d|2[0-4]\d|250|[1-9]\d)$"
+                        ErrorMessage="Enter a whole number between 10 and 250"
+                        ForeColor="Red"
+                        Display="Dynamic" />
+
+                </div>
+
                 <asp:Label ID="lblCourseInfoMsg" runat="server" />
             </div>
 
@@ -233,7 +265,7 @@
 
                 <div style="margin-top: 10px;">
                     <asp:Button ID="btnOpenQuiz" runat="server" Text="Add Quiz" CssClass="btn-outline" OnClick="btnOpenQuiz_Click" />
-                    <asp:Button ID="btnAddLesson" runat="server" Text="Add Lesson" CssClass="btn-primary" OnClick="btnAddLesson_Click" />
+                    &nbsp;<asp:Button ID="btnAddLesson" runat="server" Text="Add Lesson" CssClass="btn-primary" OnClick="btnAddLesson_Click" />
                 </div>
 
                 <asp:Label ID="lblAddLessonMsg" runat="server" />
@@ -264,8 +296,7 @@
 
                         <div style="margin-top: 8px;">
                             <asp:Button ID="btnAddQuestion" runat="server" Text="Add Question" CssClass="btn-outline" OnClick="btnAddQuestion_Click" />
-                            &nbsp;
-                            <asp:Button ID="btnDoneQuiz" runat="server" Text="Done Quiz" CssClass="btn-primary" OnClick="btnDoneQuiz_Click" />
+                            &nbsp;<asp:Button ID="btnDoneQuiz" runat="server" Text="Done Quiz" CssClass="btn-primary" OnClick="btnDoneQuiz_Click" />
                         </div>
 
                         <div style="margin-top: 10px;">
