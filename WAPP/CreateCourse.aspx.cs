@@ -11,27 +11,6 @@ namespace WAPP
     {
         string connStr = ConfigurationManager.ConnectionStrings["SeaLearnerConnection"].ConnectionString;
 
-        // Temp storage of questions for the lesson currently being built (ViewState)
-        private DataTable TempQuestionTable
-        {
-            get
-            {
-                if (ViewState["TempQuestionTable"] == null)
-                {
-                    var dt = new DataTable();
-                    dt.Columns.Add("QuestionText", typeof(string));
-                    dt.Columns.Add("OptionA", typeof(string));
-                    dt.Columns.Add("OptionB", typeof(string));
-                    dt.Columns.Add("OptionC", typeof(string));
-                    dt.Columns.Add("OptionD", typeof(string));
-                    dt.Columns.Add("CorrectAnswer", typeof(string));
-                    ViewState["TempQuestionTable"] = dt;
-                }
-                return (DataTable)ViewState["TempQuestionTable"];
-            }
-            set { ViewState["TempQuestionTable"] = value; }
-        }
-
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -63,24 +42,21 @@ namespace WAPP
             {
                 conn.Open();
                 string sql = @"INSERT INTO Course (Title, EducatorId, CourseType, Status) 
-                       VALUES (@title, @eid, @type, @status); 
-                       SELECT CAST(SCOPE_IDENTITY() AS INT);";
+                               VALUES (@title, @eid, @type, @status); 
+                               SELECT CAST(SCOPE_IDENTITY() AS INT);";
 
                 using (SqlCommand cmd = new SqlCommand(sql, conn))
                 {
-                    // Add all parameters before executing
-                    cmd.Parameters.AddWithValue("@title", ""); // empty string instead of "Enter Course Title"
+                    cmd.Parameters.AddWithValue("@title", "");
                     cmd.Parameters.AddWithValue("@eid", Convert.ToInt32(Session["EducatorID"]));
                     cmd.Parameters.AddWithValue("@type", "public");
                     cmd.Parameters.AddWithValue("@status", "Draft");
 
-                    // Execute and return new Course ID
                     int id = Convert.ToInt32(cmd.ExecuteScalar());
                     return id;
                 }
             }
         }
-
 
         private void LoadCourseInfoToUI()
         {
@@ -89,7 +65,7 @@ namespace WAPP
             using (SqlConnection conn = new SqlConnection(connStr))
             {
                 conn.Open();
-                using (SqlCommand cmd = new SqlCommand("SELECT Title, CourseType FROM Course WHERE Id=@id", conn))
+                using (SqlCommand cmd = new SqlCommand("SELECT Title, CourseType, Coin FROM Course WHERE Id=@id", conn))
                 {
                     cmd.Parameters.AddWithValue("@id", cid);
                     using (SqlDataReader dr = cmd.ExecuteReader())
@@ -99,51 +75,20 @@ namespace WAPP
                             txtCourseTitle.Text = dr["Title"]?.ToString();
                             string type = dr["CourseType"]?.ToString();
                             rblCourseType.SelectedValue = string.IsNullOrEmpty(type) ? "public" : type.ToLower();
+
+                            if (type?.ToLower() == "private" && dr["Coin"] != DBNull.Value)
+                            {
+                                txtCoursePrice.Text = dr["Coin"].ToString();
+                            }
                         }
                     }
                 }
             }
         }
 
-
-
         protected void btnOpenQuiz_Click(object sender, EventArgs e)
         {
             pnlQuiz.Visible = true;
-        }
-
-        protected void btnAddQuestion_Click(object sender, EventArgs e)
-        {
-            string q = txtQuestionText.Text.Trim();
-            if (string.IsNullOrEmpty(q))
-            {
-                lblAddLessonMsg.Text = "Please enter a question.";
-                lblAddLessonMsg.ForeColor = System.Drawing.Color.Red;
-                return;
-            }
-
-            DataTable dt = TempQuestionTable;
-            DataRow r = dt.NewRow();
-            r["QuestionText"] = q;
-            r["OptionA"] = txtOptA.Text.Trim();
-            r["OptionB"] = txtOptB.Text.Trim();
-            r["OptionC"] = txtOptC.Text.Trim();
-            r["OptionD"] = txtOptD.Text.Trim();
-            r["CorrectAnswer"] = rblCorrect.SelectedValue ?? "A";
-            dt.Rows.Add(r);
-            TempQuestionTable = dt;
-
-            rptTempQuestions.DataSource = dt;
-            rptTempQuestions.DataBind();
-
-            // clear inputs
-            txtQuestionText.Text = "";
-            txtOptA.Text = "";
-            txtOptB.Text = "";
-            txtOptC.Text = "";
-            txtOptD.Text = "";
-            rblCorrect.ClearSelection();
-            lblAddLessonMsg.Text = "";
         }
 
         protected void btnDoneQuiz_Click(object sender, EventArgs e)
@@ -181,7 +126,6 @@ namespace WAPP
             }
             else if (!string.IsNullOrEmpty(lessonContent))
             {
-                // save text to txt file to keep file-path column consistent
                 string uploads = Server.MapPath("~/uploads/");
                 if (!Directory.Exists(uploads)) Directory.CreateDirectory(uploads);
                 string unique = "lesson_" + DateTime.Now.ToString("yyyyMMddHHmmssfff") + ".txt";
@@ -191,7 +135,24 @@ namespace WAPP
                 contentPath = "~/uploads/" + unique;
             }
 
-            DataTable qdt = TempQuestionTable; // may be empty
+            // ✅ Collect all dynamic questions from Request
+            List<(string QText, string A, string B, string C, string D, string Correct)> questions = new List<(string, string, string, string, string, string)>();
+            foreach (string key in Request.Form.Keys)
+            {
+                if (key.StartsWith("q") && key.Contains("_text"))
+                {
+                    string prefix = key.Split('_')[0]; // e.g. "q1"
+                    string qtext = Request.Form[key].Trim();
+                    string a = Request.Form[prefix + "_a"];
+                    string b = Request.Form[prefix + "_b"];
+                    string c = Request.Form[prefix + "_c"];
+                    string d = Request.Form[prefix + "_d"];
+                    string correct = Request.Form[prefix + "_correct"];
+
+                    if (!string.IsNullOrEmpty(qtext))
+                        questions.Add((qtext, a, b, c, d, correct));
+                }
+            }
 
             using (SqlConnection conn = new SqlConnection(connStr))
             {
@@ -218,17 +179,16 @@ namespace WAPP
                         cmdL.Parameters.AddWithValue("@lnum", lessonNumber);
                         cmdL.Parameters.AddWithValue("@ltitle", lessonTitle);
                         cmdL.Parameters.AddWithValue("@ctype", contentType);
-                        if (string.IsNullOrEmpty(contentPath)) cmdL.Parameters.AddWithValue("@cpath", DBNull.Value);
-                        else cmdL.Parameters.AddWithValue("@cpath", contentPath);
+                        cmdL.Parameters.AddWithValue("@cpath", string.IsNullOrEmpty(contentPath) ? DBNull.Value : (object)contentPath);
                         lessonId = Convert.ToInt32(cmdL.ExecuteScalar());
                     }
 
-                    // if questions exist, insert quiz and questions
-                    if (qdt != null && qdt.Rows.Count > 0)
+                    // insert quiz + questions if any exist
+                    if (questions.Count > 0)
                     {
                         int coins = 0;
                         int.TryParse(txtQuizCoins.Text.Trim(), out coins);
-                        int totalQ = qdt.Rows.Count;
+                        int totalQ = questions.Count;
 
                         string insertQuiz = @"INSERT INTO Quiz (LessonId, QuizRewardCoins, TotalQuestions)
                                               VALUES (@lid, @coins, @total);
@@ -246,23 +206,23 @@ namespace WAPP
                                                   VALUES (@qid, @qtext, @a, @b, @c, @d, @corr);";
                         using (SqlCommand cmdQQ = new SqlCommand(insertQuestion, conn, tran))
                         {
-                            cmdQQ.Parameters.Add(new SqlParameter("@qid", System.Data.SqlDbType.Int));
-                            cmdQQ.Parameters.Add(new SqlParameter("@qtext", System.Data.SqlDbType.NVarChar));
-                            cmdQQ.Parameters.Add(new SqlParameter("@a", System.Data.SqlDbType.NVarChar));
-                            cmdQQ.Parameters.Add(new SqlParameter("@b", System.Data.SqlDbType.NVarChar));
-                            cmdQQ.Parameters.Add(new SqlParameter("@c", System.Data.SqlDbType.NVarChar));
-                            cmdQQ.Parameters.Add(new SqlParameter("@d", System.Data.SqlDbType.NVarChar));
-                            cmdQQ.Parameters.Add(new SqlParameter("@corr", System.Data.SqlDbType.NVarChar));
+                            cmdQQ.Parameters.Add("@qid", SqlDbType.Int);
+                            cmdQQ.Parameters.Add("@qtext", SqlDbType.NVarChar);
+                            cmdQQ.Parameters.Add("@a", SqlDbType.NVarChar);
+                            cmdQQ.Parameters.Add("@b", SqlDbType.NVarChar);
+                            cmdQQ.Parameters.Add("@c", SqlDbType.NVarChar);
+                            cmdQQ.Parameters.Add("@d", SqlDbType.NVarChar);
+                            cmdQQ.Parameters.Add("@corr", SqlDbType.NVarChar);
 
-                            foreach (DataRow row in qdt.Rows)
+                            foreach (var q in questions)
                             {
                                 cmdQQ.Parameters["@qid"].Value = quizId;
-                                cmdQQ.Parameters["@qtext"].Value = row["QuestionText"].ToString();
-                                cmdQQ.Parameters["@a"].Value = row["OptionA"].ToString();
-                                cmdQQ.Parameters["@b"].Value = row["OptionB"].ToString();
-                                cmdQQ.Parameters["@c"].Value = row["OptionC"].ToString();
-                                cmdQQ.Parameters["@d"].Value = row["OptionD"].ToString();
-                                cmdQQ.Parameters["@corr"].Value = row["CorrectAnswer"].ToString();
+                                cmdQQ.Parameters["@qtext"].Value = q.QText;
+                                cmdQQ.Parameters["@a"].Value = q.A;
+                                cmdQQ.Parameters["@b"].Value = q.B;
+                                cmdQQ.Parameters["@c"].Value = q.C;
+                                cmdQQ.Parameters["@d"].Value = q.D;
+                                cmdQQ.Parameters["@corr"].Value = q.Correct;
                                 cmdQQ.ExecuteNonQuery();
                             }
                         }
@@ -282,15 +242,10 @@ namespace WAPP
             // clear UI
             txtNewLessonTitle.Text = "";
             txtNewLessonContent.Text = "";
-            if (fuLessonFile.HasFile) { /* file already saved */ }
-            ViewState["TempQuestionTable"] = null;
-            rptTempQuestions.DataSource = null;
-            rptTempQuestions.DataBind();
             pnlQuiz.Visible = false;
             lblAddLessonMsg.Text = "Lesson added.";
             lblAddLessonMsg.ForeColor = System.Drawing.Color.Green;
 
-            // refresh lesson list
             BindLessons();
         }
 
@@ -321,21 +276,6 @@ namespace WAPP
             lvLessons.DataBind();
         }
 
-        protected void lvLessons_ItemCommand(object sender, System.Web.UI.WebControls.ListViewCommandEventArgs e)
-        {
-            if (e.CommandName == "DeleteLesson")
-            {
-                int lessonId = Convert.ToInt32(e.CommandArgument);
-                DeleteLesson(lessonId);
-                BindLessons();
-            }
-            else if (e.CommandName == "EditLesson")
-            {
-                int lessonId = Convert.ToInt32(e.CommandArgument);
-                LoadLessonForEdit(lessonId);
-            }
-        }
-
         private void DeleteLesson(int lessonId)
         {
             using (SqlConnection conn = new SqlConnection(connStr))
@@ -350,64 +290,6 @@ namespace WAPP
                     cmd.ExecuteNonQuery();
                 }
             }
-        }
-
-        private void LoadLessonForEdit(int lessonId)
-        {
-            // load lesson details
-            using (SqlConnection conn = new SqlConnection(connStr))
-            {
-                conn.Open();
-                using (SqlCommand cmd = new SqlCommand("SELECT LessonTitle, ContentType, ContentFilePath FROM Lesson WHERE Id=@id", conn))
-                {
-                    cmd.Parameters.AddWithValue("@id", lessonId);
-                    using (SqlDataReader dr = cmd.ExecuteReader())
-                    {
-                        if (dr.Read())
-                        {
-                            txtNewLessonTitle.Text = dr["LessonTitle"].ToString();
-                            // Not loading file content into textarea — educator may re-upload or edit text manually
-                        }
-                    }
-                }
-
-                // load quiz questions if exists
-                using (SqlCommand cmdQ = new SqlCommand("SELECT q.Id FROM Quiz q WHERE q.LessonId=@lid", conn))
-                {
-                    cmdQ.Parameters.AddWithValue("@lid", lessonId);
-                    object qidObj = cmdQ.ExecuteScalar();
-                    if (qidObj != null)
-                    {
-                        int qid = Convert.ToInt32(qidObj);
-                        DataTable qdt = new DataTable();
-                        using (SqlCommand cmdQuestions = new SqlCommand("SELECT QuestionText, OptionA, OptionB, OptionC, OptionD, CorrectAnswer FROM Question WHERE QuizId=@qid", conn))
-                        {
-                            cmdQuestions.Parameters.AddWithValue("@qid", qid);
-                            using (SqlDataAdapter da = new SqlDataAdapter(cmdQuestions))
-                            {
-                                da.Fill(qdt);
-                            }
-                        }
-                        TempQuestionTable = qdt;
-                        rptTempQuestions.DataSource = qdt;
-                        rptTempQuestions.DataBind();
-                        pnlQuiz.Visible = true;
-                    }
-                    else
-                    {
-                        ViewState["TempQuestionTable"] = null;
-                        rptTempQuestions.DataSource = null;
-                        rptTempQuestions.DataBind();
-                        pnlQuiz.Visible = false;
-                    }
-                }
-            }
-
-            // keep editing id so Save/Edit can update later (optional: implement update logic)
-            // we'll store the lesson Id in hidden field to allow update in future
-            hfEditingLessonId.Value = lessonId.ToString();
-            lblAddLessonMsg.Text = "Loaded lesson for editing. Make changes and click Add Lesson to save as new (or implement update logic).";
-            lblAddLessonMsg.ForeColor = System.Drawing.Color.Blue;
         }
 
         protected void btnCreateCourse_Click(object sender, EventArgs e)
@@ -426,13 +308,12 @@ namespace WAPP
                     cmd.Parameters.AddWithValue("@title", txtCourseTitle.Text.Trim());
                     cmd.Parameters.AddWithValue("@type", rblCourseType.SelectedValue ?? "public");
 
-                    // Handle course price for private courses
                     decimal coursePrice = 0;
                     if (rblCourseType.SelectedValue == "private")
                     {
                         if (int.TryParse(txtCoursePrice.Text.Trim(), out int parsedPrice) && parsedPrice >= 10 && parsedPrice <= 250)
                         {
-                            coursePrice = parsedPrice; // still stored as decimal for DB
+                            coursePrice = parsedPrice;
                         }
                         else
                         {
@@ -442,18 +323,14 @@ namespace WAPP
                         }
                     }
 
-                    // Public courses default to 0
                     cmd.Parameters.AddWithValue("@coin", coursePrice);
                     cmd.Parameters.AddWithValue("@id", cid);
-
                     cmd.ExecuteNonQuery();
                 }
             }
 
-            // Clear session draft so next time a new draft is created
             Session.Remove("NewCourseId");
             Response.Redirect("Educator_dashboard.aspx");
         }
-
     }
 }

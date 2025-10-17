@@ -271,85 +271,131 @@
                 <asp:Label ID="lblAddLessonMsg" runat="server" />
 
                 <!-- Quiz panel -->
-                <asp:Panel ID="pnlQuiz" runat="server" Visible="false" Style="margin-top: 12px; border-top: 1px solid #e6e6e6; padding-top: 12px;">
-                    <div style="font-weight: 700; margin-bottom: 6px;">Quiz Setup</div>
+                <br />
+                <asp:Panel ID="pnlQuiz" runat="server" Visible="false"
+                    Style="margin-top: 12px; border-top: 1px solid #e6e6e6; padding-top: 12px;">
+
+                    <div style="font-weight: 700; margin-bottom: 6px;">
+                        <br />
+                        Quiz Setup</div>
                     <div class="muted">Create quiz questions for this lesson</div>
 
                     <label>Coin Reward</label>
                     <asp:TextBox ID="txtQuizCoins" runat="server" CssClass="input" Text="10" />
 
-                    <div style="margin-top: 8px;">
-                        <label>Question</label>
-                        <asp:TextBox ID="txtQuestionText" runat="server" CssClass="input" placeholder="Enter question text" />
-                        <asp:TextBox ID="txtOptA" runat="server" CssClass="input" placeholder="Option A" />
-                        <asp:TextBox ID="txtOptB" runat="server" CssClass="input" placeholder="Option B" />
-                        <asp:TextBox ID="txtOptC" runat="server" CssClass="input" placeholder="Option C" />
-                        <asp:TextBox ID="txtOptD" runat="server" CssClass="input" placeholder="Option D" />
+                    <!-- Container for all dynamically added questions -->
+                    <div id="questionsContainer" runat="server" style="margin-top: 8px;">
+                        <!-- First question template (base UI) -->
+                        <div class="question-item">
+                            <label>Question</label>
+                            <input type="text" name="q1_text" class="input" placeholder="Enter question text" required />
 
-                        <label style="margin-top: 6px;">Correct Answer</label>
-                        <asp:RadioButtonList ID="rblCorrect" runat="server">
-                            <asp:ListItem Value="A">A</asp:ListItem>
-                            <asp:ListItem Value="B">B</asp:ListItem>
-                            <asp:ListItem Value="C">C</asp:ListItem>
-                            <asp:ListItem Value="D">D</asp:ListItem>
-                        </asp:RadioButtonList>
+                            <input type="text" name="q1_a" class="input" placeholder="Option A" required />
+                            <input type="text" name="q1_b" class="input" placeholder="Option B" required />
+                            <input type="text" name="q1_c" class="input" placeholder="Option C" required />
+                            <input type="text" name="q1_d" class="input" placeholder="Option D" required />
 
-                        <div style="margin-top: 8px;">
-                            <asp:Button ID="btnAddQuestion" runat="server" Text="Add Question" CssClass="btn-outline" OnClick="btnAddQuestion_Click" />
-                            &nbsp;<asp:Button ID="btnDoneQuiz" runat="server" Text="Done Quiz" CssClass="btn-primary" OnClick="btnDoneQuiz_Click" />
-                        </div>
-
-                        <div style="margin-top: 10px;">
-                            <asp:Repeater ID="rptTempQuestions" runat="server">
-                                <ItemTemplate>
-                                    <div class="question-item">
-                                        <div><strong>Q:</strong> <%# Eval("QuestionText") %></div>
-                                        <div><small>A: <%# Eval("OptionA") %> | B: <%# Eval("OptionB") %> | C: <%# Eval("OptionC") %> | D: <%# Eval("OptionD") %></small></div>
-                                        <div><small>Answer: <%# Eval("CorrectAnswer") %></small></div>
-                                    </div>
-                                </ItemTemplate>
-                            </asp:Repeater>
+                            <label style="margin-top: 6px;">Correct Answer</label>
+                            <div>
+                                <label>
+                                    <input type="radio" name="q1_correct" value="A" required />
+                                    A</label>
+                                <label>
+                                    <input type="radio" name="q1_correct" value="B" />
+                                    B</label>
+                                <label>
+                                    <input type="radio" name="q1_correct" value="C" />
+                                    C</label>
+                                <label>
+                                    <input type="radio" name="q1_correct" value="D" />
+                                    D</label>
+                            </div>
                         </div>
                     </div>
+
+                    <!-- Add / Done Buttons (stay fixed after Correct Answer) -->
+                    <div style="margin-top: 12px;">
+                        <button type="button" class="btn-outline" onclick="addQuestion()">Add Question</button>
+                        &nbsp;<asp:Button ID="btnDoneQuiz" runat="server" Text="Done Quiz" CssClass="btn-primary" OnClick="btnDoneQuiz_Click" />
+                        <br />
+                        <br />
+                        <br />
+                    </div>
+
                 </asp:Panel>
-            </div>
 
-            <!-- Course Lessons -->
-            <div class="section">
-                <h3>Course Lessons</h3>
-                <div class="muted">Add lessons to your course</div>
+                <!-- Script kept outside of the Panel -->
+                <script type="text/javascript">
+                    let questionCount = 1; // Start with the first visible question
 
-                <asp:ListView ID="lvLessons" runat="server">
-                    <ItemTemplate>
-                        <div class="lesson-item">
+                    function addQuestion() {
+                        questionCount++;
+                        const container = document.getElementById('<%= questionsContainer.ClientID %>');
+
+                        // Clone the original question layout
+                        const newBlock = document.createElement('div');
+                        newBlock.className = 'question-item';
+                        newBlock.style.marginTop = "15px";
+
+                        newBlock.innerHTML = `
+                            <label>Question</label>
+                            <input type="text" name="q${questionCount}_text" class="input" placeholder="Enter question text" required />
+
+                            <input type="text" name="q${questionCount}_a" class="input" placeholder="Option A" required />
+                            <input type="text" name="q${questionCount}_b" class="input" placeholder="Option B" required />
+                            <input type="text" name="q${questionCount}_c" class="input" placeholder="Option C" required />
+                            <input type="text" name="q${questionCount}_d" class="input" placeholder="Option D" required />
+
+                            <label style="margin-top: 6px;">Correct Answer</label>
                             <div>
-                                <div style="font-weight: 700">Lesson <%# Eval("LessonNumber") %>: <%# Eval("LessonTitle") %></div>
-                                <div class="lesson-meta"><%# Convert.ToBoolean(Eval("HasQuiz")) ? "Has quiz" : "No quiz" %></div>
+                                <label><input type="radio" name="q${questionCount}_correct" value="A" required /> A</label>
+                                <label><input type="radio" name="q${questionCount}_correct" value="B" /> B</label>
+                                <label><input type="radio" name="q${questionCount}_correct" value="C" /> C</label>
+                                <label><input type="radio" name="q${questionCount}_correct" value="D" /> D</label>
                             </div>
-                            <div>
-                                <asp:LinkButton ID="lnkEdit" runat="server" CommandName="EditLesson" CommandArgument='<%# Eval("Id") %>' CssClass="small-btn">Edit</asp:LinkButton>
-                                <asp:LinkButton ID="lnkDelete" runat="server" CommandName="DeleteLesson" CommandArgument='<%# Eval("Id") %>' CssClass="small-btn danger">Delete</asp:LinkButton>
+                        `;
+
+                        container.appendChild(newBlock);
+                    }
+                </script>
+
+
+                <!-- Course Lessons -->
+                <div class="section">
+                    <h3>Course Lessons</h3>
+                    <div class="muted">Add lessons to your course</div>
+
+                    <asp:ListView ID="lvLessons" runat="server">
+                        <ItemTemplate>
+                            <div class="lesson-item">
+                                <div>
+                                    <div style="font-weight: 700">Lesson <%# Eval("LessonNumber") %>: <%# Eval("LessonTitle") %></div>
+                                    <div class="lesson-meta"><%# Convert.ToBoolean(Eval("HasQuiz")) ? "Has quiz" : "No quiz" %></div>
+                                </div>
+                                <div>
+                                    <asp:LinkButton ID="lnkEdit" runat="server" CommandName="EditLesson" CommandArgument='<%# Eval("Id") %>' CssClass="small-btn">Edit</asp:LinkButton>
+                                    <asp:LinkButton ID="lnkDelete" runat="server" CommandName="DeleteLesson" CommandArgument='<%# Eval("Id") %>' CssClass="small-btn danger">Delete</asp:LinkButton>
+                                </div>
                             </div>
-                        </div>
-                    </ItemTemplate>
-                    <EmptyDataTemplate>
-                        <div style="color: #6b7280;">No lessons added yet. Create your first lesson below.</div>
-                    </EmptyDataTemplate>
-                </asp:ListView>
-            </div>
-
-            <!-- Publish -->
-            <div class="section" style="display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <div style="font-weight: 700;">Ready to publish?</div>
-                    <div class="muted">Make sure you've added all lessons and quizzes before creating the course</div>
+                        </ItemTemplate>
+                        <EmptyDataTemplate>
+                            <div style="color: #6b7280;">No lessons added yet. Create your first lesson below.</div>
+                        </EmptyDataTemplate>
+                    </asp:ListView>
                 </div>
-                <div class="right">
-                    <asp:Button ID="btnCreateCourse" runat="server" Text="Create Course" CssClass="btn-primary" OnClick="btnCreateCourse_Click" />
-                </div>
-            </div>
 
-            <asp:Label ID="lblMessage" runat="server" CssClass="msg" />
+                <!-- Publish -->
+                <div class="section" style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <div style="font-weight: 700;">Ready to publish?</div>
+                        <div class="muted">Make sure you've added all lessons and quizzes before creating the course</div>
+                    </div>
+                    <div class="right">
+                        <asp:Button ID="btnCreateCourse" runat="server" Text="Create Course" CssClass="btn-primary" OnClick="btnCreateCourse_Click" />
+                    </div>
+                </div>
+
+                <asp:Label ID="lblMessage" runat="server" CssClass="msg" />
+            </div>
         </div>
-    </div>
 </asp:Content>

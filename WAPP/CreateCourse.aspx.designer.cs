@@ -159,67 +159,13 @@ namespace WAPP
         protected global::System.Web.UI.WebControls.TextBox txtQuizCoins;
 
         /// <summary>
-        /// txtQuestionText control.
+        /// questionsContainer control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtQuestionText;
-
-        /// <summary>
-        /// txtOptA control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtOptA;
-
-        /// <summary>
-        /// txtOptB control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtOptB;
-
-        /// <summary>
-        /// txtOptC control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtOptC;
-
-        /// <summary>
-        /// txtOptD control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtOptD;
-
-        /// <summary>
-        /// rblCorrect control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButtonList rblCorrect;
-
-        /// <summary>
-        /// btnAddQuestion control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnAddQuestion;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl questionsContainer;
 
         /// <summary>
         /// btnDoneQuiz control.
@@ -229,15 +175,6 @@ namespace WAPP
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnDoneQuiz;
-
-        /// <summary>
-        /// rptTempQuestions control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater rptTempQuestions;
 
         /// <summary>
         /// lvLessons control.
