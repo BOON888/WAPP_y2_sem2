@@ -277,33 +277,42 @@
 
                     <div style="font-weight: 700; margin-bottom: 6px;">
                         <br />
-                        Quiz Setup</div>
+                        Quiz Setup
+                    </div>
                     <div class="muted">Create quiz questions for this lesson</div>
 
-                    <label>Coin Reward</label>
+                    <!-- Coin Reward -->
+                    <label>Coin Reward (10 - 250 coins)</label>
                     <asp:TextBox ID="txtQuizCoins" runat="server" CssClass="input" Text="10" />
+                    <asp:RegularExpressionValidator
+                        ID="revQuizCoins"
+                        runat="server"
+                        ControlToValidate="txtQuizCoins"
+                        ValidationExpression="^(1\d|2[0-4]\d|250|[1-9]\d)$"
+                        ErrorMessage="Enter a whole number between 10 and 250"
+                        ForeColor="Red"
+                        Display="Dynamic" />
 
-                    <!-- Container for all dynamically added questions -->
-                    <div id="questionsContainer" runat="server" style="margin-top: 8px;">
-                        <!-- First question template (base UI) -->
-                        <div class="question-item">
-                            <label>Question</label>
-                            <input type="text" name="q1_text" class="input" placeholder="Enter question text" required />
+                    <!-- Questions Container -->
+                    <div id="questionsContainer" runat="server" style="margin-top: 12px;">
+                        <div class="question-item" style="padding: 16px; border: 1px solid #e5e7eb; border-radius: 8px; margin-bottom: 20px;">
+                            <div style="font-weight: 600; margin-bottom: 10px;">Question 1</div>
 
-                            <input type="text" name="q1_a" class="input" placeholder="Option A" required />
-                            <input type="text" name="q1_b" class="input" placeholder="Option B" required />
-                            <input type="text" name="q1_c" class="input" placeholder="Option C" required />
-                            <input type="text" name="q1_d" class="input" placeholder="Option D" required />
+                            <input type="text" id="q1_text" name="q1_text" class="input" placeholder="Enter question text" required />
+                            <input type="text" id="q1_a" name="q1_a" class="input" placeholder="Option A" required />
+                            <input type="text" id="q1_b" name="q1_b" class="input" placeholder="Option B" required />
+                            <input type="text" id="q1_c" name="q1_c" class="input" placeholder="Option C" required />
+                            <input type="text" id="q1_d" name="q1_d" class="input" placeholder="Option D" required />
 
-                            <label style="margin-top: 6px;">Correct Answer</label>
-                            <div>
-                                <label>
+                            <label style="margin-top: 10px;">Correct Answer</label>
+                            <div style="margin-bottom: 6px;">
+                                <label style="margin-right: 10px;">
                                     <input type="radio" name="q1_correct" value="A" required />
                                     A</label>
-                                <label>
+                                <label style="margin-right: 10px;">
                                     <input type="radio" name="q1_correct" value="B" />
                                     B</label>
-                                <label>
+                                <label style="margin-right: 10px;">
                                     <input type="radio" name="q1_correct" value="C" />
                                     C</label>
                                 <label>
@@ -313,32 +322,46 @@
                         </div>
                     </div>
 
-                    <!-- Add / Done Buttons (stay fixed after Correct Answer) -->
-                    <div style="margin-top: 12px;">
+                    <!-- Buttons -->
+                    <div style="margin-top: 10px;">
                         <button type="button" class="btn-outline" onclick="addQuestion()">Add Question</button>
                         &nbsp;<asp:Button ID="btnDoneQuiz" runat="server" Text="Done Quiz" CssClass="btn-primary" OnClick="btnDoneQuiz_Click" />
-                        <br />
                         <br />
                         <br />
                     </div>
 
                 </asp:Panel>
 
-                <!-- Script kept outside of the Panel -->
+                <!-- JavaScript for adding questions -->
                 <script type="text/javascript">
-                    let questionCount = 1; // Start with the first visible question
+                    let questionCount = 1;
 
                     function addQuestion() {
+                        // Validate last question first before adding a new one
+                        const lastQ = document.querySelector(`input[name='q${questionCount}_text']`);
+                        const lastA = document.querySelector(`input[name='q${questionCount}_a']`);
+                        const lastB = document.querySelector(`input[name='q${questionCount}_b']`);
+                        const lastC = document.querySelector(`input[name='q${questionCount}_c']`);
+                        const lastD = document.querySelector(`input[name='q${questionCount}_d']`);
+                        const lastCorrect = document.querySelector(`input[name='q${questionCount}_correct']:checked`);
+
+                        if (!lastQ.value.trim() || !lastA.value.trim() || !lastB.value.trim() ||
+                            !lastC.value.trim() || !lastD.value.trim() || !lastCorrect) {
+                            alert("Please complete all fields (Question, Options A–D, and Correct Answer) before adding a new question.");
+                            return;
+                        }
+
+                        // Validation passed — add new question
                         questionCount++;
                         const container = document.getElementById('<%= questionsContainer.ClientID %>');
 
-                        // Clone the original question layout
                         const newBlock = document.createElement('div');
                         newBlock.className = 'question-item';
-                        newBlock.style.marginTop = "15px";
+                        newBlock.style.cssText = "padding:16px; border:1px solid #e5e7eb; border-radius:8px; margin-bottom:20px;";
 
                         newBlock.innerHTML = `
-                            <label>Question</label>
+                            <div style="font-weight:600; margin-bottom:10px;">Question ${questionCount}</div>
+
                             <input type="text" name="q${questionCount}_text" class="input" placeholder="Enter question text" required />
 
                             <input type="text" name="q${questionCount}_a" class="input" placeholder="Option A" required />
@@ -346,16 +369,18 @@
                             <input type="text" name="q${questionCount}_c" class="input" placeholder="Option C" required />
                             <input type="text" name="q${questionCount}_d" class="input" placeholder="Option D" required />
 
-                            <label style="margin-top: 6px;">Correct Answer</label>
-                            <div>
-                                <label><input type="radio" name="q${questionCount}_correct" value="A" required /> A</label>
-                                <label><input type="radio" name="q${questionCount}_correct" value="B" /> B</label>
-                                <label><input type="radio" name="q${questionCount}_correct" value="C" /> C</label>
+                            <label style="margin-top:10px;">Correct Answer</label>
+                            <div style="margin-bottom:6px;">
+                                <label style="margin-right:10px;"><input type="radio" name="q${questionCount}_correct" value="A" required /> A</label>
+                                <label style="margin-right:10px;"><input type="radio" name="q${questionCount}_correct" value="B" /> B</label>
+                                <label style="margin-right:10px;"><input type="radio" name="q${questionCount}_correct" value="C" /> C</label>
                                 <label><input type="radio" name="q${questionCount}_correct" value="D" /> D</label>
                             </div>
                         `;
 
                         container.appendChild(newBlock);
+                        // Scroll to new question for user convenience
+                        newBlock.scrollIntoView({ behavior: "smooth", block: "center" });
                     }
                 </script>
 
@@ -398,4 +423,5 @@
                 <asp:Label ID="lblMessage" runat="server" CssClass="msg" />
             </div>
         </div>
+    </div>
 </asp:Content>
