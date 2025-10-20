@@ -208,7 +208,7 @@
                 <ItemTemplate>
                     <div class="course-card" onclick="window.location.href='CourseDetails.aspx?id=<%# Eval("Id") %>'">
                         <img src='<%# Eval("CoursePicture") %>' alt="Course Image" />
-                        <h4><%# Eval("Title") %></h4>
+
                         <p><b>Created by:</b> <%# Eval("EducatorId") %></p>
                         <p><b>Status:</b> <%# Eval("Status") %></p>
                     </div>

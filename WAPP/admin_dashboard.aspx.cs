@@ -19,9 +19,9 @@ namespace WAPP
         private void LoadCourses()
         {
             // 🔹 Replace with your actual connection string name in Web.config
-            string connStr = ConfigurationManager.ConnectionStrings["YourConnectionStringName"].ConnectionString;
+            string connString = ConfigurationManager.ConnectionStrings["SeaLearnerConnection"].ConnectionString;
 
-            using (SqlConnection conn = new SqlConnection(connStr))
+            using (SqlConnection conn = new SqlConnection(connString))
             {
                 string query = "SELECT Id, EducatorId, CourseType, CoursePicture, Status FROM Course";
                 SqlDataAdapter da = new SqlDataAdapter(query, conn);
