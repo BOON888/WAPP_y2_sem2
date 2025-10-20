@@ -201,8 +201,10 @@
     <Content Include="sign_in.aspx" />
     <Content Include="sign_up.aspx" />
     <Content Include="Site.Master" />
+    <Content Include="StudentCourseContent.aspx" />
     <Content Include="StudentDashboard.aspx" />
     <Content Include="StudentProfile.aspx" />
+    <Content Include="StudentQuiz.aspx" />
     <Content Include="tem_dashboard.aspx" />
     <Content Include="ViewSwitcher.ascx" />
     <Content Include="Web.config" />
@@ -356,6 +358,13 @@
     <Compile Include="Site.Mobile.Master.designer.cs">
       <DependentUpon>Site.Mobile.Master</DependentUpon>
     </Compile>
+    <Compile Include="StudentCourseContent.aspx.cs">
+      <DependentUpon>StudentCourseContent.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="StudentCourseContent.aspx.designer.cs">
+      <DependentUpon>StudentCourseContent.aspx</DependentUpon>
+    </Compile>
     <Compile Include="StudentDashboard.aspx.cs">
       <DependentUpon>StudentDashboard.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -369,6 +378,13 @@
     </Compile>
     <Compile Include="StudentProfile.aspx.designer.cs">
       <DependentUpon>StudentProfile.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="StudentQuiz.aspx.cs">
+      <DependentUpon>StudentQuiz.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="StudentQuiz.aspx.designer.cs">
+      <DependentUpon>StudentQuiz.aspx</DependentUpon>
     </Compile>
     <Compile Include="tem_dashboard.aspx.cs">
       <DependentUpon>tem_dashboard.aspx</DependentUpon>
