@@ -128,7 +128,7 @@
 
         <asp:Button ID="btnSignIn" runat="server" CssClass="btn" Text="Sign In" OnClick="btnSignIn_Click" />
 
-        <a href="#" class="forgot">Forgot Password?</a>
+        <a href="forgot_password" class="forgot">Forgot Password?</a>
 
         <hr />
         <p>Don't have an account?</p>

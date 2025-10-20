@@ -127,7 +127,7 @@
                         <div>
                             <h4><%# Eval("Title") %></h4>
                             <p>By <%# Eval("EducatorName") %></p>
-                            <p><strong><%# Eval("CoinReward") %> Coins Required</strong></p>
+                            <p><strong><%# Eval("Coin") %> Coins Required</strong></p>
                         </div>
                         <button class="btn" type="button"
                             onclick="window.location='CourseDetails.aspx?id=<%# Eval("Id") %>'">
