@@ -200,20 +200,17 @@
     <div>
         <h3>Course Management</h3>
         <p>View and manage all courses on the platform</p>
+        <div>
+        <h3>Course Management</h3>
+        <p>View and manage all courses on the platform</p>
         <div class="course-container">
-            <asp:Repeater ID="RepeaterCourses" runat="server" OnItemCommand="RepeaterCourses_ItemCommand">
+            <asp:Repeater ID="RepeaterCourses" runat="server">
                 <ItemTemplate>
-                    <div class="course-card">
-                        <div class="course-title"><%# Eval("CourseName") %></div>
-                        <div class="course-info">
-                            Created by: <%# Eval("Instructor") %><br />
-                            Lessons: <%# Eval("LessonCount") %><br />
-                            Course ID: <%# Eval("CourseID") %>
-                        </div>
-                        <div class="course-actions">
-                            <asp:Button ID="btnView" runat="server" CssClass="btn btn-view" Text="View" CommandName="View" CommandArgument='<%# Eval("CourseID") %>' />
-                            <asp:Button ID="btnDelete" runat="server" CssClass="btn btn-delete" Text="Delete" CommandName="Delete" CommandArgument='<%# Eval("CourseID") %>' />
-                        </div>
+                    <div class="course-card" onclick="window.location.href='CourseDetails.aspx?id=<%# Eval("Id") %>'">
+                        <img src='<%# Eval("CoursePicture") %>' alt="Course Image" />
+                        <h4><%# Eval("Title") %></h4>
+                        <p><b>Created by:</b> <%# Eval("EducatorId") %></p>
+                        <p><b>Status:</b> <%# Eval("Status") %></p>
                     </div>
                 </ItemTemplate>
             </asp:Repeater>
