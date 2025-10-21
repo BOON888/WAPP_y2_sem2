@@ -78,6 +78,15 @@ namespace WAPP
         protected global::System.Web.UI.WebControls.Label lblCourseInfoMsg;
 
         /// <summary>
+        /// btnAddLesson control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnAddLesson;
+
+        /// <summary>
         /// hfEditingLessonId control.
         /// </summary>
         /// <remarks>
@@ -121,15 +130,6 @@ namespace WAPP
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnOpenQuiz;
-
-        /// <summary>
-        /// btnAddLesson control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnAddLesson;
 
         /// <summary>
         /// lblAddLessonMsg control.
@@ -177,13 +177,13 @@ namespace WAPP
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl questionsContainer;
 
         /// <summary>
-        /// btnDoneQuiz control.
+        /// hfQuizData control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnDoneQuiz;
+        protected global::System.Web.UI.WebControls.HiddenField hfQuizData;
 
         /// <summary>
         /// lvLessons control.

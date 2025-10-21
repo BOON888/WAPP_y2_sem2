@@ -4,6 +4,8 @@ using System.Data.SqlClient;
 using System.Configuration;
 using System.IO;
 using System.Collections.Generic;
+using System.Web.Script.Serialization;
+using System.Text;
 
 namespace WAPP
 {
@@ -34,7 +36,55 @@ namespace WAPP
                 BindLessons();
                 pnlQuiz.Visible = false;
             }
+
+            // ✅ Restore unsaved lesson data on every postback
+            if (ViewState["UnsavedLessonTitle"] != null)
+            {
+                txtNewLessonTitle.Text = ViewState["UnsavedLessonTitle"].ToString();
+            }
+            if (ViewState["UnsavedLessonContent"] != null)
+            {
+                txtNewLessonContent.Text = ViewState["UnsavedLessonContent"].ToString();
+            }
+            if (ViewState["UnsavedQuizCoins"] != null)
+            {
+                txtQuizCoins.Text = ViewState["UnsavedQuizCoins"].ToString();
+            }
+            // ✅ Restore dynamic quiz questions if validation failed
+            if (IsPostBack && !string.IsNullOrEmpty(hfQuizData.Value))
+            {
+                string json = hfQuizData.Value;
+                System.Web.Script.Serialization.JavaScriptSerializer js = new System.Web.Script.Serialization.JavaScriptSerializer();
+                var questions = js.Deserialize<List<Dictionary<string, string>>>(json);
+
+                System.Text.StringBuilder sb = new System.Text.StringBuilder();
+                int qnum = 0;
+                foreach (var q in questions)
+                {
+                    qnum++;
+                    sb.Append($@"
+                        <div class='question-item' style='padding:16px; border:1px solid #e5e7eb; border-radius:8px; margin-bottom:20px;'>
+                        <div style='font-weight:600; margin-bottom:10px;'>Question {qnum}</div>
+                        <input type='text' name='q{qnum}_text' class='input' value='{q["text"]}' placeholder='Enter question text' required />
+                        <input type='text' name='q{qnum}_a' class='input' value='{q["a"]}' placeholder='Option A' required />
+                        <input type='text' name='q{qnum}_b' class='input' value='{q["b"]}' placeholder='Option B' required />
+                        <input type='text' name='q{qnum}_c' class='input' value='{q["c"]}' placeholder='Option C' required />
+                        <input type='text' name='q{qnum}_d' class='input' value='{q["d"]}' placeholder='Option D' required />
+                        <label style='margin-top:10px;'>Correct Answer</label>
+                        <div style='margin-bottom:6px;'>
+                            <label style='margin-right:10px;'><input type='radio' name='q{qnum}_correct' value='A' {(q["correct"] == "A" ? "checked" : "")} /> A</label>
+                            <label style='margin-right:10px;'><input type='radio' name='q{qnum}_correct' value='B' {(q["correct"] == "B" ? "checked" : "")} /> B</label>
+                            <label style='margin-right:10px;'><input type='radio' name='q{qnum}_correct' value='C' {(q["correct"] == "C" ? "checked" : "")} /> C</label>
+                            <label><input type='radio' name='q{qnum}_correct' value='D' {(q["correct"] == "D" ? "checked" : "")} /> D</label>
+                         </div>
+                    </div>");
+                }
+                questionsContainer.InnerHtml = sb.ToString();
+                pnlQuiz.Visible = true;
+            }
+
         }
+
 
         private int CreateDraftCourse()
         {
@@ -103,12 +153,23 @@ namespace WAPP
 
             string lessonTitle = txtNewLessonTitle.Text.Trim();
             string lessonContent = txtNewLessonContent.Text.Trim();
+
             if (string.IsNullOrEmpty(lessonTitle))
             {
                 lblAddLessonMsg.Text = "Please enter a lesson title.";
                 lblAddLessonMsg.ForeColor = System.Drawing.Color.Red;
+
+                // ✅ Keep quiz panel open
+                pnlQuiz.Visible = true;
+
+                // ✅ Save what the educator has entered so far
+                ViewState["UnsavedLessonTitle"] = txtNewLessonTitle.Text;
+                ViewState["UnsavedLessonContent"] = txtNewLessonContent.Text;
+                ViewState["UnsavedQuizCoins"] = txtQuizCoins.Text;
+
                 return;
             }
+
 
             string contentType = "text";
             string contentPath = null;
@@ -229,6 +290,20 @@ namespace WAPP
                     }
 
                     tran.Commit();
+
+                    // ✅ Only clear when successfully added
+                    txtNewLessonTitle.Text = "";
+                    txtNewLessonContent.Text = "";
+                    ViewState["TempQuestionTable"] = null;
+                    pnlQuiz.Visible = false;
+
+                    lblAddLessonMsg.Text = "Lesson added successfully.";
+                    lblAddLessonMsg.ForeColor = System.Drawing.Color.Green;
+
+                    // ✅ Clear any temporarily stored unsaved data
+                    ViewState["UnsavedLessonTitle"] = null;
+                    ViewState["UnsavedLessonContent"] = null;
+                    ViewState["UnsavedQuizCoins"] = null;
                 }
                 catch (Exception ex)
                 {
@@ -238,14 +313,6 @@ namespace WAPP
                     return;
                 }
             }
-
-            // clear UI
-            txtNewLessonTitle.Text = "";
-            txtNewLessonContent.Text = "";
-            pnlQuiz.Visible = false;
-            lblAddLessonMsg.Text = "Lesson added.";
-            lblAddLessonMsg.ForeColor = System.Drawing.Color.Green;
-
             BindLessons();
         }
 
