@@ -146,7 +146,7 @@ namespace WAPP
         {
             pnlQuiz.Visible = false;
         }
-        
+
 
         protected void btnAddLesson_Click(object sender, EventArgs e)
         {
@@ -232,9 +232,11 @@ namespace WAPP
                     }
 
                     // insert lesson
-                    string insertLesson = @"INSERT INTO Lesson (CourseId, LessonNumber, LessonTitle, ContentType, ContentFilePath)
-                                            VALUES (@cid, @lnum, @ltitle, @ctype, @cpath);
-                                            SELECT CAST(SCOPE_IDENTITY() AS INT);";
+                    string insertLesson = @"INSERT INTO Lesson 
+                        (CourseId, LessonNumber, LessonTitle, ContentType, ContentFilePath, ContentFile)
+                        VALUES (@cid, @lnum, @ltitle, @ctype, @cpath, @contentFile);
+                        SELECT CAST(SCOPE_IDENTITY() AS INT);";
+
                     int lessonId;
                     using (SqlCommand cmdL = new SqlCommand(insertLesson, conn, tran))
                     {
@@ -243,6 +245,7 @@ namespace WAPP
                         cmdL.Parameters.AddWithValue("@ltitle", lessonTitle);
                         cmdL.Parameters.AddWithValue("@ctype", contentType);
                         cmdL.Parameters.AddWithValue("@cpath", string.IsNullOrEmpty(contentPath) ? DBNull.Value : (object)contentPath);
+                        cmdL.Parameters.AddWithValue("@contentFile", string.IsNullOrEmpty(contentPath) ? DBNull.Value : (object)contentPath);
                         lessonId = Convert.ToInt32(cmdL.ExecuteScalar());
                     }
 
