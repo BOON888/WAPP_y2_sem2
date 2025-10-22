@@ -429,12 +429,12 @@ namespace WAPP
                 }
 
                 // ✅ Feedback message
-                lblMessage.Text = "✅ Course created and published successfully! Your course is now saved to the database.";
+                lblMessage.Text = "Course created and published successfully!";
                 lblMessage.ForeColor = System.Drawing.Color.Green;
             }
             catch (Exception ex)
             {
-                lblMessage.Text = "❌ Error saving course: " + ex.Message;
+                lblMessage.Text = "Error saving course: " + ex.Message;
                 lblMessage.ForeColor = System.Drawing.Color.Red;
             }
         }
