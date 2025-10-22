@@ -244,8 +244,20 @@ namespace WAPP
                         cmdL.Parameters.AddWithValue("@lnum", lessonNumber);
                         cmdL.Parameters.AddWithValue("@ltitle", lessonTitle);
                         cmdL.Parameters.AddWithValue("@ctype", contentType);
-                        cmdL.Parameters.AddWithValue("@cpath", string.IsNullOrEmpty(contentPath) ? DBNull.Value : (object)contentPath);
-                        cmdL.Parameters.AddWithValue("@contentFile", string.IsNullOrEmpty(contentPath) ? DBNull.Value : (object)contentPath);
+                        if (fuLessonFile.HasFile)
+                        {
+                            // User uploaded a file
+                            cmdL.Parameters.AddWithValue("@cpath", (object)contentPath ?? DBNull.Value);
+                            cmdL.Parameters.AddWithValue("@contentFile", DBNull.Value);
+                        }
+                        else
+                        {
+                            // User entered text content
+                            string textContent = txtNewLessonContent.Text.Trim();
+                            cmdL.Parameters.AddWithValue("@cpath", DBNull.Value);
+                            cmdL.Parameters.AddWithValue("@contentFile", string.IsNullOrEmpty(textContent) ? DBNull.Value : (object)textContent);
+                        }
+
                         lessonId = Convert.ToInt32(cmdL.ExecuteScalar());
                     }
 
