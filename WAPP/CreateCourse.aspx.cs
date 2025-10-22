@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using System.Configuration;
 using System.IO;
-using System.Collections.Generic;
-using System.Web.Script.Serialization;
 using System.Text;
+using System.Web.Script.Serialization;
+using System.Web.UI.WebControls;
 
 namespace WAPP
 {
@@ -145,6 +146,7 @@ namespace WAPP
         {
             pnlQuiz.Visible = false;
         }
+        
 
         protected void btnAddLesson_Click(object sender, EventArgs e)
         {
@@ -343,6 +345,16 @@ namespace WAPP
             lvLessons.DataBind();
         }
 
+        protected void lvLessons_ItemCommand(object sender, ListViewCommandEventArgs e)
+        {
+            if (e.CommandName == "DeleteLesson")
+            {
+                int lessonId = Convert.ToInt32(e.CommandArgument);
+                DeleteLesson(lessonId); // calls your existing function
+                BindLessons(); // refresh the list
+            }
+        }
+
         private void DeleteLesson(int lessonId)
         {
             using (SqlConnection conn = new SqlConnection(connStr))
@@ -361,43 +373,71 @@ namespace WAPP
 
         protected void btnCreateCourse_Click(object sender, EventArgs e)
         {
-            if (Session["NewCourseId"] == null) return;
-            int cid = Convert.ToInt32(Session["NewCourseId"]);
-
-            using (SqlConnection conn = new SqlConnection(connStr))
+            if (Session["NewCourseId"] == null)
             {
-                conn.Open();
+                lblMessage.Text = "⚠️ Course session not found. Please refresh and try again.";
+                lblMessage.ForeColor = System.Drawing.Color.Red;
+                return;
+            }
 
-                string sql = "UPDATE Course SET Status=@status, Title=@title, CourseType=@type, Coin=@coin WHERE Id=@id";
-                using (SqlCommand cmd = new SqlCommand(sql, conn))
+            int cid = Convert.ToInt32(Session["NewCourseId"]);
+            string courseTitle = txtCourseTitle.Text.Trim();
+            string courseType = rblCourseType.SelectedValue ?? "public";
+            int coursePrice = 0;
+
+            // 🧠 1️⃣ Validate course title
+            if (string.IsNullOrEmpty(courseTitle))
+            {
+                lblMessage.Text = "⚠️ Please enter a course title before creating the course.";
+                lblMessage.ForeColor = System.Drawing.Color.Red;
+                return;
+            }
+
+            // 🧠 2️⃣ Validate course price if private
+            if (courseType == "private")
+            {
+                if (!int.TryParse(txtCoursePrice.Text.Trim(), out coursePrice) || coursePrice < 10 || coursePrice > 250)
                 {
-                    cmd.Parameters.AddWithValue("@status", "Published");
-                    cmd.Parameters.AddWithValue("@title", txtCourseTitle.Text.Trim());
-                    cmd.Parameters.AddWithValue("@type", rblCourseType.SelectedValue ?? "public");
-
-                    decimal coursePrice = 0;
-                    if (rblCourseType.SelectedValue == "private")
-                    {
-                        if (int.TryParse(txtCoursePrice.Text.Trim(), out int parsedPrice) && parsedPrice >= 10 && parsedPrice <= 250)
-                        {
-                            coursePrice = parsedPrice;
-                        }
-                        else
-                        {
-                            lblMessage.Text = "Please enter a valid whole number between 10 and 250.";
-                            lblMessage.ForeColor = System.Drawing.Color.Red;
-                            return;
-                        }
-                    }
-
-                    cmd.Parameters.AddWithValue("@coin", coursePrice);
-                    cmd.Parameters.AddWithValue("@id", cid);
-                    cmd.ExecuteNonQuery();
+                    lblMessage.Text = "⚠️ Please enter a valid whole number between 10 and 250 for the course price.";
+                    lblMessage.ForeColor = System.Drawing.Color.Red;
+                    return;
                 }
             }
 
-            Session.Remove("NewCourseId");
-            Response.Redirect("Educator_dashboard.aspx");
+            // 🧠 3️⃣ Save course info to database (update existing draft)
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connStr))
+                {
+                    conn.Open();
+
+                    string sql = @"UPDATE Course
+                           SET Title=@title,
+                               CourseType=@type,
+                               Coin=@coin,
+                               Status='Published'
+                           WHERE Id=@id";
+
+                    using (SqlCommand cmd = new SqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@title", courseTitle);
+                        cmd.Parameters.AddWithValue("@type", courseType);
+                        cmd.Parameters.AddWithValue("@coin", coursePrice);
+                        cmd.Parameters.AddWithValue("@id", cid);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+
+                // ✅ Feedback message
+                lblMessage.Text = "✅ Course created and published successfully! Your course is now saved to the database.";
+                lblMessage.ForeColor = System.Drawing.Color.Green;
+            }
+            catch (Exception ex)
+            {
+                lblMessage.Text = "❌ Error saving course: " + ex.Message;
+                lblMessage.ForeColor = System.Drawing.Color.Red;
+            }
         }
+
     }
 }

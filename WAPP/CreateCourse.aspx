@@ -433,7 +433,7 @@
                 <h3>Course Lessons</h3>
                 <div class="muted">Add lessons to your course</div>
 
-                <asp:ListView ID="lvLessons" runat="server">
+                <asp:ListView ID="lvLessons" runat="server" OnItemCommand="lvLessons_ItemCommand">
                     <ItemTemplate>
                         <div class="lesson-item">
                             <div>
@@ -441,8 +441,13 @@
                                 <div class="lesson-meta"><%# Convert.ToBoolean(Eval("HasQuiz")) ? "Has quiz" : "No quiz" %></div>
                             </div>
                             <div>
-                                <asp:LinkButton ID="lnkEdit" runat="server" CommandName="EditLesson" CommandArgument='<%# Eval("Id") %>' CssClass="small-btn">Edit</asp:LinkButton>
-                                <asp:LinkButton ID="lnkDelete" runat="server" CommandName="DeleteLesson" CommandArgument='<%# Eval("Id") %>' CssClass="small-btn danger">Delete</asp:LinkButton>
+                                <asp:LinkButton ID="lnkDelete" runat="server"
+                                    CommandName="DeleteLesson"
+                                    CommandArgument='<%# Eval("Id") %>'
+                                    CssClass="small-btn danger"
+                                    OnClientClick="return confirm('Are you sure you want to delete this lesson?');">
+                    Delete
+                                </asp:LinkButton>
                             </div>
                         </div>
                     </ItemTemplate>
