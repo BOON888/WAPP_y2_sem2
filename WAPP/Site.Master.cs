@@ -26,9 +26,13 @@ namespace WAPP
                     navUserProfile.Visible = true;
                     navLogout.Visible = true;
 
-                    // Display user's name and profile picture
+                    // Display user's name and role
                     lblUserFullName.Text = Session["FullName"].ToString();
 
+                    string role = Session["Role"].ToString().ToLower();
+                    lblRole.Text = char.ToUpper(role[0]) + role.Substring(1).ToLower();
+
+                    // Set profile image
                     if (Session["ProfilePicture"] != null && !string.IsNullOrEmpty(Session["ProfilePicture"].ToString()))
                     {
                         string fileName = Session["ProfilePicture"].ToString();
@@ -38,6 +42,21 @@ namespace WAPP
                     {
                         imgProfileHeader.ImageUrl = "~/image/default_profile.png"; // default placeholder image
                     }
+
+                    // ✅ Set correct profile link based on role
+                    if (role == "educator")
+                    {
+                        lnkProfile.HRef = "~/educatorProfile.aspx";
+                    }
+                    else if (role == "student")
+                    {
+                        lnkProfile.HRef = "~/studentProfile.aspx";
+                    }
+                    else
+                    {
+                        // Default fallback (optional)
+                        lnkProfile.HRef = "~/profile.aspx";
+                    }
                 }
                 else
                 {
@@ -46,13 +65,12 @@ namespace WAPP
                 }
             }
         }
-
         protected void Logout_Click(object sender, EventArgs e)
         {
             Session.Clear();           // Remove all session data
             Session.Abandon();         // End the session
             Response.Redirect("~/public_dashboard");
         }
-
     }
 }
+
