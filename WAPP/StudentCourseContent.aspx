@@ -91,22 +91,24 @@
             </div>
         </div>
 
-        <!-- Lessons -->
         <div class="lesson-list">
             <h2 class="section-title">📘 Lessons</h2>
             <asp:Repeater ID="rptLessons" runat="server">
                 <ItemTemplate>
                     <div class="lesson-item">
                         <div>
-                            <span class="lesson-title">Lesson <%# Eval("LessonNumber") %>: <%# Eval("LessonTitle") %></span><br />
+                            <span class="lesson-title">
+                                Lesson <%# Eval("LessonNumber") %>: <%# Eval("LessonTitle") %>
+                            </span><br />
                             <small>Type: <%# Eval("ContentType") %></small>
                         </div>
-                        <button class="btn-view"
-                            onclick="window.location='<%# ResolveUrl(Eval("ContentFilePath").ToString()) %>'">View</button>
+                        <a class="btn-view" href='<%# "StudentLesson.aspx?lessonId=" + Eval("Id") %>'>View</a>
                     </div>
                 </ItemTemplate>
             </asp:Repeater>
         </div>
+
+       
 
         <!-- Quizzes -->
         <div class="quiz-list">

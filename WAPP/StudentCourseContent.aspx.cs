@@ -2,7 +2,7 @@
 using System.Data;
 using System.Data.SqlClient;
 using System.Configuration;
-using System.Web.UI.WebControls; // Required for RepeaterCommandEventArgs
+using System.Web.UI.WebControls; // For RepeaterCommandEventArgs
 
 namespace WAPP
 {
@@ -14,14 +14,14 @@ namespace WAPP
         {
             if (!IsPostBack)
             {
-                // Authorization check
+                // ✅ Authorization check
                 if (Session["UserId"] == null || Session["Role"]?.ToString().ToLower() != "student")
                 {
                     Response.Redirect("sign_in.aspx");
                     return;
                 }
 
-                // Course ID validation
+                // ✅ Course ID validation
                 string idParam = Request.QueryString["courseId"];
                 if (string.IsNullOrEmpty(idParam) || !int.TryParse(idParam, out int courseId))
                 {
@@ -31,17 +31,21 @@ namespace WAPP
                 }
 
                 Session["SelectedCourseId"] = courseId;
-                
-                // Load course data
+
+                // ✅ Load all data
                 LoadCourseInfo(courseId);
                 LoadLessons(courseId);
                 LoadQuizzes(courseId);
             }
 
-            // Must register the ItemCommand handler every time (PostBack or not)
+            // Ensure handler is bound on every load
             rptQuizzes.ItemCommand += rptQuizzes_ItemCommand;
+            
         }
 
+        // =============================
+        //  COURSE INFORMATION
+        // =============================
         private void LoadCourseInfo(int courseId)
         {
             using (SqlConnection conn = new SqlConnection(connString))
@@ -64,26 +68,34 @@ namespace WAPP
                     lblCourseTitle.Text = dr["Title"].ToString();
                     lblEducator.Text = dr["EducatorName"].ToString();
                     lblCourseType.Text = dr["CourseType"].ToString();
-                    lblCoin.Text = dr["Coin"].ToString();
                     lblStatus.Text = dr["Status"].ToString();
+
+                    // Change "Coins Needed"
+                    int coins = dr["Coin"] == DBNull.Value ? 0 : Convert.ToInt32(dr["Coin"]);
+                    lblCoin.Text = coins.ToString();
                 }
                 else
                 {
                     lblError.Text = "⚠️ Course not found.";
                     lblError.Visible = true;
                 }
+
                 dr.Close();
             }
         }
 
+        // =============================
+        //  LESSON LIST
+        // =============================
         private void LoadLessons(int courseId)
         {
             using (SqlConnection conn = new SqlConnection(connString))
             {
                 conn.Open();
                 SqlDataAdapter da = new SqlDataAdapter(
-                    @"SELECT LessonNumber, LessonTitle, ContentType, ContentFilePath
-                      FROM Lesson WHERE CourseId=@cid ORDER BY LessonNumber ASC", conn);
+                    // ⭐ Make sure 'Id' is included here
+                    @"SELECT Id, LessonNumber, LessonTitle, ContentType, ContentFilePath
+              FROM Lesson WHERE CourseId=@cid ORDER BY LessonNumber ASC", conn);
                 da.SelectCommand.Parameters.AddWithValue("@cid", courseId);
 
                 DataTable dt = new DataTable();
@@ -93,6 +105,9 @@ namespace WAPP
             }
         }
 
+        // =============================
+        //  QUIZ LIST + PROGRESS BAR
+        // =============================
         private void LoadQuizzes(int courseId)
         {
             if (Session["StudentID"] == null || !int.TryParse(Session["StudentID"].ToString(), out int studentId))
@@ -104,7 +119,6 @@ namespace WAPP
             using (SqlConnection conn = new SqlConnection(connString))
             {
                 conn.Open();
-
                 string query = @"
                     SELECT q.Id, q.QuizRewardCoins, l.LessonTitle, l.LessonNumber,
                            ISNULL(p.Status, 'NotStarted') AS Status
@@ -112,7 +126,7 @@ namespace WAPP
                     JOIN Lesson l ON q.LessonId = l.Id
                     LEFT JOIN StudentQuizProgress p ON p.QuizId = q.Id AND p.StudentId = @sid
                     WHERE l.CourseId = @cid
-                    ORDER BY l.LessonNumber ASC"; 
+                    ORDER BY l.LessonNumber ASC";
 
                 SqlCommand cmd = new SqlCommand(query, conn);
                 cmd.Parameters.AddWithValue("@cid", courseId);
@@ -122,12 +136,11 @@ namespace WAPP
                 DataTable dt = new DataTable();
                 da.Fill(dt);
 
-                // Add TEMPORARY columns for front-end rendering logic
+                // Add temporary fields for UI
                 dt.Columns.Add("ButtonText", typeof(string));
                 dt.Columns.Add("ButtonClass", typeof(string));
                 dt.Columns.Add("ButtonEnabled", typeof(bool));
-                
-                // --- Sequential Quiz Unlocking Logic ---
+
                 bool previousQuizCompleted = true;
                 int completedCount = 0;
 
@@ -138,7 +151,7 @@ namespace WAPP
 
                     if (isCompleted)
                     {
-                        // Case 1: Quiz is COMPLETED
+                        // Completed quiz
                         row["ButtonText"] = "Completed";
                         row["ButtonClass"] = "btn-view btn-disabled";
                         row["ButtonEnabled"] = false;
@@ -147,61 +160,54 @@ namespace WAPP
                     }
                     else if (previousQuizCompleted)
                     {
-                        // Case 2: Quiz is UNLOCKED (The next one in the sequence)
+                        // Next available quiz
                         row["ButtonText"] = "Start Quiz";
                         row["ButtonClass"] = "btn-view";
                         row["ButtonEnabled"] = true;
-                        previousQuizCompleted = false; // Locks all quizzes that follow
+                        previousQuizCompleted = false;
                     }
                     else
                     {
-                        // Case 3: Quiz is LOCKED
+                        // Locked quiz
                         row["ButtonText"] = "Locked 🔒";
                         row["ButtonClass"] = "btn-view btn-disabled";
                         row["ButtonEnabled"] = false;
                     }
                 }
-                // --- End of Sequential Quiz Unlocking Logic ---
 
-
-                // Compute Progress
+                // Calculate course progress
                 int total = dt.Rows.Count;
                 int percent = (total == 0) ? 0 : (int)((completedCount / (double)total) * 100);
-                
-                // --- PROGRESS BAR COLOR SELECTION LOGIC ---
+
                 string progressClass;
                 if (percent < 30)
-                {
-                    progressClass = "progress-low";    // Red
-                }
+                    progressClass = "progress-low";
                 else if (percent < 70)
-                {
-                    progressClass = "progress-medium"; // Orange
-                }
+                    progressClass = "progress-medium";
                 else
-                {
-                    progressClass = "progress-high";   // Green
-                }
+                    progressClass = "progress-high";
 
                 lblProgressPercent.Text = percent + "%";
                 progressFill.Style["width"] = percent + "%";
                 progressFill.InnerText = percent + "%";
-                // Apply the new class to change color
                 progressFill.Attributes["class"] = $"progress-fill {progressClass}";
-                // --- END PROGRESS BAR COLOR LOGIC ---
-
 
                 rptQuizzes.DataSource = dt;
                 rptQuizzes.DataBind();
             }
         }
 
+        // =============================
+        //  BUTTON HANDLERS
+        // =============================
+
+        // 🔹 Back to Dashboard
         protected void btnBackDashboard_Click(object sender, EventArgs e)
         {
             Response.Redirect("StudentDashboard.aspx");
         }
-        
-        // Handler for the Quiz Repeater Button Clicks
+
+        // 🔹 Quiz Click Event
         protected void rptQuizzes_ItemCommand(object source, RepeaterCommandEventArgs e)
         {
             if (e.CommandName == "OpenQuiz")
@@ -210,5 +216,9 @@ namespace WAPP
                 Response.Redirect($"StudentQuiz.aspx?quizId={quizId}");
             }
         }
+
+        
+
+
     }
 }
