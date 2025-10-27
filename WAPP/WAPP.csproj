@@ -207,6 +207,7 @@
     <Content Include="StudentLesson.aspx" />
     <Content Include="StudentProfile.aspx" />
     <Content Include="StudentQuiz.aspx" />
+    <Content Include="StudentQuizResult.aspx" />
     <Content Include="tem_dashboard.aspx" />
     <Content Include="Uploads\html_intro.mp4" />
     <Content Include="Uploads\webpage_build.mp4" />
@@ -403,6 +404,13 @@
     </Compile>
     <Compile Include="StudentQuiz.aspx.designer.cs">
       <DependentUpon>StudentQuiz.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="StudentQuizResult.aspx.cs">
+      <DependentUpon>StudentQuizResult.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="StudentQuizResult.aspx.designer.cs">
+      <DependentUpon>StudentQuizResult.aspx</DependentUpon>
     </Compile>
     <Compile Include="tem_dashboard.aspx.cs">
       <DependentUpon>tem_dashboard.aspx</DependentUpon>
