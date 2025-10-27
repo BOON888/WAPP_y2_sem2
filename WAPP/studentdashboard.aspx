@@ -14,8 +14,8 @@
             border-radius: 12px;
             padding: 40px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            width: 90%;
-            max-width: 1100px;
+            width: 99%;
+            max-width: 1900px;
             margin: 60px auto;
         }
 
@@ -49,12 +49,6 @@
             margin-bottom: 10px;
         }
 
-        .card asp\:Label {
-            font-size: 20px;
-            color: #111827;
-            font-weight: 600;
-        }
-
         .section {
             margin-top: 40px;
         }
@@ -64,7 +58,6 @@
             margin-bottom: 20px;
         }
 
-        /* Course list horizontal scroll */
         .course-list {
             display: flex;
             gap: 20px;
@@ -119,20 +112,6 @@
             color: #001eff;
         }
 
-        /* Scrollbar styling */
-        .course-list::-webkit-scrollbar {
-            height: 8px;
-        }
-
-        .course-list::-webkit-scrollbar-thumb {
-            background-color: #001eff;
-            border-radius: 4px;
-        }
-
-        .course-list::-webkit-scrollbar-track {
-            background: #f0f0f0;
-        }
-
         .searchBox {
             padding: 8px 10px;
             border: 1px solid #d1d5db;
@@ -140,6 +119,17 @@
             min-width: 220px;
             font-size: 14px;
             background-color: #f9fafb;
+        }
+
+        .course-list::-webkit-scrollbar {
+            height: 8px;
+        }
+        .course-list::-webkit-scrollbar-thumb {
+            background-color: #001eff;
+            border-radius: 4px;
+        }
+        .course-list::-webkit-scrollbar-track {
+            background: #f0f0f0;
         }
     </style>
 
@@ -173,7 +163,7 @@
                             <p>By <%# Eval("EducatorName") %></p>
                             <p><strong>⌛ On Going</strong></p>
                             <button class="btn" type="button"
-                                onclick="window.location='CourseDetails.aspx?id=<%# Eval("Id") %>'">Continue Learning</button>
+                                onclick="window.location='StudentCourseContent.aspx?courseId=<%# Eval("Id") %>'">Continue Learning</button>
                         </div>
                     </ItemTemplate>
                 </asp:Repeater>
@@ -199,7 +189,7 @@
                                 <p>By <%# Eval("EducatorName") %></p>
                             </div>
                             <button class="btn" type="button"
-                                onclick="window.location='CourseDetails.aspx?id=<%# Eval("Id") %>'">Start Learning</button>
+                                onclick="window.location='StudentCourseContent.aspx?courseId=<%# Eval("Id") %>'">Start Learning</button>
                         </div>
                     </ItemTemplate>
                 </asp:Repeater>
@@ -244,7 +234,7 @@
                             <p>By <%# Eval("EducatorName") %></p>
                             <p><strong>✅ Completed</strong></p>
                             <button class="btn" type="button"
-                                onclick="window.location='CourseDetails.aspx?id=<%# Eval("Id") %>'">Review Course</button>
+                                onclick="window.location='StudentCourseContent.aspx?courseId=<%# Eval("Id") %>'">Review Course</button>
                         </div>
                     </ItemTemplate>
                 </asp:Repeater>

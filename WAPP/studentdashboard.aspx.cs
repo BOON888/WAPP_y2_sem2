@@ -13,20 +13,19 @@ namespace WAPP
         {
             if (!IsPostBack)
             {
-                // 🔹 Ensure the user is logged in and is a student
+                // Ensure valid student session
                 if (Session["UserId"] == null || Session["Role"] == null || Session["Role"].ToString().ToLower() != "student")
                 {
                     Response.Redirect("sign_in.aspx");
                     return;
                 }
 
-                // 🔹 Ensure StudentID is available
+                // Ensure StudentID exists
                 if (Session["StudentID"] == null)
                 {
-                    LoadStudentID();  // get Student.Id based on current UserId
+                    LoadStudentID();
                 }
 
-                // 🔹 If still missing (database error or mismatch), show safe defaults
                 if (Session["StudentID"] == null)
                 {
                     lblStudentName.Text = "Unknown Student";
@@ -36,17 +35,12 @@ namespace WAPP
                     return;
                 }
 
-                // ✅ Show current student name from session
                 lblStudentName.Text = Session["FullName"]?.ToString() ?? "Unnamed";
-
-                // ✅ Load latest stats & course data
                 LoadStudentStats();
                 LoadCourses();
             }
         }
 
-
-        // ✅ Get StudentID based on logged-in user
         private void LoadStudentID()
         {
             int userId = Convert.ToInt32(Session["UserId"]);
@@ -54,11 +48,10 @@ namespace WAPP
             using (SqlConnection conn = new SqlConnection(connString))
             {
                 conn.Open();
-
                 SqlCommand cmd = new SqlCommand("SELECT Id FROM Student WHERE UserId = @uid", conn);
                 cmd.Parameters.AddWithValue("@uid", userId);
-
                 object result = cmd.ExecuteScalar();
+
                 if (result != null)
                 {
                     Session["StudentID"] = Convert.ToInt32(result);
@@ -74,8 +67,6 @@ namespace WAPP
             using (SqlConnection conn = new SqlConnection(connString))
             {
                 conn.Open();
-
-                // 🔹 Load coins and badges
                 SqlCommand cmd = new SqlCommand("SELECT Coins, BadgesEarned FROM Student WHERE Id=@id", conn);
                 cmd.Parameters.AddWithValue("@id", studentId);
                 SqlDataReader dr = cmd.ExecuteReader();
@@ -87,7 +78,6 @@ namespace WAPP
                 }
                 dr.Close();
 
-                // 🔹 Load completed course count
                 SqlCommand cmd2 = new SqlCommand("SELECT COUNT(*) FROM StudentCourseProgress WHERE StudentId=@id AND Status='Completed'", conn);
                 cmd2.Parameters.AddWithValue("@id", studentId);
                 lblCoursesCompleted.Text = cmd2.ExecuteScalar().ToString();
@@ -102,7 +92,7 @@ namespace WAPP
             {
                 conn.Open();
 
-                // Incomplete Courses
+                // In Progress Courses
                 SqlDataAdapter daIncomplete = new SqlDataAdapter(
                     @"SELECT c.Id, c.Title, e.EducationQualification AS EducatorName
                       FROM Course c 
@@ -115,23 +105,29 @@ namespace WAPP
                 rptIncompleteCourses.DataSource = dtIncomplete;
                 rptIncompleteCourses.DataBind();
 
-                // Public Courses
+                // Public
                 SqlDataAdapter daPublic = new SqlDataAdapter(
-                    "SELECT c.Id, c.Title, e.EducationQualification AS EducatorName FROM Course c JOIN Educator e ON c.EducatorId=e.Id WHERE c.CourseType='Public'", conn);
+                    @"SELECT c.Id, c.Title, e.EducationQualification AS EducatorName 
+                      FROM Course c 
+                      JOIN Educator e ON c.EducatorId=e.Id 
+                      WHERE c.CourseType='Public'", conn);
                 DataTable dtPublic = new DataTable();
                 daPublic.Fill(dtPublic);
                 rptPublicCourses.DataSource = dtPublic;
                 rptPublicCourses.DataBind();
 
-                // Private Courses
+                // Private
                 SqlDataAdapter daPrivate = new SqlDataAdapter(
-                    "SELECT c.Id, c.Title, e.EducationQualification AS EducatorName, 50 AS CoinReward FROM Course c JOIN Educator e ON c.EducatorId=e.Id WHERE c.CourseType='Private'", conn);
+                    @"SELECT c.Id, c.Title, e.EducationQualification AS EducatorName, 50 AS CoinReward 
+                      FROM Course c 
+                      JOIN Educator e ON c.EducatorId=e.Id 
+                      WHERE c.CourseType='Private'", conn);
                 DataTable dtPrivate = new DataTable();
                 daPrivate.Fill(dtPrivate);
                 rptPrivateCourses.DataSource = dtPrivate;
                 rptPrivateCourses.DataBind();
 
-                // Completed Courses
+                // Completed
                 SqlDataAdapter daCompleted = new SqlDataAdapter(
                     @"SELECT c.Id, c.Title, e.EducationQualification AS EducatorName
                       FROM Course c 
