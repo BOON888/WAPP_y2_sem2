@@ -204,6 +204,7 @@
     <Content Include="Site.Master" />
     <Content Include="StudentCourseContent.aspx" />
     <Content Include="StudentDashboard.aspx" />
+    <Content Include="StudentLesson.aspx" />
     <Content Include="StudentProfile.aspx" />
     <Content Include="StudentQuiz.aspx" />
     <Content Include="tem_dashboard.aspx" />
@@ -379,6 +380,13 @@
     </Compile>
     <Compile Include="StudentDashboard.aspx.designer.cs">
       <DependentUpon>StudentDashboard.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="StudentLesson.aspx.cs">
+      <DependentUpon>StudentLesson.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="StudentLesson.aspx.designer.cs">
+      <DependentUpon>StudentLesson.aspx</DependentUpon>
     </Compile>
     <Compile Include="StudentProfile.aspx.cs">
       <DependentUpon>StudentProfile.aspx</DependentUpon>
