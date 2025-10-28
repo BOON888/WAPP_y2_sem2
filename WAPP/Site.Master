@@ -16,6 +16,7 @@
     <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
 
 </head>
+
 <body style="min-height: 100vh; display: flex; flex-direction: column; margin: 0;">
     <form runat="server" style="flex: 1; display: flex; flex-direction: column;">
 
@@ -35,49 +36,77 @@
             </Scripts>
         </asp:ScriptManager>
 
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark" style="background-color:#001eff;">
-            <div class="container">
-                <p>
-                <a class="navbar-brand" runat="server" href="~/public_dashboard" style="font-size:24px;">
-                    Sea Learner <img src="/Image/logo.png" alt="Sealearner" style="height:20px;"/>
+        <nav class="navbar navbar-expand-sm navbar-dark"
+             style="background: 
+                    linear-gradient(to bottom, #001eff 10%, rgba(0,30,255,0)), 
+                    linear-gradient(135deg, #eaf0ff, #ffffff);
+                    background-blend-mode: normal;
+                    position: fixed; top: 0; width: 100%; z-index: 1000;">
+            <div class="container d-flex justify-content-between align-items-center">
+
+                <a class="navbar-brand d-flex align-items-center" runat="server" href="~/public_dashboard" style="font-size:24px;">
+                    Sea Learner 
+                    <img src="/Image/sl_logo.png" alt="Sealearner" style="height:25px; margin-left:8px;"/>
                 </a>
-                </p>
-                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
-                    title="Toggle navigation" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="collapse navbar-collapse d-sm-inline-flex justify-content-end">
-                    <ul class="navbar-nav">
-                        <li id="navSignIn" runat="server" class="nav-item" style="border:1px solid white; background-color: #001eff ;border-radius: 10px; margin-right:10px">
-                            <a class="nav-link" runat="server" href="~/sign_in">Sign-In</a>
+
+                <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                    <ul class="navbar-nav align-items-center" style="margin-top:0px;">
+
+                        <li id="navSignIn" runat="server" class="nav-item mx-2">
+                            <a class="btnSignIn" runat="server" href="~/sign_in">Sign-In</a>
                         </li>
-                        <li id="navSignUp" runat="server" class="nav-item" style="border:1px solid white; background-color: white; border-radius: 10px;">
-                            <a class="nav-link" runat="server" href="~/sign_up" style="color:black">Sign-Up</a>
+
+                        <li id="navSignUp" runat="server" class="nav-item mx-2">
+                            <a class="btnSignUp" runat="server" href="~/sign_up">Sign-Up</a>
                         </li>
-                        <li id="navUserProfile" runat="server" class="nav-item d-flex align-items-center" style="margin-right:15px;">
-                            <a id="lnkProfile" runat="server" class="d-flex align-items-center text-decoration-none text-white">
-                                <asp:Image ID="imgProfileHeader" runat="server" Width="35px" Height="35px" Style="border-radius:10px; margin-right:8px; border:none;" />
-                                <asp:Label ID="lblUserFullName" runat="server" Font-Bold="True"></asp:Label>
-                                <asp:Label ID="lblRole" runat="server" Style="padding:8px;" Font-Bold="True"></asp:Label>
+
+                        <li id="navUserProfile" runat="server" class="nav-item d-flex align-items-center mx-2">
+                            <a id="lnkProfile" runat="server" class="d-flex align-items-center text-white text-decoration-none">
+                                <asp:Image ID="imgProfileHeader" runat="server" Width="35px" Height="35px"
+                                           Style="border-radius:10px; margin-right:8px;" />
+                                <div class="d-flex flex-column">
+                                    <asp:Label ID="lblUserFullName" runat="server" Font-Bold="True"></asp:Label>
+                                    <asp:Label ID="lblRole" runat="server" Font-Size="Small"></asp:Label>
+                                </div>
                             </a>
                         </li>
-                        <li id="navLogout" runat="server" class="nav-item" style="border:1px solid white; background-color: white; border-radius: 10px;">
-                            <asp:LinkButton ID="btnLogout" runat="server" CssClass="nav-link" OnClick="Logout_Click" style="color:black;">Logout</asp:LinkButton>
+
+                        <li id="navLogout" runat="server" class="nav-item mx-2">
+                            <asp:LinkButton ID="btnLogout" runat="server" CssClass="nav-link bg-white text-dark border border-white rounded px-3"
+                                            OnClick="Logout_Click">Logout</asp:LinkButton>
                         </li>
+
                     </ul>
                 </div>
             </div>
         </nav>
 
-        <div class="container body-content" style="flex: 1;">
+
+        <div class="container body-content" style="flex: 1; padding-top: 40px;">
             <asp:ContentPlaceHolder ID="MainContent" runat="server">
             </asp:ContentPlaceHolder>
             <hr />
         </div>
 
-        <footer style="background-color:#001eff; color:white; height:60px; display:flex; align-items:center; justify-content:center; margin-top:auto;">
-            <p class="m-0">&copy; <%: DateTime.Now.Year %> - Sealearner</p>
+        <footer style="position: relative; overflow: hidden; height: 60%; color: white; text-align: center;">
+            <!-- Background video -->
+            <video autoplay muted loop playsinline 
+                   style="position: absolute; top: 40%; left: 50%;
+                          width: 100%; height: 140%; object-fit: cover;
+                          transform: translate(-50%, -50%);
+                          z-index: 0; opacity: 0.6;">
+                <source src="/image/sea_wave.mp4" type="video/mp4">
+            </video>
+
+            <!-- Footer content -->
+            <div style="position: relative; z-index: 2; display: flex; align-items: center; justify-content: center; height: 100%;">
+                <p style="color:white" class="m-0">&copy; <%: DateTime.Now.Year %> - Sealearner</p>
+            </div>
         </footer>
 
     </form>

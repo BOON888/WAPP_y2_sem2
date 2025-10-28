@@ -42,15 +42,18 @@ namespace WAPP
                 {
                     // Insert into Users table with father and mother columns
                     string insertUserQuery = @"INSERT INTO Users 
-                        (FullName, Email, Password, Role, Age, Gender, father, mother)
+                        (FullName, Email, Password, Role, Age, Gender, father, mother, Status)
                         OUTPUT INSERTED.Id
-                        VALUES (@FullName, @Email, @Password, @Role, @Age, @Gender, @Father, @Mother)";
+                        VALUES (@FullName, @Email, @Password, @Role, @Age, @Gender, @Father, @Mother, @Status)";
+
 
                     SqlCommand cmdUser = new SqlCommand(insertUserQuery, conn, transaction);
                     cmdUser.Parameters.AddWithValue("@FullName", txtFullName.Text.Trim());
                     cmdUser.Parameters.AddWithValue("@Email", txtEmail.Text.Trim());
                     cmdUser.Parameters.AddWithValue("@Password", txtPassword.Text.Trim());
                     cmdUser.Parameters.AddWithValue("@Role", rblRole.SelectedValue);
+                    cmdUser.Parameters.AddWithValue("@Status", "active");
+
 
                     int age = 0;
                     string gender = "";

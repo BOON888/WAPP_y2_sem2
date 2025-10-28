@@ -4,17 +4,63 @@
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
-            background-color: #f9f9fb;
+            background: linear-gradient(135deg, #eaf0ff, #ffffff);
+        }
+
+        html {
+          scrollbar-width: none; /* Firefox */
+        }
+
+        html::-webkit-scrollbar {
+          display: none; /* Chrome, Safari, Edge */
+        }
+
+        .btnSignIn, .btnSignUp {
+            position: relative;
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            padding: 10px;
+            overflow: hidden; /* hides the wave box */
+            transition: color 0.3s ease;
+        }
+
+        .btnSignIn::after, .btnSignUp::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 15px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%) scale(0);
+            transition: transform 0.6s ease, opacity 0.6s ease;
+            opacity: 0;
+            border-radius: 2px; /* makes corners slightly soft, optional */
+        }
+
+        .btnSignIn:hover, .btnSignUp:hover {
+            color: black;
+        }
+
+        .btnSignIn:hover::after, .btnSignUp:hover::after {
+            transform: translate(-50%, -50%) scale(6); /* expands outward like a wave */
+            opacity: 1;
         }
 
         .login-container {
-            background-color: white;
-            border-radius: 12px;
             padding: 40px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             width: 400px;
             margin: 80px auto;
+            margin-bottom: 30px;
             text-align: center;
+            background: rgba(255, 255, 255, 0.25); /* half-transparent white */
+            border-radius: 12px;
+            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25); /* soft blue shadow */
+            backdrop-filter: blur(10px); /* frosted glass effect */
+            -webkit-backdrop-filter: blur(10px); /* Safari support */
+            border: 1px solid rgba(255, 255, 255, 0.3); /* subtle border for glass look */
         }
 
         h2 {
@@ -28,7 +74,6 @@
         }
 
         .form-group {
-            text-align: left;
             margin-bottom: 15px;
         }
 
@@ -37,6 +82,7 @@
             color: #374151;
             font-weight: 600;
             margin-bottom: 5px;
+            text-align:left;
         }
 
         input[type="text"], input[type="password"] {
@@ -45,24 +91,7 @@
             border-radius: 6px;
             border: 1px solid #d1d5db;
             background-color: #f9fafb;
-        }
-
-        .btn {
-            background-color: #001eff;
-            color: white;
-            border: solid 1px #001eff ;
-            border-radius: 6px;
-            padding: 10px;
-            width: 100%;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
-        .btn:hover {
-            background-color: white;
-            border: solid 1px #001eff  ;
-            color:#001eff;
+            max-width: none;    /* remove inherited max-width if any */
         }
 
         .forgot {
@@ -84,29 +113,67 @@
             border-top: 1px solid #e5e7eb;
         }
 
-        .signup-link {
-            background-color: #001eff;
-            color: white;
-            border: solid 1px #001eff ;
-            border-radius: 6px;
-            padding: 10px;
-            width: 100%;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 10px;
-            text-decoration: none;
-        }
-
-        .signup-link:hover {
-            background-color: white;
-            border: solid 1px #001eff  ;
-            color:#001eff;
-        }
-
         .error {
             color: red;
             margin-bottom: 10px;
             font-size: 14px;
+        }
+
+        .btnSign_In {
+          background-color: #001eff;
+          color: white;
+          border: none;
+          border-radius: 6px;
+          padding: 10px 20px;
+          font-size: 16px;
+          cursor: pointer;
+          margin: 5px;
+          transition: background-color 0.3s ease, color 0.3s ease, transform 0.25s ease, box-shadow 0.25s ease;
+          width: 300px;
+        }
+
+        .btn {
+          background-color: #001eff;
+          border: 1px solid #001eff;
+          color: white;
+          border-radius: 6px;
+          padding: 10px 20px;
+          font-size: 16px;
+          cursor: pointer;
+          margin: 5px;
+          transition: background-color 0.3s ease, color 0.3s ease, transform 0.25s ease, box-shadow 0.25s ease;
+          text-decoration: none;
+          width: 300px;
+        }
+
+        /* Shared hover and active effects */
+        .btn:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 6px 15px rgba(0, 30, 255, 0.25);
+          opacity: 0.95;
+        }
+
+        .btn:active {
+          transform: translateY(0);
+          box-shadow: 0 3px 8px rgba(0, 30, 255, 0.2);
+          opacity: 1;
+        }
+
+        .signup-link {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            color: #6b7280;
+        }
+
+        .signup-link a {
+            color: #001eff;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .signup-link a:hover {
+            text-decoration: underline;
         }
     </style>
 
@@ -129,9 +196,9 @@
         <asp:Button ID="btnSignIn" runat="server" CssClass="btn" Text="Sign In" OnClick="btnSignIn_Click" />
 
         <a href="forgot_password" class="forgot">Forgot Password?</a>
-
         <hr />
-        <p>Don't have an account?</p>
-        <a href="sign_up.aspx" class="signup-link">Sign Up</a>
+        <div class="signup-link">
+            Don't have an account? <a href="sign_up.aspx">Sign Un</a>
+        </div>
     </div>
 </asp:Content>

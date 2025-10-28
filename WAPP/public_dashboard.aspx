@@ -4,7 +4,48 @@
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
-            background-color: #f9f9fb;
+            background: linear-gradient(135deg, #eaf0ff, #ffffff);
+        }
+
+        html {
+          scrollbar-width: none; /* Firefox */
+        }
+
+        html::-webkit-scrollbar {
+          display: none; /* Chrome, Safari, Edge */
+        }
+
+        .btnSignIn, .btnSignUp {
+            position: relative;
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            padding: 10px;
+            overflow: hidden; /* hides the wave box */
+            transition: color 0.3s ease;
+        }
+
+        .btnSignIn::after, .btnSignUp::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 15px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%) scale(0);
+            transition: transform 0.6s ease, opacity 0.6s ease;
+            opacity: 0;
+            border-radius: 2px; /* makes corners slightly soft, optional */
+        }
+
+        .btnSignIn:hover, .btnSignUp:hover {
+            color: black;
+        }
+
+        .btnSignIn:hover::after, .btnSignUp:hover::after {
+            transform: translate(-50%, -50%) scale(6); /* expands outward like a wave */
+            opacity: 1;
         }
 
         .text-center {
@@ -12,34 +53,46 @@
         }
 
         .btn {
-            background-color: #001eff;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            margin: 5px;
-            transition: all 0.3s ease;
+          background-color: #001eff;
+          color: white;
+          border: none;
+          border-radius: 6px;
+          padding: 10px 20px;
+          font-size: 16px;
+          cursor: pointer;
+          margin: 5px;
+          transition: background-color 0.3s ease, color 0.3s ease, transform 0.25s ease, box-shadow 0.25s ease;
         }
 
         .btn-outline {
-            background-color: white;
-            border: 1px solid #001eff;
-            color: #001eff;
+          background-color: white;
+          border: 1px solid #001eff;
+          color: #001eff;
         }
 
         .btn:hover {
-            opacity: 0.9;
+          transform: translateY(-2px);
+          box-shadow: 0 6px 15px rgba(0, 30, 255, 0.25);
+          opacity: 0.95;
+        }
+
+        /* Optional: Make active click feel responsive */
+        .btn:active {
+          transform: translateY(0);
+          box-shadow: 0 3px 8px rgba(0, 30, 255, 0.2);
+          opacity: 1;
         }
 
         .section {
-            max-width: 900px;
-            margin: 40px auto;
-            padding: 30px;
-            background-color: white;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+          max-width: 900px;
+          margin: 40px auto;
+          padding: 30px;
+          background: rgba(255, 255, 255, 0.25); /* half-transparent white */
+          border-radius: 12px;
+          box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25); /* soft blue shadow */
+          backdrop-filter: blur(10px); /* frosted glass effect */
+          -webkit-backdrop-filter: blur(10px); /* Safari support */
+          border: 1px solid rgba(255, 255, 255, 0.3); /* subtle border for glass look */
         }
 
         /* ===== Carousel ===== */
@@ -123,10 +176,13 @@
         }
 
         .stats-box {
-            background-color: #f9f9fb;
+            background: rgba(255, 255, 255, 0.25); /* half-transparent white */
             border-radius: 10px;
             padding: 20px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25); /* soft blue shadow */
+            backdrop-filter: blur(10px); /* frosted glass effect */
+            -webkit-backdrop-filter: blur(10px); /* Safari support */
+            border: 1px solid rgba(255, 255, 255, 0.3); /* subtle border for glass look */
         }
 
         .stats-box p {
@@ -170,10 +226,8 @@
     <!-- Latest Updates Section -->
     <div class="section">
         <h2 class="text-center"><strong>Latest Updates & Opportunities</strong></h2>
-
-        <!-- Carousel container -->
         <div id="adCarousel" class="carousel">
-            <div class="carousel-fade-overlay"></div> <!-- fade to black overlay -->
+            <div class="carousel-fade-overlay"></div> 
             <asp:Repeater ID="rptAds" runat="server">
                 <ItemTemplate>
                     <div class="carousel-item" 
