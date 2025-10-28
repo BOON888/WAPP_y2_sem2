@@ -1,7 +1,43 @@
 ﻿<%@ Page Title="Community Forum" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="community.aspx.cs" Inherits="WAPP.community" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
+
+    <style>
+        /* 🔙 Back Button Styling (consistent with other pages) */
+        .back-btn {
+            background-color: #38bdf8;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 20px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 25px;
+            text-decoration: none;
+        }
+
+        .back-btn:hover {
+            background-color: #0ea5e9;
+            transform: translateY(-2px);
+        }
+
+        .back-btn i {
+            font-style: normal;
+            font-weight: bold;
+        }
+    </style>
+
     <div class="container mt-5">
+
+        <!-- 🔙 Back Button -->
+        <a href="StudentDashboard.aspx" class="back-btn">
+            <i>←</i> Back to Dashboard
+        </a>
 
         <h2 class="mb-4">Community Forum</h2>
         <p class="text-muted">Ask questions, share knowledge, and connect with other learners</p>
@@ -29,7 +65,7 @@
                         </div>
 
                         <!-- Delete Button (visible only if owner) -->
-                        <asp:LinkButton ID="btnDelete" runat="server" 
+                        <asp:LinkButton ID="btnDelete" runat="server"
                             CommandName="DeletePost"
                             CommandArgument='<%# Eval("Id") %>'
                             CssClass="text-danger"

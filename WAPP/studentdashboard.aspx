@@ -3,7 +3,39 @@
     Inherits="WAPP.StudentDashboard" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
+
     <style>
+        /* ===== Navigation Bar (Same as Admin Style) ===== */
+        .navbar {
+            background-color: #ffffff;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        .navbar a,
+        .navbar asp\:LinkButton {
+            color: black;
+            text-decoration: none;
+            margin-right: 30px;
+            font-weight: 500;
+            font-size: 16px;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+        .navbar a:hover,
+        .navbar asp\:LinkButton:hover {
+            color: #38bdf8;
+            transform: translateY(-2px);
+        }
+        .navbar .active {
+            color: #38bdf8;
+            border-bottom: 2px solid #38bdf8;
+            padding-bottom: 4px;
+        }
+
+        /* ===== Dashboard Style ===== */
         body {
             font-family: 'Segoe UI', sans-serif;
             background-color: #f9f9fb;
@@ -16,7 +48,7 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             width: 99%;
             max-width: 1900px;
-            margin: 60px auto;
+            margin: 40px auto;
         }
 
         .welcome {
@@ -133,6 +165,18 @@
         }
     </style>
 
+    <!-- ===== STUDENT NAVIGATION BAR ===== -->
+    <div class="navbar">
+        <asp:LinkButton ID="lnkDashboard" runat="server" CssClass="active" PostBackUrl="~/StudentDashboard.aspx">Dashboard</asp:LinkButton>
+        <asp:LinkButton ID="lnkPrivate" runat="server" PostBackUrl="~/PrivateCourse.aspx">Private Course</asp:LinkButton>
+        <asp:LinkButton ID="lnkPublic" runat="server" PostBackUrl="~/PublicCourse.aspx">Public Course</asp:LinkButton>
+        <asp:LinkButton ID="lnkCommunity" runat="server" PostBackUrl="~/community.aspx">Community</asp:LinkButton>
+        <asp:LinkButton ID="lnkLeaderboard" runat="server" PostBackUrl="~/Leaderboard.aspx">Leaderboard</asp:LinkButton>
+        <asp:LinkButton ID="lnkProfile" runat="server" PostBackUrl="~/StudentProfile.aspx">Profile</asp:LinkButton>
+        <asp:LinkButton ID="lnkFeedback" runat="server" PostBackUrl="~/Feedback.aspx">Feedback</asp:LinkButton>
+    </div>
+
+    <!-- ===== DASHBOARD CONTENT ===== -->
     <div class="dashboard-container">
         <p class="welcome">Welcome back, <asp:Label ID="lblStudentName" runat="server" /> 👋</p>
 
@@ -241,4 +285,5 @@
             </div>
         </div>
     </div>
+
 </asp:Content>
