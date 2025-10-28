@@ -1,27 +1,31 @@
 ﻿using System;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using System.Configuration;
-using System.Web.UI.WebControls; // For RepeaterCommandEventArgs
+using System.Web.UI;
+using System.Web.UI.WebControls;
 
 namespace WAPP
 {
     public partial class StudentCourseContent : System.Web.UI.Page
     {
         private string connString => ConfigurationManager.ConnectionStrings["SeaLearnerConnection"].ConnectionString;
+        private int ProgressPercent
+        {
+            get { return ViewState["ProgressPercent"] == null ? 0 : (int)ViewState["ProgressPercent"]; }
+            set { ViewState["ProgressPercent"] = value; }
+        }
 
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
-                // ✅ Authorization check
                 if (Session["UserId"] == null || Session["Role"]?.ToString().ToLower() != "student")
                 {
                     Response.Redirect("sign_in.aspx");
                     return;
                 }
 
-                // ✅ Course ID validation
                 string idParam = Request.QueryString["courseId"];
                 if (string.IsNullOrEmpty(idParam) || !int.TryParse(idParam, out int courseId))
                 {
@@ -31,35 +35,25 @@ namespace WAPP
                 }
 
                 Session["SelectedCourseId"] = courseId;
-
-                // ✅ Load all data
                 LoadCourseInfo(courseId);
                 LoadLessons(courseId);
                 LoadQuizzes(courseId);
             }
 
-            // Ensure handler is bound on every load
             rptQuizzes.ItemCommand += rptQuizzes_ItemCommand;
-            
         }
 
-        // =============================
-        //  COURSE INFORMATION
-        // =============================
         private void LoadCourseInfo(int courseId)
         {
             using (SqlConnection conn = new SqlConnection(connString))
             {
                 conn.Open();
-                string query = @"
-                    SELECT c.Title, c.CourseType, 
-                           ISNULL(c.Coin, 0) AS Coin, 
+                SqlCommand cmd = new SqlCommand(@"
+                    SELECT c.Title, c.CourseType, ISNULL(c.Coin, 0) AS Coin, 
                            c.Status, e.EducationQualification AS EducatorName
                     FROM Course c
                     JOIN Educator e ON c.EducatorId = e.Id
-                    WHERE c.Id = @id";
-
-                SqlCommand cmd = new SqlCommand(query, conn);
+                    WHERE c.Id = @id", conn);
                 cmd.Parameters.AddWithValue("@id", courseId);
                 SqlDataReader dr = cmd.ExecuteReader();
 
@@ -69,33 +63,25 @@ namespace WAPP
                     lblEducator.Text = dr["EducatorName"].ToString();
                     lblCourseType.Text = dr["CourseType"].ToString();
                     lblStatus.Text = dr["Status"].ToString();
-
-                    // Change "Coins Needed"
-                    int coins = dr["Coin"] == DBNull.Value ? 0 : Convert.ToInt32(dr["Coin"]);
-                    lblCoin.Text = coins.ToString();
+                    lblCoin.Text = dr["Coin"].ToString();
                 }
                 else
                 {
                     lblError.Text = "⚠️ Course not found.";
                     lblError.Visible = true;
                 }
-
                 dr.Close();
             }
         }
 
-        // =============================
-        //  LESSON LIST
-        // =============================
         private void LoadLessons(int courseId)
         {
             using (SqlConnection conn = new SqlConnection(connString))
             {
                 conn.Open();
                 SqlDataAdapter da = new SqlDataAdapter(
-                    // ⭐ Make sure 'Id' is included here
-                    @"SELECT Id, LessonNumber, LessonTitle, ContentType, ContentFilePath
-              FROM Lesson WHERE CourseId=@cid ORDER BY LessonNumber ASC", conn);
+                    @"SELECT Id, LessonNumber, LessonTitle, ContentType, ContentFilePath 
+                      FROM Lesson WHERE CourseId=@cid ORDER BY LessonNumber ASC", conn);
                 da.SelectCommand.Parameters.AddWithValue("@cid", courseId);
 
                 DataTable dt = new DataTable();
@@ -105,9 +91,6 @@ namespace WAPP
             }
         }
 
-        // =============================
-        //  QUIZ LIST + PROGRESS BAR
-        // =============================
         private void LoadQuizzes(int courseId)
         {
             if (Session["StudentID"] == null || !int.TryParse(Session["StudentID"].ToString(), out int studentId))
@@ -119,16 +102,14 @@ namespace WAPP
             using (SqlConnection conn = new SqlConnection(connString))
             {
                 conn.Open();
-                string query = @"
+                SqlCommand cmd = new SqlCommand(@"
                     SELECT q.Id, q.QuizRewardCoins, l.LessonTitle, l.LessonNumber,
                            ISNULL(p.Status, 'NotStarted') AS Status
                     FROM Quiz q
                     JOIN Lesson l ON q.LessonId = l.Id
                     LEFT JOIN StudentQuizProgress p ON p.QuizId = q.Id AND p.StudentId = @sid
                     WHERE l.CourseId = @cid
-                    ORDER BY l.LessonNumber ASC";
-
-                SqlCommand cmd = new SqlCommand(query, conn);
+                    ORDER BY l.LessonNumber ASC", conn);
                 cmd.Parameters.AddWithValue("@cid", courseId);
                 cmd.Parameters.AddWithValue("@sid", studentId);
 
@@ -136,7 +117,6 @@ namespace WAPP
                 DataTable dt = new DataTable();
                 da.Fill(dt);
 
-                // Add temporary fields for UI
                 dt.Columns.Add("ButtonText", typeof(string));
                 dt.Columns.Add("ButtonClass", typeof(string));
                 dt.Columns.Add("ButtonEnabled", typeof(bool));
@@ -151,7 +131,6 @@ namespace WAPP
 
                     if (isCompleted)
                     {
-                        // Completed quiz
                         row["ButtonText"] = "Completed";
                         row["ButtonClass"] = "btn-view btn-disabled";
                         row["ButtonEnabled"] = false;
@@ -160,7 +139,6 @@ namespace WAPP
                     }
                     else if (previousQuizCompleted)
                     {
-                        // Next available quiz
                         row["ButtonText"] = "Start Quiz";
                         row["ButtonClass"] = "btn-view";
                         row["ButtonEnabled"] = true;
@@ -168,46 +146,31 @@ namespace WAPP
                     }
                     else
                     {
-                        // Locked quiz
                         row["ButtonText"] = "Locked 🔒";
                         row["ButtonClass"] = "btn-view btn-disabled";
                         row["ButtonEnabled"] = false;
                     }
                 }
 
-                // Calculate course progress
                 int total = dt.Rows.Count;
-                int percent = (total == 0) ? 0 : (int)((completedCount / (double)total) * 100);
+                ProgressPercent = (total == 0) ? 0 : (int)((completedCount / (double)total) * 100);
 
-                string progressClass;
-                if (percent < 30)
-                    progressClass = "progress-low";
-                else if (percent < 70)
-                    progressClass = "progress-medium";
-                else
-                    progressClass = "progress-high";
+                lblProgressPercent.Text = ProgressPercent + "%";
+                progressFill.Style["width"] = ProgressPercent + "%";
+                progressFill.InnerText = ProgressPercent + "%";
 
-                lblProgressPercent.Text = percent + "%";
-                progressFill.Style["width"] = percent + "%";
-                progressFill.InnerText = percent + "%";
-                progressFill.Attributes["class"] = $"progress-fill {progressClass}";
+                btnCompleteCourse.Enabled = (ProgressPercent == 100);
 
                 rptQuizzes.DataSource = dt;
                 rptQuizzes.DataBind();
             }
         }
 
-        // =============================
-        //  BUTTON HANDLERS
-        // =============================
-
-        // 🔹 Back to Dashboard
         protected void btnBackDashboard_Click(object sender, EventArgs e)
         {
             Response.Redirect("StudentDashboard.aspx");
         }
 
-        // 🔹 Quiz Click Event
         protected void rptQuizzes_ItemCommand(object source, RepeaterCommandEventArgs e)
         {
             if (e.CommandName == "OpenQuiz")
@@ -217,7 +180,68 @@ namespace WAPP
             }
         }
 
-        
+        // ✅ Complete Course Button Click
+        protected void btnCompleteCourse_Click(object sender, EventArgs e)
+        {
+            // Ensure student session is valid
+            if (Session["StudentID"] == null)
+            {
+                lblError.Text = "⚠️ Session expired. Please log in again.";
+                lblError.Visible = true;
+                return;
+            }
+
+            int studentId = Convert.ToInt32(Session["StudentID"]);
+            int courseId = Convert.ToInt32(Session["SelectedCourseId"]);
+
+            // ✅ Check if course progress is 100%
+            if (ProgressPercent < 100)
+            {
+                lblError.Text = "⚠️ You must complete all quizzes before finishing the course.";
+                lblError.Visible = true;
+                return;
+            }
+
+            using (SqlConnection conn = new SqlConnection(connString))
+            {
+                conn.Open();
+
+                // ✅ Update StudentCourseProgress status + award badge
+                string badgeTitle = "Distinction in " + lblCourseTitle.Text;
+
+                SqlCommand updateCmd = new SqlCommand(@"
+            UPDATE StudentCourseProgress
+            SET Status = 'Completed', BadgeEarned = @badge
+            WHERE StudentId = @sid AND CourseId = @cid", conn);
+
+                updateCmd.Parameters.AddWithValue("@sid", studentId);
+                updateCmd.Parameters.AddWithValue("@cid", courseId);
+                updateCmd.Parameters.AddWithValue("@badge", badgeTitle);
+
+                int rowsAffected = updateCmd.ExecuteNonQuery();
+
+                if (rowsAffected > 0)
+                {
+                    // ✅ Increment student's total badges
+                    SqlCommand updateBadgeCount = new SqlCommand(@"
+                UPDATE Student
+                SET BadgesEarned = ISNULL(BadgesEarned, 0) + 1
+                WHERE Id = @sid", conn);
+
+                    updateBadgeCount.Parameters.AddWithValue("@sid", studentId);
+                    updateBadgeCount.ExecuteNonQuery();
+
+                    lblError.Visible = false;
+                    ScriptManager.RegisterStartupScript(this, GetType(), "alert",
+                        $"alert('🎉 Course completed! You earned the badge: {badgeTitle}'); window.location='StudentDashboard.aspx';", true);
+                }
+                else
+                {
+                    lblError.Text = "⚠️ Could not update course completion. Please try again.";
+                    lblError.Visible = true;
+                }
+            }
+        }
 
 
     }

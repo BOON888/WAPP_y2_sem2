@@ -153,20 +153,37 @@ namespace WAPP
                 {
                     conn.Open();
 
+                    // ✅ Step 1: Check if already joined this course
+                    SqlCommand checkExist = new SqlCommand(
+                        "SELECT COUNT(*) FROM StudentCourseProgress WHERE StudentId=@sid AND CourseId=@cid", conn);
+                    checkExist.Parameters.AddWithValue("@sid", studentId);
+                    checkExist.Parameters.AddWithValue("@cid", courseId);
+
+                    int exists = Convert.ToInt32(checkExist.ExecuteScalar());
+                    if (exists > 0)
+                    {
+                        // 🔸 Already joined
+                        Response.Write("<script>alert('You have already joined this course!');</script>");
+                        return;
+                    }
+
+                    // ✅ Step 2: Check current coins
                     SqlCommand getCoins = new SqlCommand("SELECT Coins FROM Student WHERE Id=@id", conn);
                     getCoins.Parameters.AddWithValue("@id", studentId);
                     int coins = Convert.ToInt32(getCoins.ExecuteScalar());
 
-                    int cost = 50;
+                    int cost = 50; // default cost per course
                     if (coins >= cost)
                     {
+                        // ✅ Deduct coins
                         SqlCommand updateCoins = new SqlCommand("UPDATE Student SET Coins=Coins-@cost WHERE Id=@id", conn);
                         updateCoins.Parameters.AddWithValue("@cost", cost);
                         updateCoins.Parameters.AddWithValue("@id", studentId);
                         updateCoins.ExecuteNonQuery();
 
+                        // ✅ Enroll course
                         SqlCommand enroll = new SqlCommand(
-                            "INSERT INTO StudentCourseProgress(StudentId, CourseId, Status) VALUES(@sid,@cid,'In Progress')", conn);
+                            "INSERT INTO StudentCourseProgress (StudentId, CourseId, Status) VALUES (@sid, @cid, 'In Progress')", conn);
                         enroll.Parameters.AddWithValue("@sid", studentId);
                         enroll.Parameters.AddWithValue("@cid", courseId);
                         enroll.ExecuteNonQuery();
@@ -175,8 +192,46 @@ namespace WAPP
                     }
                     else
                     {
+                        // ❌ Not enough coins
                         Response.Write("<script>alert('Not enough coins to subscribe.');</script>");
                     }
+                }
+            }
+        }
+
+        protected void rptPublicCourses_ItemCommand(object source, System.Web.UI.WebControls.RepeaterCommandEventArgs e)
+        {
+            if (e.CommandName == "StartCourse")
+            {
+                int studentId = Convert.ToInt32(Session["StudentID"]);
+                int courseId = Convert.ToInt32(e.CommandArgument);
+
+                using (SqlConnection conn = new SqlConnection(connString))
+                {
+                    conn.Open();
+
+                    // ✅ Step 1: Check if already joined this course
+                    SqlCommand checkExist = new SqlCommand(
+                        "SELECT COUNT(*) FROM StudentCourseProgress WHERE StudentId=@sid AND CourseId=@cid", conn);
+                    checkExist.Parameters.AddWithValue("@sid", studentId);
+                    checkExist.Parameters.AddWithValue("@cid", courseId);
+
+                    int exists = Convert.ToInt32(checkExist.ExecuteScalar());
+                    if (exists > 0)
+                    {
+                        Response.Write("<script>alert('You have already joined this course!');</script>");
+                        return;
+                    }
+
+                    // ✅ Step 2: Insert new progress record (auto join)
+                    SqlCommand enroll = new SqlCommand(
+                        "INSERT INTO StudentCourseProgress (StudentId, CourseId, Status) VALUES (@sid, @cid, 'In Progress')", conn);
+                    enroll.Parameters.AddWithValue("@sid", studentId);
+                    enroll.Parameters.AddWithValue("@cid", courseId);
+                    enroll.ExecuteNonQuery();
+
+                    // ✅ Step 3: Redirect to content page
+                    Response.Write("<script>alert('Course started successfully!');window.location='StudentCourseContent.aspx?courseId=" + courseId + "';</script>");
                 }
             }
         }

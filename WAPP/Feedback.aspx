@@ -19,34 +19,6 @@
             margin: 60px auto;
         }
 
-        /* 🔙 Back Button */
-        .back-btn {
-            background-color: #38bdf8;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            padding: 10px 20px;
-            font-size: 15px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 25px;
-            text-decoration: none;
-        }
-
-        .back-btn:hover {
-            background-color: #0ea5e9;
-            transform: translateY(-2px);
-        }
-
-        .back-btn i {
-            font-style: normal;
-            font-weight: bold;
-        }
-
         .feedback-container h1 {
             font-size: 38px;
             font-weight: bold;
@@ -188,12 +160,6 @@
     </style>
 
     <div class="feedback-container">
-
-        <!-- 🔙 Back Button -->
-        <a href="StudentDashboard.aspx" class="back-btn">
-            <i>←</i> Back to Dashboard
-        </a>
-
         <h1>Feedback</h1>
         <p>Help us improve your learning experience</p>
 
@@ -215,7 +181,7 @@
             </asp:DropDownList>
 
             <label for="txtSubject">Subject</label>
-            <asp:TextBox ID="txtSubject" runat="server" placeholder="Title of your feedback"></asp:TextBox>
+            <asp:TextBox ID="txtSubject" runat="server" placeholder="Tittle of your feedback"></asp:TextBox>
 
             <label for="txtDescription">Description</label>
             <asp:TextBox ID="txtDescription" runat="server" TextMode="MultiLine"

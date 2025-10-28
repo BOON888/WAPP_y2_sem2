@@ -99,7 +99,7 @@
             text-align: right;
             font-size: 14px;
             margin-top: 5px;
-            color: #4F46E5;
+            color: #001eff;
             text-decoration: none;
         }
 

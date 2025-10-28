@@ -9,12 +9,41 @@ namespace WAPP
         protected void Page_Load(object sender, EventArgs e)
         {
         }
+        protected void Page_PreRender(object sender, EventArgs e)
+        {
+            txtPassword.Attributes["value"] = txtPassword.Text;
+            txtConfirmPassword.Attributes["value"] = txtConfirmPassword.Text;
+        }
 
         protected void rblRole_SelectedIndexChanged(object sender, EventArgs e)
         {
-            studentSection.Visible = rblRole.SelectedValue == "student";
-            educatorSection.Visible = rblRole.SelectedValue == "educator";
+            if (rblRole.SelectedValue == "student")
+            {
+                studentSection.Visible = true;
+                educatorSection.Visible = false;
+
+                // Add CSS class to trigger animation
+                studentSection.CssClass = "studentSection visible";
+                educatorSection.CssClass = "educatorSection";
+            }
+            else if (rblRole.SelectedValue == "educator")
+            {
+                studentSection.Visible = false;
+                educatorSection.Visible = true;
+
+                // Add CSS class to trigger animation
+                studentSection.CssClass = "studentSection";
+                educatorSection.CssClass = "educatorSection visible";
+            }
+            else
+            {
+                studentSection.Visible = false;
+                educatorSection.Visible = false;
+                studentSection.CssClass = "studentSection";
+                educatorSection.CssClass = "educatorSection";
+            }
         }
+
 
         protected void btnCreate_Click(object sender, EventArgs e)
         {

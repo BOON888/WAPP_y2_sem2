@@ -86,6 +86,31 @@
             </div>
         </nav>
 
+        <!-- Secondary menu bar -->
+        <div id="menuBar" runat="server" style="width:100%; background-color:#f8f9fa; margin-top:60px; border-top:1px solid #ddd; border-bottom:1px solid #ddd;">
+            <!-- Student Menu -->
+            <div id="studentMenu" runat="server" visible="false" class="container d-flex justify-content-center py-2">
+                <a href="StudentDashboard.aspx" class="mx-2 text-decoration-none text-dark">Student Dashboard</a>
+                <a href="Feedback.aspx" class="mx-2 text-decoration-none text-dark">Feedback</a>
+                <a href="Leaderboard.aspx" class="mx-2 text-decoration-none text-dark">Leaderboard</a>
+                <a href="PrivateCourse.aspx" class="mx-2 text-decoration-none text-dark">Private Courses</a>
+                <a href="PublicCourse.aspx" class="mx-2 text-decoration-none text-dark">Public Courses</a>
+                <a href="StudentCourseContent.aspx" class="mx-2 text-decoration-none text-dark">Course Content</a>
+                <a href="StudentLesson.aspx" class="mx-2 text-decoration-none text-dark">Lessons</a>
+                <a href="StudentQuiz.aspx" class="mx-2 text-decoration-none text-dark">Quiz</a>
+                <a href="StudentQuizResult.aspx" class="mx-2 text-decoration-none text-dark">Quiz Results</a>
+            </div>
+
+            <!-- educator Menu -->
+            <div id="educatorMenu" runat="server" visible="false" class="container d-flex justify-content-center py-2">
+                <a href="educatordashboard.aspx" class="mx-3 text-decoration-none text-dark fw-bold">Educator Dashboard</a>
+            </div>
+
+            <!-- Admin Menu -->
+            <div id="adminMenu" runat="server" visible="false" class="container d-flex justify-content-center py-2">
+                <a href="admin_dashboard.aspx" class="mx-3 text-decoration-none text-dark fw-bold">Admin Dashboard</a>
+            </div>
+        </div>
 
         <div class="container body-content" style="flex: 1; padding-top: 40px;">
             <asp:ContentPlaceHolder ID="MainContent" runat="server">

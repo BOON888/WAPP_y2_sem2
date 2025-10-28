@@ -26,34 +26,6 @@
             margin-bottom: 20px;
         }
 
-        /* 🔙 Back Button */
-        .back-btn {
-            background-color: #38bdf8;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            padding: 10px 20px;
-            font-size: 15px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 25px;
-            text-decoration: none;
-        }
-
-        .back-btn:hover {
-            background-color: #0ea5e9;
-            transform: translateY(-2px);
-        }
-
-        .back-btn i {
-            font-style: normal;
-            font-weight: bold;
-        }
-
         /* 🔍 Search and Filter Row */
         .search-bar {
             display: flex;
@@ -131,11 +103,6 @@
     </style>
 
     <div class="page-container">
-        <!-- 🔙 Back Button -->
-        <a href="StudentDashboard.aspx" class="back-btn">
-            <i>←</i> Back to Dashboard
-        </a>
-
         <h1>Private Courses</h1>
 
         <!-- 🔍 Search and Coin Filter -->
