@@ -128,6 +128,7 @@
     <Content Include="Content\Site.css" />
     <Content Include="CreateCourse.aspx" />
     <Content Include="Default.aspx" />
+    <Content Include="editCourse.aspx" />
     <Content Include="EducatorCourseStudents.aspx" />
     <Content Include="educatordashboard.aspx" />
     <Content Include="educatorProfile.aspx" />
@@ -278,6 +279,13 @@
     </Compile>
     <Compile Include="Default.aspx.designer.cs">
       <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="editCourse.aspx.cs">
+      <DependentUpon>editCourse.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="editCourse.aspx.designer.cs">
+      <DependentUpon>editCourse.aspx</DependentUpon>
     </Compile>
     <Compile Include="EducatorCourseStudents.aspx.cs">
       <DependentUpon>EducatorCourseStudents.aspx</DependentUpon>
