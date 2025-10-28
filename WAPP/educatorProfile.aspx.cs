@@ -175,36 +175,45 @@ namespace WAPP
             {
                 conn.Open();
 
-                // Get EducatorId from UserId
+                // 1️⃣ Get EducatorId based on UserId
                 SqlCommand getEid = new SqlCommand("SELECT Id FROM Educator WHERE UserId=@uid", conn);
                 getEid.Parameters.AddWithValue("@uid", userId);
                 object eidObj = getEid.ExecuteScalar();
-                if (eidObj != null)
-                    educatorId = Convert.ToInt32(eidObj);
 
-                // Count Courses
+                if (eidObj == null)
+                {
+                    lblCoursesCreated.Text = "0";
+                    lblTotalStudents.Text = "0";
+                    lblCompletions.Text = "0";
+                    return;
+                }
+
+                educatorId = Convert.ToInt32(eidObj);
+
+                // 2️⃣ Courses Created
                 SqlCommand cmdCourses = new SqlCommand("SELECT COUNT(*) FROM Course WHERE EducatorId=@eid", conn);
                 cmdCourses.Parameters.AddWithValue("@eid", educatorId);
-                lblCoursesCreated.Text = cmdCourses.ExecuteScalar().ToString();
+                lblCoursesCreated.Text = cmdCourses.ExecuteScalar()?.ToString() ?? "0";
 
-                // Count Students
+                // 3️⃣ Total Students (distinct)
                 SqlCommand cmdStudents = new SqlCommand(@"
                     SELECT COUNT(DISTINCT scp.StudentId)
                     FROM StudentCourseProgress scp
-                    JOIN Course c ON scp.CourseId = c.Id
-                    WHERE c.EducatorId=@eid", conn);
-                cmdStudents.Parameters.AddWithValue("@eid", educatorId);
+                    INNER JOIN Course c ON scp.CourseId = c.Id
+                    WHERE c.EducatorId = @eid", conn);
+                        cmdStudents.Parameters.AddWithValue("@eid", educatorId);
                 lblTotalStudents.Text = cmdStudents.ExecuteScalar()?.ToString() ?? "0";
 
-                // Count Completions
-                SqlCommand cmdCompletions = new SqlCommand(@"
-                    SELECT COUNT(*) 
+                // 4️⃣ Completed Courses
+                SqlCommand cmdCompleted = new SqlCommand(@"
+                    SELECT COUNT(*)
                     FROM StudentCourseProgress scp
-                    JOIN Course c ON scp.CourseId = c.Id
-                    WHERE c.EducatorId=@eid AND scp.Status='Completed'", conn);
-                cmdCompletions.Parameters.AddWithValue("@eid", educatorId);
-                lblCompletions.Text = cmdCompletions.ExecuteScalar()?.ToString() ?? "0";
+                    INNER JOIN Course c ON scp.CourseId = c.Id
+                    WHERE c.EducatorId = @eid AND scp.Status = 'Completed'", conn);
+                        cmdCompleted.Parameters.AddWithValue("@eid", educatorId);
+                lblCompletions.Text = cmdCompleted.ExecuteScalar()?.ToString() ?? "0";
             }
         }
+
     }
 }
