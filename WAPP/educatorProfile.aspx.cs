@@ -12,7 +12,13 @@ namespace WAPP
         {
             if (!IsPostBack)
             {
-                // 🔹 Temporarily disabled login/session check for UI testing
+                // ✅ Ensure educator is logged in
+                if (Session["UserId"] == null || Session["Role"] == null || Session["Role"].ToString().ToLower() != "educator")
+                {
+                    Response.Redirect("sign_in.aspx");
+                    return;
+                }
+
                 LoadEducatorProfile();
                 LoadTeachingStats();
             }
@@ -20,8 +26,7 @@ namespace WAPP
 
         private void LoadEducatorProfile()
         {
-            // ⚠️ For now, hardcode a test user ID
-            int userId = 1000; // Example: use an existing user in your DB
+            int userId = Convert.ToInt32(Session["UserId"]);
 
             using (SqlConnection conn = new SqlConnection(connStr))
             {
@@ -47,15 +52,16 @@ namespace WAPP
                     txtEmail.Text = dr["Email"].ToString();
                     txtAge.Text = dr["Age"].ToString();
 
-                    if (!string.IsNullOrEmpty(dr["Gender"].ToString()))
-                        ddlGender.SelectedValue = dr["Gender"].ToString();
+                    string gender = dr["Gender"].ToString();
+                    if (!string.IsNullOrEmpty(gender) && ddlGender.Items.FindByValue(gender) != null)
+                        ddlGender.SelectedValue = gender;
 
-                    if (!string.IsNullOrEmpty(dr["EducationQualification"].ToString()))
-                        ddlQualification.SelectedValue = dr["EducationQualification"].ToString();
+                    string qual = dr["EducationQualification"].ToString();
+                    if (!string.IsNullOrEmpty(qual) && ddlQualification.Items.FindByValue(qual) != null)
+                        ddlQualification.SelectedValue = qual;
 
                     txtUniversity.Text = dr["GraduatedUniversity"].ToString();
                 }
-
                 dr.Close();
             }
         }
@@ -63,6 +69,7 @@ namespace WAPP
         protected void btnEdit_Click(object sender, EventArgs e)
         {
             txtFullName.ReadOnly = false;
+            txtEmail.ReadOnly = false;      // ✅ Make email editable
             txtAge.ReadOnly = false;
             txtUniversity.ReadOnly = false;
             ddlGender.Enabled = true;
@@ -71,13 +78,13 @@ namespace WAPP
             btnEdit.Visible = false;
             btnSave.Visible = true;
             btnCancel.Visible = true;
-
             lblMsg.Text = "";
         }
 
         protected void btnCancel_Click(object sender, EventArgs e)
         {
             txtFullName.ReadOnly = true;
+            txtEmail.ReadOnly = true;       // ✅ Re-disable email on cancel
             txtAge.ReadOnly = true;
             txtUniversity.ReadOnly = true;
             ddlGender.Enabled = false;
@@ -94,9 +101,9 @@ namespace WAPP
 
         protected void btnSave_Click(object sender, EventArgs e)
         {
-            // ⚠️ Use the same hardcoded user ID for now
-            int userId = 1000;
+            int userId = Convert.ToInt32(Session["UserId"]);
             string fullName = txtFullName.Text.Trim();
+            string email = txtEmail.Text.Trim();     // ✅ Allow updating email
             string gender = ddlGender.SelectedValue;
             string qualification = ddlQualification.SelectedValue;
             string university = txtUniversity.Text.Trim();
@@ -106,20 +113,23 @@ namespace WAPP
             using (SqlConnection conn = new SqlConnection(connStr))
             {
                 conn.Open();
-
                 SqlTransaction tran = conn.BeginTransaction();
+
                 try
                 {
+                    // ✅ Update Users table (including Email now)
                     string sqlUser = @"UPDATE Users 
-                                       SET FullName=@name, Age=@age, Gender=@gender
+                                       SET FullName=@name, Email=@mail, Age=@age, Gender=@gender
                                        WHERE Id=@uid";
                     SqlCommand cmdU = new SqlCommand(sqlUser, conn, tran);
                     cmdU.Parameters.AddWithValue("@name", fullName);
+                    cmdU.Parameters.AddWithValue("@mail", email);
                     cmdU.Parameters.AddWithValue("@age", age);
                     cmdU.Parameters.AddWithValue("@gender", gender);
                     cmdU.Parameters.AddWithValue("@uid", userId);
                     cmdU.ExecuteNonQuery();
 
+                    // ✅ Update Educator table
                     string sqlEdu = @"UPDATE Educator 
                                       SET EducationQualification=@qual, GraduatedUniversity=@uni
                                       WHERE UserId=@uid";
@@ -137,6 +147,7 @@ namespace WAPP
                     LoadEducatorProfile();
 
                     txtFullName.ReadOnly = true;
+                    txtEmail.ReadOnly = true;
                     txtAge.ReadOnly = true;
                     txtUniversity.ReadOnly = true;
                     ddlGender.Enabled = false;
@@ -157,15 +168,26 @@ namespace WAPP
 
         private void LoadTeachingStats()
         {
-            int educatorId = 3000; // ⚠️ Hardcoded for testing
+            int userId = Convert.ToInt32(Session["UserId"]);
+            int educatorId = 0;
+
             using (SqlConnection conn = new SqlConnection(connStr))
             {
                 conn.Open();
 
+                // Get EducatorId from UserId
+                SqlCommand getEid = new SqlCommand("SELECT Id FROM Educator WHERE UserId=@uid", conn);
+                getEid.Parameters.AddWithValue("@uid", userId);
+                object eidObj = getEid.ExecuteScalar();
+                if (eidObj != null)
+                    educatorId = Convert.ToInt32(eidObj);
+
+                // Count Courses
                 SqlCommand cmdCourses = new SqlCommand("SELECT COUNT(*) FROM Course WHERE EducatorId=@eid", conn);
                 cmdCourses.Parameters.AddWithValue("@eid", educatorId);
                 lblCoursesCreated.Text = cmdCourses.ExecuteScalar().ToString();
 
+                // Count Students
                 SqlCommand cmdStudents = new SqlCommand(@"
                     SELECT COUNT(DISTINCT scp.StudentId)
                     FROM StudentCourseProgress scp
@@ -174,6 +196,7 @@ namespace WAPP
                 cmdStudents.Parameters.AddWithValue("@eid", educatorId);
                 lblTotalStudents.Text = cmdStudents.ExecuteScalar()?.ToString() ?? "0";
 
+                // Count Completions
                 SqlCommand cmdCompletions = new SqlCommand(@"
                     SELECT COUNT(*) 
                     FROM StudentCourseProgress scp
