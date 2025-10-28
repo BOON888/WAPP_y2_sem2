@@ -140,8 +140,11 @@
     <Content Include="Image\promo1.jpg" />
     <Content Include="Image\promo2.jpg" />
     <Content Include="Image\default_profile.png" />
+    <Content Include="Image\sea_sound.mp3" />
     <Content Include="Image\sea_wave.mp4" />
     <Content Include="Image\sl_logo.png" />
+    <Content Include="Image\sound2.png" />
+    <Content Include="Image\sound1.png" />
     <Content Include="Leaderboard.aspx" />
     <Content Include="my_post.aspx" />
     <Content Include="PrivateCourse.aspx" />

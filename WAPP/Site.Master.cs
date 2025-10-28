@@ -9,12 +9,13 @@ namespace WAPP
             string currentPage = System.IO.Path.GetFileNameWithoutExtension(Request.Path).ToLower();
 
             // 🔹 Control top navigation (Sign In / Sign Up / Profile / Logout)
-            if (currentPage == "public_dashboard" || currentPage == "sign_in" || currentPage == "sign_up")
+            if (currentPage == "public_dashboard" || currentPage == "sign_in" || currentPage == "sign_up" || currentPage == "forgot_password")
             {
                 navSignIn.Visible = true;
                 navSignUp.Visible = true;
                 navLogout.Visible = false;
                 navUserProfile.Visible = false;
+                menuBar.Visible = false;
             }
             else
             {
@@ -66,29 +67,67 @@ namespace WAPP
                 }
             }
 
+            if (Session["Role"] != null)
+            {
+                string role = Session["Role"].ToString().ToLower();
+
+                switch (role)
+                {
+                    case "student":
+                        navDashboardLink.HRef = "~/StudentDashboard.aspx";
+                        break;
+                    case "educator":
+                        navDashboardLink.HRef = "~/educatordashboard.aspx";
+                        break;
+                    case "admin":
+                        navDashboardLink.HRef = "~/admin_dashboard.aspx";
+                        break;
+                    default:
+                        navDashboardLink.HRef = "~/public_dashboard.aspx";
+                        break;
+                }
+            }
+            else
+            {
+                // User not logged in
+                navDashboardLink.HRef = "~/public_dashboard.aspx";
+            }
+
             studentMenu.Visible = false;
             educatorMenu.Visible = false;
             adminMenu.Visible = false;
 
-            currentPage = currentPage.ToLower();
+            string userRole = Session["Role"] != null ? Session["Role"].ToString().ToLower() : "";
 
-            if (currentPage == "studentdashboard" ||
-                currentPage == "feedback" ||
-                currentPage == "leaderboard" ||
-                currentPage == "privatecourse" ||
-                currentPage == "publiccourse" ||
-                currentPage == "studentcoursecontent" ||
-                currentPage == "studentlesson" ||
-                currentPage == "studentquiz" ||
-                currentPage == "studentquizresult")
+            if ((currentPage == "studentdashboard" ||
+                 currentPage == "feedback" ||
+                 currentPage == "leaderboard" ||
+                 currentPage == "privatecourse" ||
+                 currentPage == "publiccourse" ||
+                 currentPage == "studentprofile" ||
+                 currentPage == "studentcoursecontent" ||
+                 currentPage == "studentlesson" ||
+                 currentPage == "studentquiz" ||
+                 currentPage == "studentquizresult" ||
+                 (currentPage == "community" && userRole == "student")||
+                 (currentPage == "my_post" && userRole == "student")))
             {
                 studentMenu.Visible = true;
             }
-            else if (currentPage == "educatordashboard")
+            else if ((currentPage == "educatordashboard" ||
+                      currentPage == "educatorprofile" ||
+                      currentPage == "createcourse" ||
+                      currentPage == "educatorcoursestudents" ||
+                      (currentPage == "community" && userRole == "educator")||
+                      (currentPage == "my_post" && userRole == "educator")))
             {
                 educatorMenu.Visible = true;
             }
-            else if (currentPage == "admin_dashboard")
+            else if (currentPage == "admin_dashboard" ||
+                     currentPage == "adminmanage_ads" ||
+                     currentPage == "adminuser_management" ||
+                     currentPage == "admin_communitymanagement" ||
+                     currentPage == "admin_feedbackmanagement")
             {
                 adminMenu.Visible = true;
             }

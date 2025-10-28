@@ -16,6 +16,45 @@
     <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
 
 </head>
+    <style>
+        /*menu design*/ 
+        #menuBar { 
+            background: rgba(255, 255, 255, 0.25); 
+            border-radius: 12px; 
+            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25); 
+            backdrop-filter: blur(10px); 
+            -webkit-backdrop-filter: blur(10px); 
+            border: 1px solid rgba(255, 255, 255, 0.3); 
+            padding: 10px 0; 
+            margin-top: 60px; 
+        } 
+        #menuBar a { 
+            text-decoration: none; 
+            color: black; 
+            font-weight: 500; 
+            transition: all 0.3s ease; 
+            position: relative; 
+            margin: 0 12px; 
+        } 
+        #menuBar a:hover { 
+            color: #001eff; 
+            transform: translateY(-4px); 
+        } 
+        #menuBar a::after { 
+            content: ''; 
+            position: absolute; 
+            width: 0%; 
+            height: 2px; 
+            bottom: -2px; 
+            left: 50%; 
+            background-color: #001eff; 
+            transition: all 0.3s ease; 
+            transform: translateX(-50%); 
+        } 
+        #menuBar a:hover::after { 
+            width: 60%; 
+        } 
+    </style>
 
 <body style="min-height: 100vh; display: flex; flex-direction: column; margin: 0;">
     <form runat="server" style="flex: 1; display: flex; flex-direction: column;">
@@ -44,7 +83,7 @@
                     position: fixed; top: 0; width: 100%; z-index: 1000;">
             <div class="container d-flex justify-content-between align-items-center">
 
-                <a class="navbar-brand d-flex align-items-center" runat="server" href="~/public_dashboard" style="font-size:24px;">
+                <a id="navDashboardLink" class="navbar-brand d-flex align-items-center" runat="server" href="#" style="font-size:24px;">
                     Sea Learner 
                     <img src="/Image/sl_logo.png" alt="Sealearner" style="height:25px; margin-left:8px;"/>
                 </a>
@@ -90,25 +129,29 @@
         <div id="menuBar" runat="server" style="width:100%; background-color:#f8f9fa; margin-top:60px; border-top:1px solid #ddd; border-bottom:1px solid #ddd;">
             <!-- Student Menu -->
             <div id="studentMenu" runat="server" visible="false" class="container d-flex justify-content-center py-2">
-                <a href="StudentDashboard.aspx" class="mx-2 text-decoration-none text-dark">Student Dashboard</a>
-                <a href="Feedback.aspx" class="mx-2 text-decoration-none text-dark">Feedback</a>
-                <a href="Leaderboard.aspx" class="mx-2 text-decoration-none text-dark">Leaderboard</a>
+                <a href="StudentDashboard.aspx" class="mx-2 text-decoration-none text-dark">Dashboard</a>
                 <a href="PrivateCourse.aspx" class="mx-2 text-decoration-none text-dark">Private Courses</a>
                 <a href="PublicCourse.aspx" class="mx-2 text-decoration-none text-dark">Public Courses</a>
-                <a href="StudentCourseContent.aspx" class="mx-2 text-decoration-none text-dark">Course Content</a>
-                <a href="StudentLesson.aspx" class="mx-2 text-decoration-none text-dark">Lessons</a>
-                <a href="StudentQuiz.aspx" class="mx-2 text-decoration-none text-dark">Quiz</a>
-                <a href="StudentQuizResult.aspx" class="mx-2 text-decoration-none text-dark">Quiz Results</a>
+                <a href="community.aspx" class="mx-2 text-decoration-none text-dark">Community</a>
+                <a href="Leaderboard.aspx" class="mx-2 text-decoration-none text-dark">Leaderboard</a>
+                <a href="StudentProfile.aspx" class="mx-2 text-decoration-none text-dark">Profile</a>
+                <a href="Feedback.aspx" class="mx-2 text-decoration-none text-dark">Feedback</a>
             </div>
 
             <!-- educator Menu -->
             <div id="educatorMenu" runat="server" visible="false" class="container d-flex justify-content-center py-2">
-                <a href="educatordashboard.aspx" class="mx-3 text-decoration-none text-dark fw-bold">Educator Dashboard</a>
+                <a href="educatordashboard.aspx" class="mx-2 text-decoration-none text-dark">Dashboard</a>
+                <a href="community.aspx" class="mx-2 text-decoration-none text-dark">Community</a>
+                <a href="educatorProfile.aspx" class="mx-2 text-decoration-none text-dark">Profile</a>
             </div>
 
             <!-- Admin Menu -->
             <div id="adminMenu" runat="server" visible="false" class="container d-flex justify-content-center py-2">
-                <a href="admin_dashboard.aspx" class="mx-3 text-decoration-none text-dark fw-bold">Admin Dashboard</a>
+                <a href="admin_dashboard.aspx" class="mx-2 text-decoration-none text-dark">Dashboard</a>
+                <a href="adminManage_Ads.aspx" class="mx-2 text-decoration-none text-dark">Advertisement Management</a>
+                <a href="adminUser_Management.aspx" class="mx-2 text-decoration-none text-dark">User Management</a>
+                <a href="admin_communitymanagement.aspx" class="mx-2 text-decoration-none text-dark">Community</a>
+                <a href="admin_feedbackmanagement.aspx" class="mx-2 text-decoration-none text-dark">Feedback</a>
             </div>
         </div>
 
@@ -117,6 +160,54 @@
             </asp:ContentPlaceHolder>
             <hr />
         </div>
+
+        <!-- Background music with mute/unmute control -->
+        <audio id="bgMusic" autoplay loop>
+          <source src="/image/sea_sound.mp3" type="audio/mpeg">
+        </audio>
+
+        <div id="musicToggle"
+             style="position: fixed; bottom: 30px; right: 20px;
+                    background: #8181814c;
+                    border-radius: 50%; width: 50px; height: 50px;
+                    display: flex; justify-content: center; align-items: center;
+                    cursor: pointer; z-index: 2000;">
+          <img id="musicIcon" src="/image/sound1.png" alt="Sound Toggle"
+               style="width: 30px; height: 30px;">
+        </div>
+
+        <script>
+            const bgMusic = document.getElementById('bgMusic');
+            const musicToggle = document.getElementById('musicToggle');
+            const musicIcon = document.getElementById('musicIcon');
+
+            // restore volume and mute state
+            bgMusic.volume = 0.5;
+            const savedTime = sessionStorage.getItem('musicTime');
+            const savedMuted = sessionStorage.getItem('musicMuted') === 'true';
+
+            // restore previous time and mute setting
+            if (savedTime) bgMusic.currentTime = parseFloat(savedTime);
+            bgMusic.muted = savedMuted;
+            musicIcon.src = savedMuted ? "/image/sound2.png" : "/image/sound1.png";
+
+            // try autoplay (handle browser restriction)
+            window.addEventListener('load', () => {
+                bgMusic.play().catch(() => console.log("Autoplay blocked until user interacts."));
+            });
+
+            // toggle mute/unmute
+            musicToggle.addEventListener('click', () => {
+                bgMusic.muted = !bgMusic.muted;
+                musicIcon.src = bgMusic.muted ? "/image/sound2.png" : "/image/sound1.png";
+                sessionStorage.setItem('musicMuted', bgMusic.muted);
+            });
+
+            // save the current time before leaving page
+            window.addEventListener('beforeunload', () => {
+                sessionStorage.setItem('musicTime', bgMusic.currentTime);
+            });
+        </script>
 
         <footer style="position: relative; overflow: hidden; height: 60%; color: white; text-align: center;">
             <!-- Background video -->
