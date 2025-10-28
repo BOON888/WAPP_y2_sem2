@@ -6,7 +6,6 @@
 
     <style>
         body { font-family: 'Segoe UI', sans-serif; background-color: #f9f9fb; }
-
         .leaderboard-container {
             background-color: white;
             border-radius: 12px;
@@ -16,35 +15,6 @@
             max-width: 1100px;
             margin: 60px auto;
         }
-
-        /* 🔙 Back Button */
-        .back-btn {
-            background-color: #38bdf8;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            padding: 10px 20px;
-            font-size: 15px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 25px;
-            text-decoration: none;
-        }
-
-        .back-btn:hover {
-            background-color: #0ea5e9;
-            transform: translateY(-2px);
-        }
-
-        .back-btn i {
-            font-style: normal;
-            font-weight: bold;
-        }
-
         .header {
             text-align: center;
             margin-bottom: 30px;
@@ -103,9 +73,23 @@
         .silver { color: #9ca3af; }
         .bronze { color: #d97706; }
 
-        .student-info { flex: 1; }
-        .student-name { font-weight: 600; color: #111827; }
+        .avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
 
+        .student-info {
+            flex: 1;
+        }
+        .student-name { font-weight: 600; color: #111827; }
         .badge-label {
             margin-left: 8px;
             font-size: 13px;
@@ -123,9 +107,12 @@
             font-size: 14px;
             color: #374151;
         }
-
+        .auto-style1 {
+            font-size: xx-large;
+        }
+        /* Highlight current user row */
         .highlighted {
-            background-color: #e0e7ff !important;
+            background-color: #e0e7ff !important;  /* light blue */
             border: 2px solid #001eff !important;
             box-shadow: 0 0 10px rgba(0, 30, 255, 0.3);
             transition: all 0.3s ease;
@@ -133,12 +120,6 @@
     </style>
 
     <div class="leaderboard-container">
-
-        <!-- 🔙 Back Button -->
-        <a href="StudentDashboard.aspx" class="back-btn">
-            <i>←</i> Back to Dashboard
-        </a>
-
         <div class="header">
             <h1>🏆 Leaderboard</h1>
             <p>See how you rank among other learners</p>
