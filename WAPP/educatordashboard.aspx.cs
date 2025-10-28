@@ -38,17 +38,23 @@ namespace WAPP
                 BindCourses();
             }
         }
-
         protected void rptCourses_ItemCommand(object source, RepeaterCommandEventArgs e)
         {
             string courseId = e.CommandArgument?.ToString();
             if (string.IsNullOrEmpty(courseId)) return;
 
             if (e.CommandName == "View")
-                Response.Redirect($"~/ViewCourse.aspx?id={Server.UrlEncode(courseId)}");
+            {
+                // Navigate to the new EducatorCourseStudents page
+                Response.Redirect($"~/EducatorCourseStudents.aspx?CourseId={Server.UrlEncode(courseId)}");
+            }
             else if (e.CommandName == "Edit")
+            {
+                // Keep your original Edit logic
                 Response.Redirect($"~/EditCourse.aspx?id={Server.UrlEncode(courseId)}");
+            }
         }
+
 
         protected void btnCreateCourse_Click(object sender, EventArgs e)
         {
