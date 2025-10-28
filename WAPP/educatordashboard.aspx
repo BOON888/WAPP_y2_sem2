@@ -204,7 +204,7 @@
                     <div class="action-desc">Engage with students</div>
                 </asp:HyperLink>
 
-                <asp:HyperLink ID="hlProfile" runat="server" NavigateUrl="~/Profile.aspx" CssClass="action-card">
+                <asp:HyperLink ID="hlProfile" runat="server" NavigateUrl="~/educatorProfile.aspx" CssClass="action-card">
                     <div class="action-title">Profile</div>
                     <div class="action-desc">Update your information</div>
                 </asp:HyperLink>
