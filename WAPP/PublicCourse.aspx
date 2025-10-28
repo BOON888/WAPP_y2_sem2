@@ -13,10 +13,18 @@
             background-color: white;
             border-radius: 12px;
             padding: 40px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            width: 90%;
-            max-width: 1100px;
+            
+            width: 99%;
+            max-width: 1900px;
             margin: 60px auto;
+            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25);
+
+            backdrop-filter: blur(10px);
+
+            -webkit-backdrop-filter: blur(10px);
+
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.25);
         }
 
         h1 {
@@ -26,7 +34,7 @@
             margin-bottom: 20px;
         }
 
-        /* 🔍 Search bar aligned to left */
+        
         .search-bar {
             display: flex;
             gap: 10px;
@@ -37,11 +45,19 @@
 
         .searchBox {
             padding: 10px 12px;
-            border: 1px solid #d1d5db;
+            
             border-radius: 6px;
             min-width: 300px;
             font-size: 14px;
             background-color: #f9fafb;
+            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25);
+
+            backdrop-filter: blur(10px);
+
+            -webkit-backdrop-filter: blur(10px);
+
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.25);
         }
 
         .btn {
@@ -60,7 +76,7 @@
             color: #001eff;
         }
 
-        /* Course grid */
+        
         .course-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -95,7 +111,7 @@
     <div class="page-container">
         <h1>Public Courses</h1>
 
-        <!-- 🔍 Search Bar (aligned left) -->
+        <!--Search Bar (aligned left) -->
         <div class="search-bar">
             <asp:TextBox ID="txtSearch" runat="server" CssClass="searchBox" Placeholder="Search by course title or educator..." />
             <asp:Button ID="btnSearch" runat="server" Text="Search" CssClass="btn" OnClick="btnSearch_Click" />

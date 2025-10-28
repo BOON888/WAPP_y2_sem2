@@ -7,8 +7,16 @@
 
         .course-container {
             width:99%; max-width:1900px; margin:20px auto;
-            background:white; border-radius:10px;
-            box-shadow:0 3px 8px rgba(0,0,0,0.1); padding:40px;
+            border-radius:10px;
+            padding:40px;
+            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25);
+
+            backdrop-filter: blur(10px);
+
+            -webkit-backdrop-filter: blur(10px);
+
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.25);
         }
 
         .top-buttons {
@@ -20,9 +28,15 @@
         .back-btn, .complete-btn {
             background:#001eff; color:white; padding:10px 18px;
             border-radius:6px; border:none; cursor:pointer;
-            font-weight:600; transition:0.3s;
+            font-weight:600; transition: background-color 0.3s ease, color 0.3s ease, transform 0.25s ease, box-shadow 0.25s ease;
         }
-        .back-btn:hover, .complete-btn:hover { background:#3246ff; }
+        .back-btn:hover, .complete-btn:hover { 
+            
+            background-color: white; 
+
+            color: #001eff; 
+        }
+
         .complete-btn[disabled] {
             background:#d1d5db; color:#6b7280; cursor:not-allowed;
         }
@@ -50,9 +64,17 @@
         .section-title { font-size:20px; font-weight:600; color:#001eff; margin-bottom:15px; }
 
         .lesson-item,.quiz-item {
-            border:1px solid #e5e7eb; border-radius:8px; padding:15px;
+            border-radius:8px; padding:15px;
             margin-bottom:12px; display:flex; justify-content:space-between;
-            align-items:center; background:#f9fafb;
+            align-items:center;
+            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25);
+
+            backdrop-filter: blur(10px);
+
+            -webkit-backdrop-filter: blur(10px);
+
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.25);
         }
 
         .lesson-item:hover { background:#eef2ff; }
@@ -61,9 +83,11 @@
         .btn-view {
             background:#001eff; color:white; border:none;
             padding:8px 14px; border-radius:6px; cursor:pointer;
-            transition:0.3s;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.25s ease, box-shadow 0.25s ease;
         }
-        .btn-view:hover { background:#3b4bff; }
+        .btn-view:hover { background-color: white; 
+
+            color: #001eff; }
 
         .btn-disabled {
             background:#d1d5db; color:#6b7280; cursor:not-allowed;
@@ -87,7 +111,7 @@
                 Text="← Back to Dashboard" OnClick="btnBackDashboard_Click" />
 
             <asp:Button ID="btnCompleteCourse" runat="server" CssClass="complete-btn"
-                Text="✅ Complete Course" OnClick="btnCompleteCourse_Click" Enabled="false" />
+                Text="Complete Course" OnClick="btnCompleteCourse_Click" Enabled="false" />
         </div>
 
         <div class="course-header">
@@ -111,7 +135,7 @@
         </div>
 
         <div class="lesson-list">
-            <h2 class="section-title">📘 Lessons</h2>
+            <h2 class="section-title">Lessons</h2>
             <asp:Repeater ID="rptLessons" runat="server">
                 <ItemTemplate>
                     <div class="lesson-item">
@@ -129,7 +153,7 @@
 
         <!-- Quizzes -->
         <div class="quiz-list">
-            <h2 class="section-title">🧩 Quizzes</h2>
+            <h2 class="section-title">Quizzes</h2>
             <asp:Repeater ID="rptQuizzes" runat="server">
                 <ItemTemplate>
                     <div class="quiz-item">

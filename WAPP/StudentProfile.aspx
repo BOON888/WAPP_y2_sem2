@@ -9,21 +9,37 @@
         }
 
         .profile-container {
-            background: white;
+            
             border-radius: 16px;
             padding: 50px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            width: 95%;
-            max-width: 1000px;
+            
+            width: 98%;
+            max-width: 1800px;
             margin: 60px auto;
+            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25);
+
+            backdrop-filter: blur(10px);
+
+            -webkit-backdrop-filter: blur(10px);
+
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.25);
         }
 
         .section-card {
-            background: white;
+            
             border-radius: 16px;
             padding: 30px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            
             margin-bottom: 30px;
+            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25);
+
+            backdrop-filter: blur(10px);
+
+            -webkit-backdrop-filter: blur(10px);
+
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.25);
         }
 
         .section-card h2 {
@@ -80,18 +96,21 @@
         }
 
         .btn-edit {
-            background-color: #4f46e5;
+            background-color: #001eff;
             color: white;
             border: none;
             padding: 8px 16px;
             border-radius: 8px;
             cursor: pointer;
-            transition: 0.3s;
+            
             font-weight: 600;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.25s ease, box-shadow 0.25s ease;
         }
 
         .btn-edit:hover {
-            background-color: #6366f1;
+            background-color: white; 
+
+            color: #001eff;
         }
 
         .form-column {
@@ -141,13 +160,15 @@
             padding: 12px 20px;
             border-radius: 8px;
             cursor: pointer;
-            transition: 0.3s;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.25s ease, box-shadow 0.25s ease;
             display: inline-block;
             margin-top: 10px;
         }
 
         .btn-save:hover {
-            background-color: #3740ff;
+            background-color: white; 
+
+            color: #001eff;
         }
 
         .stats-section {
@@ -166,7 +187,15 @@
             text-align: center;
             border-radius: 12px;
             padding: 25px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            
+            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25);
+
+            backdrop-filter: blur(10px);
+
+            -webkit-backdrop-filter: blur(10px);
+
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.25);
         }
 
         .stat-coins {
@@ -218,40 +247,21 @@
 
         .auto-style1 {
             border-radius: 50%;
-            border: 4px solid #f3f4f6;
+            
             object-fit: cover;
             display: block;
-        }
-        .back-container {
-            width: 95%;
-            max-width: 1000px;
-            margin: 30px auto -30px auto;
-            display: flex;
-            justify-content: flex-start;
-        }
+            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25);
 
-        .btn-back {
-            background-color: #e5e7eb;
-            color: #111827;
-            border: none;
-            padding: 10px 18px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: 0.3s;
-            font-size: 14px;
-        }
+            backdrop-filter: blur(10px);
 
-        .btn-back:hover {
-            background-color: #d1d5db;
+            -webkit-backdrop-filter: blur(10px);
+
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.25);
         }
+        
     </style>
-    <div class="back-container">
-        <asp:Button ID="btnBackDashboard" runat="server" 
-            Text="← Back to Dashboard" 
-            CssClass="btn-back" 
-            OnClick="btnBackDashboard_Click" />
-    </div>
+    
     <div class="profile-container">
         <div class="profile-header">
             <div class="profile-info">
@@ -269,13 +279,13 @@
                 </div>
             </div>
 
-            <!-- 🔹 Smooth scroll button -->
+            <!-- Smooth scroll button -->
             <button type="button" class="btn-edit" onclick="scrollToEdit()">Edit Profile</button>
 
             
         </div>
 
-        <!-- 🔹 Anchor target for smooth scroll -->
+        <!-- Anchor target for smooth scroll -->
         <a id="editSection"></a>
 
         <div class="section-card">
@@ -358,7 +368,7 @@
         </div>
     </div>
 
-    <!-- 🔹 Smooth scroll script -->
+    
     <script>
         function scrollToEdit() {
             document.getElementById("editSection").scrollIntoView({ behavior: 'smooth' });

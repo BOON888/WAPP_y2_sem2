@@ -13,11 +13,33 @@ namespace WAPP
         {
             if (!IsPostBack)
             {
+                //Ensure valid student session
+                if (Session["UserId"] == null || Session["Role"] == null || Session["Role"].ToString().ToLower() != "student")
+                {
+                    Response.Redirect("sign_in.aspx");
+                    return;
+                }
+
+                //Ensure StudentID exists
                 if (Session["StudentID"] == null)
                 {
-                    Session["StudentID"] = 2000; // temp login
-                    Session["StudentName"] = "Alice Tan";
+                    int userId = Convert.ToInt32(Session["UserId"]);
+                    using (SqlConnection conn = new SqlConnection(connStr))
+                    {
+                        conn.Open();
+                        SqlCommand cmd = new SqlCommand("SELECT Id FROM Student WHERE UserId = @uid", conn);
+                        cmd.Parameters.AddWithValue("@uid", userId);
+                        object result = cmd.ExecuteScalar();
+                        if (result != null)
+                            Session["StudentID"] = Convert.ToInt32(result);
+                        else
+                        {
+                            Response.Redirect("sign_in.aspx");
+                            return;
+                        }
+                    }
                 }
+
                 LoadFeedbackHistory();
             }
         }
@@ -30,7 +52,7 @@ namespace WAPP
                 string.IsNullOrEmpty(txtDescription.Text.Trim()))
             {
                 lblMessage.ForeColor = System.Drawing.Color.Red;
-                lblMessage.Text = "⚠ Please fill in all fields before submitting.";
+                lblMessage.Text = "Please fill in all fields before submitting.";
                 return;
             }
 
@@ -52,7 +74,7 @@ namespace WAPP
             }
 
             lblMessage.ForeColor = System.Drawing.Color.Green;
-            lblMessage.Text = "✅ Feedback submitted successfully!";
+            lblMessage.Text = "Feedback submitted successfully!";
             txtSubject.Text = "";
             txtDescription.Text = "";
             ddlCategory.SelectedIndex = 0;

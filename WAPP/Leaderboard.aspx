@@ -10,10 +10,17 @@
             background-color: white;
             border-radius: 12px;
             padding: 40px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            width: 90%;
-            max-width: 1100px;
+            background: rgba(255, 255, 255, 0.25); /* half-transparent white */
+            width: 99%;
+            max-width: 1900px;
             margin: 60px auto;
+            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25); /* soft blue shadow */ 
+
+            backdrop-filter: blur(10px); /* frosted glass effect */ 
+
+            -webkit-backdrop-filter: blur(10px); /* Safari support */ 
+
+            border: 1px solid rgba(255, 255, 255, 0.3); /* subtle border for glass look */ 
         }
         .header {
             text-align: center;
@@ -30,14 +37,21 @@
             margin-bottom: 40px;
         }
         .stat-card {
-            background: #f9fafb;
+            background: rgba(255, 255, 255, 0.25);
             border-radius: 10px;
-            border: 1px solid #e5e7eb;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+            
+            
             text-align: center;
             flex: 1;
             min-width: 230px;
             padding: 20px;
+            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25); /* soft blue shadow */ 
+
+            backdrop-filter: blur(10px); /* frosted glass effect */ 
+
+            -webkit-backdrop-filter: blur(10px); /* Safari support */ 
+
+            border: 1px solid rgba(255, 255, 255, 0.3); /* subtle border for glass look */
         }
         .stat-card h2 { color: #001eff; font-size: 28px; margin: 0; }
         .stat-card p { color: #6b7280; margin: 5px 0 0; }
@@ -121,7 +135,7 @@
 
     <div class="leaderboard-container">
         <div class="header">
-            <h1>🏆 Leaderboard</h1>
+            <h1>Leaderboard</h1>
             <p>See how you rank among other learners</p>
         </div>
 
@@ -167,8 +181,8 @@
                         </div>
 
                         <div class="student-stats">
-                            <span>🎖️ <%# Eval("BadgesEarned") %> Badges</span>
-                            <span>📚 <%# Eval("CoursesCompleted") %> Courses</span>
+                            <span><%# Eval("BadgesEarned") %> Badges</span>
+                            <span><%# Eval("CoursesCompleted") %> Courses</span>
                         </div>
                     </asp:Panel>
                 </ItemTemplate>

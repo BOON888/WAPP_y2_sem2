@@ -13,10 +13,18 @@
             background-color: white;
             border-radius: 12px;
             padding: 40px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            width: 90%;
-            max-width: 1100px;
+            
+            width: 99%;
+            max-width: 1900px;
             margin: 60px auto;
+            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25); /* soft blue shadow */ 
+
+            backdrop-filter: blur(10px); /* frosted glass effect */ 
+
+            -webkit-backdrop-filter: blur(10px); /* Safari support */ 
+
+            border: 1px solid rgba(255, 255, 255, 0.3); /* subtle border for glass look */ 
+            background: rgba(255, 255, 255, 0.25); /* half-transparent white */
         }
 
         h1 {
@@ -26,7 +34,7 @@
             margin-bottom: 20px;
         }
 
-        /* 🔍 Search and Filter Row */
+        
         .search-bar {
             display: flex;
             gap: 10px;
@@ -38,20 +46,37 @@
 
         .searchBox {
             padding: 10px 12px;
-            border: 1px solid #d1d5db;
+            
             border-radius: 6px;
             min-width: 260px;
             font-size: 14px;
             background-color: #f9fafb;
+            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25); /* soft blue shadow */ 
+
+            backdrop-filter: blur(10px); /* frosted glass effect */ 
+
+            -webkit-backdrop-filter: blur(10px); /* Safari support */ 
+
+            border: 1px solid rgba(255, 255, 255, 0.3); /* subtle border for glass look */ 
+            background: rgba(255, 255, 255, 0.25);
         }
 
         .filterBox {
             padding: 10px 12px;
-            border: 1px solid #d1d5db;
+            
             border-radius: 6px;
             background-color: #f9fafb;
             font-size: 14px;
             min-width: 160px;
+
+            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25); /* soft blue shadow */ 
+
+            backdrop-filter: blur(10px); /* frosted glass effect */ 
+
+            -webkit-backdrop-filter: blur(10px); /* Safari support */ 
+
+            border: 1px solid rgba(255, 255, 255, 0.3); /* subtle border for glass look */ 
+            background: rgba(255, 255, 255, 0.25);
         }
 
         .btn {
@@ -70,7 +95,7 @@
             color: #001eff;
         }
 
-        /* Course grid */
+        
         .course-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -100,12 +125,15 @@
             font-size: 14px;
             margin-bottom: 10px;
         }
+
+        
+
     </style>
 
     <div class="page-container">
         <h1>Private Courses</h1>
 
-        <!-- 🔍 Search and Coin Filter -->
+        <!--Search and Coin Filter -->
         <div class="search-bar">
             <asp:TextBox ID="txtSearch" runat="server" CssClass="searchBox" Placeholder="Search by title or educator..." />
 

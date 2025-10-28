@@ -13,10 +13,10 @@ namespace WAPP
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            // FIX: Load courseId from Session on EVERY page load (including PostBacks)
+            
             if (Session["SelectedCourseId"] != null && int.TryParse(Session["SelectedCourseId"].ToString(), out courseId))
             {
-                // courseId is successfully set from Session
+                
             }
             else
             {
@@ -25,7 +25,7 @@ namespace WAPP
 
             if (!IsPostBack)
             {
-                // Authorization and Lesson ID validation
+                
                 if (Session["UserId"] == null || Session["Role"]?.ToString().ToLower() != "student")
                 {
                     Response.Redirect("sign_in.aspx");
@@ -35,7 +35,7 @@ namespace WAPP
                 string idParam = Request.QueryString["lessonId"];
                 if (string.IsNullOrEmpty(idParam) || !int.TryParse(idParam, out int lessonId))
                 {
-                    lblError.Text = "⚠️ Invalid or missing lesson ID.";
+                    lblError.Text = "Invalid or missing lesson ID.";
                     lblError.Visible = true;
                     return;
                 }
@@ -50,7 +50,7 @@ namespace WAPP
             {
                 conn.Open();
 
-                // Query 1: Get current lesson details
+                
                 string lessonQuery = @"
                     SELECT LessonNumber, LessonTitle, ContentType, ContentFilePath, ContentFile, CourseId
                     FROM Lesson WHERE Id = @lessonId";
@@ -80,16 +80,16 @@ namespace WAPP
                     string filePath = ResolveUrl(dr["ContentFilePath"]?.ToString() ?? "");
                     string fileText = dr["ContentFile"]?.ToString() ?? "";
 
-                    dr.Close(); // Close the reader
+                    dr.Close();
 
-                    // --- FIX: Logic to handle both media embed and text content ---
+                    
 
                     // 1. Handle ContentFile Text (Transcript/Summary)
                     litContentFileText.Text = fileText.Replace("\n", "<br/>");
                     pnlTextContent.Visible = !string.IsNullOrEmpty(fileText);
 
                     // 2. Handle Media Embed (Video/PDF)
-                    contentEmbed.InnerHtml = ""; // Clear embed by default
+                    contentEmbed.InnerHtml = "";
 
                     if (contentType.Equals("Video", StringComparison.OrdinalIgnoreCase))
                     {
@@ -116,7 +116,7 @@ namespace WAPP
                 else
                 {
                     dr.Close();
-                    lblError.Text = "⚠️ Lesson not found.";
+                    lblError.Text = "Lesson not found.";
                     lblError.Visible = true;
                 }
             }

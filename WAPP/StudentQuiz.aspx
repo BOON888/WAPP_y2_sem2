@@ -7,25 +7,43 @@
         body { background-color: #f9fafb; font-family: 'Segoe UI', sans-serif; }
 
         .quiz-container {
-            width: 95%; max-width: 900px; margin: 40px auto;
-            background: white; border-radius: 10px;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.1); padding: 40px;
+            width: 99%; max-width: 1900px; margin: 40px auto;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25);
+
+            backdrop-filter: blur(10px);
+
+            -webkit-backdrop-filter: blur(10px);
+
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.25);
         }
 
         .back-btn {
             background: #001eff; color: white; padding: 10px 18px;
             border-radius: 6px; border: none; cursor: pointer;
-            font-weight: 600; margin-bottom: 25px; transition: 0.3s;
+            font-weight: 600; margin-bottom: 25px; 
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.25s ease, box-shadow 0.25s ease;
         }
-        .back-btn:hover { background: #3246ff; }
+        .back-btn:hover { background-color: white; 
+
+            color: #001eff;  }
 
         .quiz-title { font-size: 28px; font-weight: 700; color: #111827; margin-bottom: 20px; }
         .question-block { 
             margin-bottom: 25px; 
             padding: 20px; 
             border-radius: 8px; 
-            border: 1px solid #e5e7eb; 
-            background: #f9fafb; 
+            
+            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25);
+
+            backdrop-filter: blur(10px);
+
+            -webkit-backdrop-filter: blur(10px);
+
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.25);
         }
         .question-text { 
             font-weight: 600; 
@@ -60,10 +78,13 @@
         .btn-submit {
             background: #001eff; color: white; padding: 10px 16px;
             border: none; border-radius: 6px; cursor: pointer;
-            font-weight: 600; transition: 0.3s;
+            font-weight: 600; 
             margin-top: 20px;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.25s ease, box-shadow 0.25s ease;
         }
-        .btn-submit:hover { background: #3246ff; }
+        .btn-submit:hover { background-color: white; 
+
+            color: #001eff; }
 
         .success-message {
             background: #e0ffe6; color: #0f5132; border: 1px solid #a3e4b0;

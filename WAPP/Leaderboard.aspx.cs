@@ -16,8 +16,7 @@ namespace WAPP
             {
                 if (Session["StudentID"] == null)
                 {
-                    Session["StudentID"] = 2000; // temp demo user
-                    Session["StudentName"] = "Alice Tan";
+                    
                 }
 
                 LoadLeaderboard();
@@ -79,14 +78,14 @@ namespace WAPP
                 Literal litSubject = (Literal)e.Item.FindControl("litSubject");
                 Panel pnlRow = (Panel)e.Item.FindControl("pnlRow");
 
-                // 🔹 Highlight current user
+                // Highlight current user
                 if (isCurrentUser)
                 {
                     pnlRow.CssClass += " highlighted";
                     litYou.Text = " <span style='color:#001eff;'>(You)</span>";
                 }
 
-                // 🔹 Top 3 badge tags
+                // Top 3 badge tags
                 if (rank == 1)
                     litBadgeLabel.Text = " <span class='badge-label champion'>🥇 Champion</span>";
                 else if (rank == 2)
@@ -94,7 +93,7 @@ namespace WAPP
                 else if (rank == 3)
                     litBadgeLabel.Text = " <span class='badge-label third'>🥉 Third Place</span>";
 
-                // 🔹 Student details
+                // Student details
                 litSchool.Text = string.IsNullOrEmpty(drv["School"].ToString()) ? "—" : drv["School"].ToString();
                 litSubject.Text = string.IsNullOrEmpty(drv["InterestSubject"].ToString()) ? "—" : drv["InterestSubject"].ToString();
             }

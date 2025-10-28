@@ -10,6 +10,7 @@
             color: #333;
             margin: 0;
             padding: 0;
+
         }
 
         .result-wrapper {
@@ -18,8 +19,16 @@
             padding: 30px;
             background-color: #fff;
             border-radius: 12px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            
             text-align: center;
+            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25);
+
+            backdrop-filter: blur(10px);
+
+            -webkit-backdrop-filter: blur(10px);
+
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.25);
         }
 
         .quiz-title-header {
@@ -69,10 +78,18 @@
         .score-card {
             flex: 1;
             background-color: #f8f9fa;
-            border: 1px solid #e0e0e0;
+            
             border-radius: 10px;
             padding: 20px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            
+            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25);
+
+            backdrop-filter: blur(10px);
+
+            -webkit-backdrop-filter: blur(10px);
+
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.25);
         }
         .score-card-label {
             font-size: 1em;
@@ -88,15 +105,23 @@
 
         /* Reward Section */
         .reward-panel {
-            background-color: #e0f2f7; /* Light blue */
+            background-color: #f9fafb;
             border: 1px solid #b3e0ff;
             border-radius: 10px;
             padding: 20px;
             margin-bottom: 30px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+            
             color: #2196f3;
             font-size: 1.1em;
             font-weight: 600;
+            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25);
+
+            backdrop-filter: blur(10px);
+
+            -webkit-backdrop-filter: blur(10px);
+
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.25);
         }
         .reward-icon {
             font-size: 1.8em;
@@ -129,19 +154,25 @@
         }
 
         .btn-back {
-            background-color: #3498db; /* Blue */
+            background-color: #001eff;
             color: white;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.25s ease, box-shadow 0.25s ease;
         }
         .btn-back:hover {
-            background-color: #2980b9;
+            background-color: white; 
+
+            color: #001eff; 
         }
 
         .btn-retry {
             background-color: #e67e22; /* Orange */
             color: white;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.25s ease, box-shadow 0.25s ease;
         }
         .btn-retry:hover {
-            background-color: #d35400;
+            background-color: white; 
+
+            color: #001eff; 
         }
 
         .error-message {
@@ -180,7 +211,7 @@
 
         <%-- Reward/Message Panel --%>
         <asp:Panel ID="pnlReward" runat="server" CssClass="reward-panel" Visible="false">
-            <span class="reward-icon">💡</span>
+            <span class="reward-icon"></span>
             <asp:Literal ID="litRewardMessage" runat="server" />
         </asp:Panel>
 

@@ -10,14 +10,14 @@ namespace WAPP
     public partial class StudentQuiz : System.Web.UI.Page
     {
         private string connString => ConfigurationManager.ConnectionStrings["SeaLearnerConnection"].ConnectionString;
-        // NOTE: lblError, rptQuestions, etc., are assumed to be defined in the .designer.cs
+        
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            // FIX: Always associate the ItemDataBound event before any DataBind call
+            
             rptQuestions.ItemDataBound += rptQuestions_ItemDataBound;
 
-            // ✅ Ensure user is logged in
+            
             if (Session["UserId"] == null || Session["Role"]?.ToString().ToLower() != "student")
             {
                 Response.Redirect("sign_in.aspx");
@@ -26,11 +26,11 @@ namespace WAPP
 
             if (!IsPostBack)
             {
-                // ✅ Validate Quiz ID
+                
                 string quizParam = Request.QueryString["quizId"];
                 if (string.IsNullOrEmpty(quizParam) || !int.TryParse(quizParam, out int quizId))
                 {
-                    lblError.Text = "⚠️ Invalid or missing quiz ID.";
+                    lblError.Text = "Invalid or missing quiz ID.";
                     lblError.Visible = true;
                     return;
                 }
@@ -40,17 +40,13 @@ namespace WAPP
             }
         }
 
-        // ============================================
-        // Helper Functions (ID Mapping, Load, UpdateTotal, ItemDataBound)
-        // ============================================
-
-        // *** NEW: Function to map Users.Id (from session) to Student.Id (for FK) ***
+        
         private int GetStudentIdFromUserId(int userId)
         {
             using (SqlConnection conn = new SqlConnection(connString))
             {
                 conn.Open();
-                // Query to find the Student.Id where the Student.UserId matches the Session ID
+                
                 string query = "SELECT Id FROM Student WHERE UserId = @userId";
 
                 SqlCommand cmd = new SqlCommand(query, conn);
@@ -62,7 +58,7 @@ namespace WAPP
             }
         }
 
-        // *** NEW: Method handles DIRECTLY INSERTING a new record upon a successful PASS ***
+        
         private void InsertPassingProgress(int qId, int sId)
         {
             using (SqlConnection conn = new SqlConnection(connString))
@@ -77,7 +73,7 @@ namespace WAPP
                 insertCmd.Parameters.AddWithValue("@studentId", sId);
                 insertCmd.Parameters.AddWithValue("@quizId", qId);
 
-                // Status is set to 'Completed' as specifically requested.
+                
                 insertCmd.Parameters.AddWithValue("@status", "Completed");
 
                 insertCmd.ExecuteNonQuery();
@@ -106,7 +102,7 @@ namespace WAPP
                 }
                 else
                 {
-                    lblError.Text = "⚠️ Quiz not found.";
+                    lblError.Text = "Quiz not found.";
                     lblError.Visible = true;
                     return;
                 }
@@ -167,42 +163,40 @@ namespace WAPP
             }
         }
 
-        // ============================================
-        // Submit Quiz + Evaluate Answers
-        // ============================================
+        
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
             if (Session["UserId"] == null)
             {
-                lblError.Text = "⚠️ You must be logged in.";
+                lblError.Text = "You must be logged in.";
                 lblError.Visible = true;
                 return;
             }
 
-            // --- VALIDATION: ENSURE ALL QUESTIONS ARE ANSWERED ---
+            
             foreach (RepeaterItem item in rptQuestions.Items)
             {
                 RadioButtonList rbl = (RadioButtonList)item.FindControl("rblOptions");
                 if (rbl == null || string.IsNullOrEmpty(rbl.SelectedValue))
                 {
-                    lblError.Text = "⚠️ Please answer all questions before submitting the quiz.";
+                    lblError.Text = "Please answer all questions before submitting the quiz.";
                     lblError.Visible = true;
                     return;
                 }
             }
             lblError.Visible = false;
 
-            // --- CRITICAL FIX: MAP SESSION ID TO STUDENT TABLE ID ---
+            
             int userId = Convert.ToInt32(Session["UserId"]);
             int studentIdForFK = GetStudentIdFromUserId(userId);
 
             if (studentIdForFK <= 0)
             {
-                lblError.Text = "⚠️ Error: Cannot find a valid Student record for this user. Foreign Key conflict is likely.";
+                lblError.Text = "Error: Cannot find a valid Student record for this user. Foreign Key conflict is likely.";
                 lblError.Visible = true;
                 return;
             }
-            // --- END CRITICAL FIX ---
+            
 
 
             int quizId = Convert.ToInt32(Session["CurrentQuizId"]);
@@ -211,7 +205,7 @@ namespace WAPP
 
             if (dt == null)
             {
-                lblError.Text = "⚠️ Something went wrong loading quiz data.";
+                lblError.Text = "Something went wrong loading quiz data.";
                 lblError.Visible = true;
                 return;
             }
@@ -230,19 +224,17 @@ namespace WAPP
                     correctCount++;
             }
 
-            // Calculate score and pass status
+            
             double percentageScore = (totalQuestions == 0) ? 0 : (correctCount / (double)totalQuestions) * 100;
             bool passed = percentageScore >= passingGrade;
 
-            // *** CORE LOGIC: CALL NEW INSERT METHOD ONLY IF PASSED ***
+            
             if (passed)
             {
-                // Insert a new 'Completed' record using the correct Student ID (studentIdForFK)
+                
                 InsertPassingProgress(quizId, studentIdForFK);
             }
-            // If failed, nothing happens to the progress table, as requested.
-
-            // Redirect with score details for the RESULT page display
+           
             Response.Redirect($"StudentQuizResult.aspx?quizId={quizId}&score={correctCount}&total={totalQuestions}&passGrade={passingGrade}");
         }
 

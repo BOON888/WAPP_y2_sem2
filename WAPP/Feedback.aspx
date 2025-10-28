@@ -10,13 +10,18 @@
         }
 
         .feedback-container {
-            background: white;
+            background: rgba(255, 255, 255, 0.25);
             border-radius: 12px;
             padding: 40px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            width: 90%;
-            max-width: 1000px;
+            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25);
+            width: 99%;
+            max-width: 1900px;
             margin: 60px auto;
+            backdrop-filter: blur(10px); /* frosted glass effect */ 
+
+            -webkit-backdrop-filter: blur(10px); /* Safari support */ 
+
+            border: 1px solid rgba(255, 255, 255, 0.3); /* subtle border for glass look */ 
         }
 
         .feedback-container h1 {
@@ -53,11 +58,18 @@
             width: 90%;
             max-width: 850px;
             padding: 12px 14px;
-            border: 1px solid #d1d5db;
+            
             border-radius: 8px;
             background-color: #f9fafb;
             font-size: 15px;
             transition: border-color 0.2s;
+            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25); /* soft blue shadow */ 
+
+            backdrop-filter: blur(10px); /* frosted glass effect */ 
+
+            -webkit-backdrop-filter: blur(10px); /* Safari support */ 
+
+            border: 1px solid rgba(255, 255, 255, 0.3); /* subtle border for glass look */
         }
 
         .feedback-form input:focus,
@@ -82,16 +94,17 @@
             cursor: pointer;
             font-size: 16px;
             font-weight: 600;
-            transition: 0.3s;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.25s ease, box-shadow 0.25s ease; 
             width: 90%;
             max-width: 850px;
         }
 
         .btn-submit:hover {
-            background-color: #3740ff;
+            background-color: white;
+            color: #001eff;
         }
 
-        /* Feedback history */
+        
         .feedback-history {
             margin-top: 60px;
         }

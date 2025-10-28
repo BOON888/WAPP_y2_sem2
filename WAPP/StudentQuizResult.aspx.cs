@@ -10,16 +10,16 @@ namespace WAPP
     {
         private string connString => ConfigurationManager.ConnectionStrings["SeaLearnerConnection"].ConnectionString;
 
-        // Use a private field for the mapped Student.Id (The actual FK value)
+        
         private int studentTableId;
 
-        // Use private fields to store parsed query string parameters
+        
         private int quizId;
         private int score;
         private int total;
         private float passingGrade;
 
-        // Controls are assumed to be defined in the .designer.cs
+        
         protected HtmlGenericControl pnlResult;
         protected HtmlGenericControl statusIcon;
         protected Panel pnlReward;
@@ -47,7 +47,7 @@ namespace WAPP
 
             if (this.studentTableId <= 0)
             {
-                lblError.Text = "⚠️ Security Error: Student record not found. Cannot process results.";
+                lblError.Text = "Security Error: Student record not found. Cannot process results.";
                 lblError.Visible = true;
                 return;
             }
@@ -56,7 +56,7 @@ namespace WAPP
             if (!ValidateQueryParams())
             {
                 if (pnlResult != null) pnlResult.Visible = false;
-                lblError.Text = "⚠️ Invalid or missing quiz result data.";
+                lblError.Text = "Invalid or missing quiz result data.";
                 lblError.Visible = true;
                 return;
             }
@@ -79,11 +79,7 @@ namespace WAPP
             return true;
         }
 
-        // ============================================
-        // Helper Functions (ID Mapping, Progress Check, Coin Logic)
-        // ============================================
-
-        // *** Function to map Users.Id (from session) to Student.Id (for FK) ***
+        
         private int GetStudentIdFromUserId(int userId)
         {
             using (SqlConnection conn = new SqlConnection(connString))
@@ -101,24 +97,7 @@ namespace WAPP
             }
         }
 
-        // This function is kept but NO LONGER USED in DisplayResult, as requested
-        private bool CheckIfQuizPassedBefore(int qId, int sId)
-        {
-            using (SqlConnection conn = new SqlConnection(connString))
-            {
-                conn.Open();
-                string query = @"
-                    SELECT 1 
-                    FROM StudentQuizProgress 
-                    WHERE StudentId = @sId AND QuizId = @qId AND Status = 'Completed'";
-
-                SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@sId", sId);
-                cmd.Parameters.AddWithValue("@qId", qId);
-
-                return cmd.ExecuteScalar() != null;
-            }
-        }
+        
 
         private void AddCoinsToStudent(int studentId, int coins)
         {
@@ -126,12 +105,12 @@ namespace WAPP
 
             using (SqlConnection conn = new SqlConnection(connString))
             {
-                // 1. Define the command within its own using block
+                
                 using (SqlCommand cmd = new SqlCommand("UPDATE Student SET Coins = ISNULL(Coins,0) + @coins WHERE Id=@sid", conn))
                 {
                     conn.Open();
 
-                    // 2. Use the correct Student Id (which is the mapped ID)
+                    
                     cmd.Parameters.AddWithValue("@coins", coins);
                     cmd.Parameters.AddWithValue("@sid", studentId);
 
@@ -139,10 +118,6 @@ namespace WAPP
                 }
             }
         }
-
-        // ============================================
-        // Display Logic (MODIFIED for Unconditional Reward)
-        // ============================================
 
         private void DisplayResult()
         {
@@ -196,11 +171,10 @@ namespace WAPP
 
                 if (rewardCoins > 0)
                 {
-                    // --- MODIFIED LOGIC: NO CHECK ---
-                    // Award coins using the correct Student ID (this.studentTableId) on every pass
+                    
                     AddCoinsToStudent(this.studentTableId, rewardCoins);
-                    litRewardMessage.Text = $"🏆 You earned **{rewardCoins}** Coins!";
-                    // --- END MODIFIED LOGIC ---
+                    litRewardMessage.Text = $"You earned **{rewardCoins}** Coins!";
+                    
 
                     pnlReward.Visible = true;
                 }

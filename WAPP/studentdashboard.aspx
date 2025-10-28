@@ -17,6 +17,25 @@
             width: 99%;
             max-width: 1900px;
             margin: 60px auto;
+            background: rgba(255, 255, 255, 0.25); /* half-transparent white */ 
+
+            border-radius: 12px; 
+
+            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25); /* soft blue shadow */ 
+
+            backdrop-filter: blur(10px); /* frosted glass effect */ 
+
+            -webkit-backdrop-filter: blur(10px); /* Safari support */ 
+
+            border: 1px solid rgba(255, 255, 255, 0.3); /* subtle border for glass look */ 
+        }
+
+        html { 
+          scrollbar-width: none; /* Firefox */ 
+        } 
+ 
+        html::-webkit-scrollbar { 
+          display: none; /* Chrome, Safari, Edge */ 
         }
 
         .welcome {
@@ -42,6 +61,17 @@
             flex: 1;
             text-align: center;
             min-width: 250px;
+            background: rgba(255, 255, 255, 0.25); /* half-transparent white */ 
+
+            border-radius: 12px; 
+
+            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25); /* soft blue shadow */ 
+
+            backdrop-filter: blur(10px); /* frosted glass effect */ 
+
+            -webkit-backdrop-filter: blur(10px); /* Safari support */ 
+
+            border: 1px solid rgba(255, 255, 255, 0.3); /* subtle border for glass look */ 
         }
 
         .card h3 {
@@ -65,6 +95,7 @@
             padding-bottom: 15px;
             scroll-snap-type: x mandatory;
             -webkit-overflow-scrolling: touch;
+
         }
 
         .course-card {
@@ -104,7 +135,7 @@
             font-size: 15px;
             cursor: pointer;
             margin-top: auto;
-            transition: all 0.3s ease;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.25s ease, box-shadow 0.25s ease; 
         }
 
         .btn:hover {
@@ -119,6 +150,17 @@
             min-width: 220px;
             font-size: 14px;
             background-color: #f9fafb;
+            background: rgba(255, 255, 255, 0.25); /* half-transparent white */ 
+
+            border-radius: 12px; 
+
+            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25); /* soft blue shadow */ 
+
+            backdrop-filter: blur(10px); /* frosted glass effect */ 
+
+            -webkit-backdrop-filter: blur(10px); /* Safari support */ 
+
+            border: 1px solid rgba(255, 255, 255, 0.3); /* subtle border for glass look */ 
         }
 
         .course-list::-webkit-scrollbar {
@@ -158,10 +200,10 @@
             <div class="course-list">
                 <asp:Repeater ID="rptIncompleteCourses" runat="server">
                     <ItemTemplate>
-                        <div class="course-card" style="background:#bde9fa; border-color:darkblue;">
+                        <div class="course-card" style="background:rgba(0, 30, 255, 0.25); border-color:darkblue;">
                             <h4><%# Eval("Title") %></h4>
                             <p>By <%# Eval("EducatorName") %></p>
-                            <p><strong>⌛ On Going</strong></p>
+                            <p><strong>On Going</strong></p>
                             <button class="btn" type="button"
                                 onclick="window.location='StudentCourseContent.aspx?courseId=<%# Eval("Id") %>'">Continue Learning</button>
                         </div>
@@ -232,7 +274,7 @@
                         <div class="course-card" style="background:#eafbea; border-color:green;">
                             <h4><%# Eval("Title") %></h4>
                             <p>By <%# Eval("EducatorName") %></p>
-                            <p><strong>✅ Completed</strong></p>
+                            <p><strong>Completed</strong></p>
                             <button class="btn" type="button"
                                 onclick="window.location='StudentCourseContent.aspx?courseId=<%# Eval("Id") %>'">Review Course</button>
                         </div>

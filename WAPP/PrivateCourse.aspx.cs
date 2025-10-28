@@ -7,7 +7,7 @@ namespace WAPP
 {
     public partial class PrivateCourse : System.Web.UI.Page
     {
-        // ✅ Make sure this matches your Web.config exactly
+       
         
         string connString = ConfigurationManager.ConnectionStrings["SeaLearnerConnection"].ConnectionString;
 
@@ -51,7 +51,7 @@ namespace WAPP
                     SqlDataAdapter da = new SqlDataAdapter(cmd);
                     DataTable dt = new DataTable();
 
-                    // ✅ Make sure query + connection exist before filling
+                    
                     da.Fill(dt);
 
                     rptPrivateCourses.DataSource = dt;

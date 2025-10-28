@@ -29,7 +29,7 @@ namespace WAPP
                 string idParam = Request.QueryString["courseId"];
                 if (string.IsNullOrEmpty(idParam) || !int.TryParse(idParam, out int courseId))
                 {
-                    lblError.Text = "⚠️ Invalid or missing course ID.";
+                    lblError.Text = "Invalid or missing course ID.";
                     lblError.Visible = true;
                     return;
                 }
@@ -67,7 +67,7 @@ namespace WAPP
                 }
                 else
                 {
-                    lblError.Text = "⚠️ Course not found.";
+                    lblError.Text = "Course not found.";
                     lblError.Visible = true;
                 }
                 dr.Close();
@@ -146,7 +146,7 @@ namespace WAPP
                     }
                     else
                     {
-                        row["ButtonText"] = "Locked 🔒";
+                        row["ButtonText"] = "Locked";
                         row["ButtonClass"] = "btn-view btn-disabled";
                         row["ButtonEnabled"] = false;
                     }
@@ -180,13 +180,13 @@ namespace WAPP
             }
         }
 
-        // ✅ Complete Course Button Click
+        //Complete Course Button Click
         protected void btnCompleteCourse_Click(object sender, EventArgs e)
         {
             // Ensure student session is valid
             if (Session["StudentID"] == null)
             {
-                lblError.Text = "⚠️ Session expired. Please log in again.";
+                lblError.Text = "Session expired. Please log in again.";
                 lblError.Visible = true;
                 return;
             }
@@ -194,10 +194,10 @@ namespace WAPP
             int studentId = Convert.ToInt32(Session["StudentID"]);
             int courseId = Convert.ToInt32(Session["SelectedCourseId"]);
 
-            // ✅ Check if course progress is 100%
+            // Check if course progress is 100%
             if (ProgressPercent < 100)
             {
-                lblError.Text = "⚠️ You must complete all quizzes before finishing the course.";
+                lblError.Text = "You must complete all quizzes before finishing the course.";
                 lblError.Visible = true;
                 return;
             }
@@ -206,7 +206,7 @@ namespace WAPP
             {
                 conn.Open();
 
-                // ✅ Update StudentCourseProgress status + award badge
+                // Update StudentCourseProgress status + award badge
                 string badgeTitle = "Distinction in " + lblCourseTitle.Text;
 
                 SqlCommand updateCmd = new SqlCommand(@"
@@ -222,7 +222,7 @@ namespace WAPP
 
                 if (rowsAffected > 0)
                 {
-                    // ✅ Increment student's total badges
+                    // Increment student's total badges
                     SqlCommand updateBadgeCount = new SqlCommand(@"
                 UPDATE Student
                 SET BadgesEarned = ISNULL(BadgesEarned, 0) + 1
@@ -233,11 +233,11 @@ namespace WAPP
 
                     lblError.Visible = false;
                     ScriptManager.RegisterStartupScript(this, GetType(), "alert",
-                        $"alert('🎉 Course completed! You earned the badge: {badgeTitle}'); window.location='StudentDashboard.aspx';", true);
+                        $"alert('Course completed! You earned the badge: {badgeTitle}'); window.location='StudentDashboard.aspx';", true);
                 }
                 else
                 {
-                    lblError.Text = "⚠️ Could not update course completion. Please try again.";
+                    lblError.Text = "Could not update course completion. Please try again.";
                     lblError.Visible = true;
                 }
             }
