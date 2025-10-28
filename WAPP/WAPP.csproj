@@ -199,8 +199,8 @@
     <Content Include="Scripts\WebForms\WebParts.js" />
     <Content Include="Scripts\WebForms\WebUIValidation.js" />
     <Content Include="public_dashboard.aspx" />
-	<Content Include="adminUser_Management.aspx" />
-	<Content Include="adminManage_Ads.aspx" />
+    <Content Include="adminUser_Management.aspx" />
+    <Content Include="adminManage_Ads.aspx" />
     <Content Include="sign_in.aspx" />
     <Content Include="sign_up.aspx" />
     <Content Include="Site.Master" />
@@ -211,7 +211,6 @@
     <Content Include="StudentQuiz.aspx" />
     <Content Include="StudentQuizResult.aspx" />
     <Content Include="tem_dashboard.aspx" />
-    <Content Include="testing.aspx" />
     <Content Include="Uploads\html_intro.mp4" />
     <Content Include="Uploads\webpage_build.mp4" />
     <Content Include="ViewSwitcher.ascx" />
@@ -422,28 +421,20 @@
     <Compile Include="tem_dashboard.aspx.designer.cs">
       <DependentUpon>tem_dashboard.aspx</DependentUpon>
     </Compile>
-    <Compile Include="testing.aspx.cs">
-      <DependentUpon>testing.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="testing.aspx.designer.cs">
-      <DependentUpon>testing.aspx</DependentUpon>
-    </Compile>
-	<Compile Include="adminUser_Management.aspx.cs">
-	  <DependentUpon>adminUser_Management.aspx</DependentUpon>
+    <Compile Include="adminUser_Management.aspx.cs">
+      <DependentUpon>adminUser_Management.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="adminUser_Management.aspx.designer.cs">
       <DependentUpon>adminUser_Management.aspx</DependentUpon>
     </Compile>
-	  <Compile Include="adminManage_Ads.aspx.cs">
-	  <DependentUpon>adminManage_Ads.aspx</DependentUpon>
+    <Compile Include="adminManage_Ads.aspx.cs">
+      <DependentUpon>adminManage_Ads.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
-	</Compile>
-	  <Compile Include="adminManage_Ads.aspx.designer.cs">
-	  <DependentUpon>adminManage_Ads.aspx</DependentUpon>
-	</Compile>
-	
+    </Compile>
+    <Compile Include="adminManage_Ads.aspx.designer.cs">
+      <DependentUpon>adminManage_Ads.aspx</DependentUpon>
+    </Compile>
     <Compile Include="ViewSwitcher.ascx.cs">
       <DependentUpon>ViewSwitcher.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
