@@ -129,6 +129,7 @@
     <Content Include="CreateCourse.aspx" />
     <Content Include="Default.aspx" />
     <Content Include="educatordashboard.aspx" />
+    <Content Include="educatorProfile.aspx" />
     <Content Include="favicon.ico" />
     <Content Include="Feedback.aspx" />
     <Content Include="forgot_password.aspx" />
@@ -140,7 +141,6 @@
     <Content Include="Image\default_profile.png" />
     <Content Include="Leaderboard.aspx" />
     <Content Include="my_post.aspx" />
-    <Content Include="profile.aspx" />
     <Content Include="PrivateCourse.aspx" />
     <Content Include="PublicCourse.aspx" />
     <Content Include="Scripts\bootstrap.bundle.js" />
@@ -282,6 +282,13 @@
     <Compile Include="educatordashboard.aspx.designer.cs">
       <DependentUpon>educatordashboard.aspx</DependentUpon>
     </Compile>
+    <Compile Include="educatorProfile.aspx.cs">
+      <DependentUpon>educatorProfile.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="educatorProfile.aspx.designer.cs">
+      <DependentUpon>educatorProfile.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Feedback.aspx.cs">
       <DependentUpon>Feedback.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -312,13 +319,6 @@
     </Compile>
     <Compile Include="my_post.aspx.designer.cs">
       <DependentUpon>my_post.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="profile.aspx.cs">
-      <DependentUpon>profile.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="profile.aspx.designer.cs">
-      <DependentUpon>profile.aspx</DependentUpon>
     </Compile>
     <Compile Include="PrivateCourse.aspx.cs">
       <DependentUpon>PrivateCourse.aspx</DependentUpon>
