@@ -92,7 +92,6 @@
             background-color: #f9fafb;
             box-sizing: border-box;
             max-width: none;    /* remove inherited max-width if any */
-
         }
 
         .btn {
@@ -192,6 +191,23 @@
             margin-top: 20px;
             text-align: left;
         }
+
+        .studentSection, .educatorSection {
+            transition: all 0.5s ease;
+            opacity: 0;
+            transform: scaleY(0);
+            transform-origin: top;
+            height: 0;
+            overflow: hidden;
+        }
+
+        .studentSection.visible, .educatorSection.visible {
+            opacity: 1;
+            transform: scaleY(1);
+            height: auto;
+            overflow: visible;
+        }
+
     </style>
 
     <div class="signup-container">
@@ -249,7 +265,7 @@
         </div>
 
         <!-- Student Info -->
-        <asp:Panel ID="studentSection" runat="server" Visible="false">
+        <asp:Panel ID="studentSection" runat="server" Visible="false" CssClass="studentSection">
             <hr />
             <h5 class="section-title">Student Information</h5>
 
@@ -289,7 +305,7 @@
         </asp:Panel>
 
         <!-- Educator Info -->
-        <asp:Panel ID="educatorSection" runat="server" Visible="false">
+        <asp:Panel ID="educatorSection" runat="server" Visible="false" CssClass="educatorSection">
             <hr />
             <h5 class="section-title">Educator Information</h5>
 
@@ -328,10 +344,28 @@
             </div>
         </asp:Panel>
 
+        <script type="text/javascript">
+            function scrollToSection(sectionId) {
+                document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+
+            window.onload = function () {
+                var roleSelected = document.querySelector('input[name$="rblRole"]:checked');
+                if (roleSelected) {
+                    if (roleSelected.value === "student") {
+                        scrollToSection('<%= studentSection.ClientID %>');
+                    } else if (roleSelected.value === "educator") {
+                        scrollToSection('<%= educatorSection.ClientID %>');
+                    }
+                }
+            };
+        </script>
+
         <asp:Button ID="btnCreate" runat="server" Text="Create Account" CssClass="btn" OnClick="btnCreate_Click" />
 
         <div class="signin-link">
             Already have an account? <a href="sign_in.aspx">Sign In</a>
         </div>
+
     </div>
 </asp:Content>

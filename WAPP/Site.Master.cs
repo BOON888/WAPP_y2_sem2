@@ -6,8 +6,9 @@ namespace WAPP
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            string currentPage = System.IO.Path.GetFileNameWithoutExtension(Request.Path);
+            string currentPage = System.IO.Path.GetFileNameWithoutExtension(Request.Path).ToLower();
 
+            // 🔹 Control top navigation (Sign In / Sign Up / Profile / Logout)
             if (currentPage == "public_dashboard" || currentPage == "sign_in" || currentPage == "sign_up")
             {
                 navSignIn.Visible = true;
@@ -64,7 +65,35 @@ namespace WAPP
                     navLogout.Visible = false;
                 }
             }
+
+            studentMenu.Visible = false;
+            educatorMenu.Visible = false;
+            adminMenu.Visible = false;
+
+            currentPage = currentPage.ToLower();
+
+            if (currentPage == "studentdashboard" ||
+                currentPage == "feedback" ||
+                currentPage == "leaderboard" ||
+                currentPage == "privatecourse" ||
+                currentPage == "publiccourse" ||
+                currentPage == "studentcoursecontent" ||
+                currentPage == "studentlesson" ||
+                currentPage == "studentquiz" ||
+                currentPage == "studentquizresult")
+            {
+                studentMenu.Visible = true;
+            }
+            else if (currentPage == "educatordashboard")
+            {
+                educatorMenu.Visible = true;
+            }
+            else if (currentPage == "admin_dashboard")
+            {
+                adminMenu.Visible = true;
+            }
         }
+
         protected void Logout_Click(object sender, EventArgs e)
         {
             Session.Clear();           // Remove all session data

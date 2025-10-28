@@ -2,72 +2,86 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #eaf0ff, #ffffff);
+        }
+
         .signup-container {
-            background-color: white;
-            border-radius: 12px;
             padding: 40px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             width: 400px;
             margin: 80px auto;
             text-align: center;
+            background: rgba(255, 255, 255, 0.25); /* half-transparent white */
+            border-radius: 12px;
+            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25); /* soft blue shadow */
+            backdrop-filter: blur(10px); /* frosted glass effect */
+            -webkit-backdrop-filter: blur(10px); /* Safari support */
+            border: 1px solid rgba(255, 255, 255, 0.3); /* subtle border for glass look */
         }
 
         .btn {
             background-color: #001eff;
             color: white;
-            border: solid 1px #001eff;
+            border: none;
             border-radius: 6px;
-            padding: 10px;
-            width: 100%;
+            padding: 10px 20px;
             font-size: 16px;
             cursor: pointer;
-            margin-top: 10px;
+            margin: 5px;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.25s ease, box-shadow 0.25s ease;
+            width: 200px;
         }
 
         .btn:hover {
-            background-color: white;
-            border: solid 1px #001eff;
-            color: #001eff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 30, 255, 0.25);
+            opacity: 0.95;
         }
 
         .btn-back {
             background-color: white;
             color: #001eff;
-            border: solid 1px #001eff;
-            border-radius: 6px;
-            padding: 10px;
-            width: 100%;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 10px;
         }
 
-        .btn-back:hover {
-            background-color: #001eff;
-            color: white;
+        .btn:active {
+          transform: translateY(0);
+          box-shadow: 0 3px 8px rgba(0, 30, 255, 0.2);
+          opacity: 1;
         }
 
         .form-group {
-            margin-bottom: 20px;
-            text-align: left;
+            margin-bottom: 18px;
+            margin-top: 18px;
         }
 
-        .form-group label {
+        label {
             display: block;
+            color: #374151;
+            font-weight: 600;
             margin-bottom: 5px;
-            font-weight: bold;
+            text-align:left
         }
 
-        .form-group input {
+        input[type="text"], input[type="password"], select {
             width: 100%;
-            padding: 8px;
+            padding: 10px;
             border-radius: 6px;
-            border: 1px solid #ccc;
+            border: 1px solid #d1d5db;
+            background-color: #f9fafb;
+            box-sizing: border-box;
+            max-width: none;    /* remove inherited max-width if any */
         }
 
         .hidden {
             display: none;
         }
+
+        h1, h2, h3 {
+            color: #111827;
+        }
+
     </style>
 
     <div class="signup-container">
@@ -92,8 +106,8 @@
                 <label for="txtMother">Mother Name</label>
                 <asp:TextBox ID="txtMother" runat="server" CssClass="input" placeholder="Enter your mother name"></asp:TextBox>
             </div>
-            <button type="button" class="btn-back" onclick="prevStep(1)">Back</button>
             <button type="button" class="btn" onclick="nextStep(3)">Next</button>
+            <button type="button" class="btn btn-back" onclick="prevStep(1)">Back</button>
         </div>
 
         <!-- Step 3: New Password -->
@@ -106,8 +120,8 @@
                 <label for="txtConfirmPassword">Confirm Password</label>
                 <asp:TextBox ID="txtConfirmPassword" runat="server" CssClass="input" TextMode="Password" placeholder="Confirm your new password"></asp:TextBox>
             </div>
-            <button type="button" class="btn-back" onclick="prevStep(2)">Back</button>
             <asp:Button ID="btnDone" runat="server" Text="Done" CssClass="btn" OnClick="btnDone_Click" />
+            <button type="button" class="btn btn-back" onclick="prevStep(2)">Back</button>
         </div>
 
         <asp:Label ID="lblMessage" runat="server" ForeColor="Red"></asp:Label>

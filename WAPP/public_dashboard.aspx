@@ -64,16 +64,15 @@
           transition: background-color 0.3s ease, color 0.3s ease, transform 0.25s ease, box-shadow 0.25s ease;
         }
 
-        .btn-outline {
-          background-color: white;
-          border: 1px solid #001eff;
-          color: #001eff;
-        }
-
         .btn:hover {
           transform: translateY(-2px);
           box-shadow: 0 6px 15px rgba(0, 30, 255, 0.25);
           opacity: 0.95;
+        }
+
+        .btn-outline {
+          background-color: white;
+          color: #001eff;
         }
 
         /* Optional: Make active click feel responsive */
