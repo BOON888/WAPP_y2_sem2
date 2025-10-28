@@ -15,6 +15,24 @@ namespace WAPP
     {
 
         /// <summary>
+        /// imgProfile control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Image imgProfile;
+
+        /// <summary>
+        /// fileUploadProfile control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.FileUpload fileUploadProfile;
+
+        /// <summary>
         /// lblFullName control.
         /// </summary>
         /// <remarks>
@@ -24,13 +42,13 @@ namespace WAPP
         protected global::System.Web.UI.WebControls.Label lblFullName;
 
         /// <summary>
-        /// lblEmail control.
+        /// lblEducatorId control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblEmail;
+        protected global::System.Web.UI.WebControls.Label lblEducatorId;
 
         /// <summary>
         /// btnEdit control.
@@ -58,15 +76,6 @@ namespace WAPP
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtFullName;
-
-        /// <summary>
-        /// txtEmail control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtEmail;
 
         /// <summary>
         /// txtAge control.

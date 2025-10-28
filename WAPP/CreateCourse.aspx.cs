@@ -24,8 +24,6 @@ namespace WAPP
                     Session["EducatorID"] = 3000;
                     Session["EducatorName"] = "Educator";
                 }
-                lblEducatorName.Text = Session["EducatorName"].ToString();
-
                 // create draft course if needed
                 if (Session["NewCourseId"] == null)
                 {

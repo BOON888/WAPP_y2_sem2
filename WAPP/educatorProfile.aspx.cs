@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Configuration;
 using System.Data.SqlClient;
+using System.IO;
 
 namespace WAPP
 {
@@ -13,7 +14,8 @@ namespace WAPP
             if (!IsPostBack)
             {
                 // ✅ Ensure educator is logged in
-                if (Session["UserId"] == null || Session["Role"] == null || Session["Role"].ToString().ToLower() != "educator")
+                if (Session["UserId"] == null || Session["Role"] == null ||
+                    Session["Role"].ToString().ToLower() != "educator")
                 {
                     Response.Redirect("sign_in.aspx");
                     return;
@@ -33,7 +35,8 @@ namespace WAPP
                 conn.Open();
                 string sql = @"
                     SELECT 
-                        u.FullName, u.Email, u.Age, u.Gender, 
+                        e.Id AS EducatorId,
+                        u.FullName, u.Age, u.Gender, u.ProfilePicture,
                         e.EducationQualification, e.GraduatedUniversity
                     FROM Users u
                     JOIN Educator e ON u.Id = e.UserId
@@ -45,12 +48,17 @@ namespace WAPP
 
                 if (dr.Read())
                 {
-                    lblFullName.Text = dr["FullName"].ToString();
-                    lblEmail.Text = dr["Email"].ToString();
+                    // ✅ Load profile picture
+                    string profilePic = dr["ProfilePicture"]?.ToString();
+                    imgProfile.ImageUrl = string.IsNullOrEmpty(profilePic)
+                        ? ResolveUrl("~/Image/default_profile2.png")
+                        : ResolveUrl("~/Image/" + profilePic);
 
+                    // ✅ Display educator info
+                    lblFullName.Text = dr["FullName"].ToString();
                     txtFullName.Text = dr["FullName"].ToString();
-                    txtEmail.Text = dr["Email"].ToString();
                     txtAge.Text = dr["Age"].ToString();
+                    lblEducatorId.Text = dr["EducatorId"].ToString();
 
                     string gender = dr["Gender"].ToString();
                     if (!string.IsNullOrEmpty(gender) && ddlGender.Items.FindByValue(gender) != null)
@@ -61,6 +69,11 @@ namespace WAPP
                         ddlQualification.SelectedValue = qual;
 
                     txtUniversity.Text = dr["GraduatedUniversity"].ToString();
+
+                    // ✅ Sync Session
+                    Session["EducatorID"] = dr["EducatorId"].ToString();
+                    Session["FullName"] = dr["FullName"].ToString();
+                    Session["ProfilePicture"] = dr["ProfilePicture"].ToString();
                 }
                 dr.Close();
             }
@@ -69,11 +82,11 @@ namespace WAPP
         protected void btnEdit_Click(object sender, EventArgs e)
         {
             txtFullName.ReadOnly = false;
-            txtEmail.ReadOnly = false;      // ✅ Make email editable
             txtAge.ReadOnly = false;
             txtUniversity.ReadOnly = false;
             ddlGender.Enabled = true;
             ddlQualification.Enabled = true;
+            fileUploadProfile.Visible = true;
 
             btnEdit.Visible = false;
             btnSave.Visible = true;
@@ -84,11 +97,11 @@ namespace WAPP
         protected void btnCancel_Click(object sender, EventArgs e)
         {
             txtFullName.ReadOnly = true;
-            txtEmail.ReadOnly = true;       // ✅ Re-disable email on cancel
             txtAge.ReadOnly = true;
             txtUniversity.ReadOnly = true;
             ddlGender.Enabled = false;
             ddlQualification.Enabled = false;
+            fileUploadProfile.Visible = false;
 
             btnEdit.Visible = true;
             btnSave.Visible = false;
@@ -103,12 +116,25 @@ namespace WAPP
         {
             int userId = Convert.ToInt32(Session["UserId"]);
             string fullName = txtFullName.Text.Trim();
-            string email = txtEmail.Text.Trim();     // ✅ Allow updating email
             string gender = ddlGender.SelectedValue;
             string qualification = ddlQualification.SelectedValue;
             string university = txtUniversity.Text.Trim();
-
             int.TryParse(txtAge.Text.Trim(), out int age);
+
+            string fileName = null;
+
+            // ✅ Handle profile picture upload
+            if (fileUploadProfile.HasFile)
+            {
+                string extension = Path.GetExtension(fileUploadProfile.FileName);
+                fileName = "educator_" + userId + "_" + DateTime.Now.Ticks + extension;
+
+                string folderPath = Server.MapPath("~/Image/");
+                if (!Directory.Exists(folderPath))
+                    Directory.CreateDirectory(folderPath);
+
+                fileUploadProfile.SaveAs(Path.Combine(folderPath, fileName));
+            }
 
             using (SqlConnection conn = new SqlConnection(connStr))
             {
@@ -117,22 +143,26 @@ namespace WAPP
 
                 try
                 {
-                    // ✅ Update Users table (including Email now)
+                    // ✅ Update Users
                     string sqlUser = @"UPDATE Users 
-                                       SET FullName=@name, Email=@mail, Age=@age, Gender=@gender
-                                       WHERE Id=@uid";
+                                       SET FullName=@name, Age=@age, Gender=@gender"
+                                       + (fileName != null ? ", ProfilePicture=@pic" : "")
+                                       + " WHERE Id=@uid";
+
                     SqlCommand cmdU = new SqlCommand(sqlUser, conn, tran);
                     cmdU.Parameters.AddWithValue("@name", fullName);
-                    cmdU.Parameters.AddWithValue("@mail", email);
                     cmdU.Parameters.AddWithValue("@age", age);
                     cmdU.Parameters.AddWithValue("@gender", gender);
                     cmdU.Parameters.AddWithValue("@uid", userId);
+                    if (fileName != null)
+                        cmdU.Parameters.AddWithValue("@pic", fileName);
                     cmdU.ExecuteNonQuery();
 
-                    // ✅ Update Educator table
+                    // ✅ Update Educator
                     string sqlEdu = @"UPDATE Educator 
                                       SET EducationQualification=@qual, GraduatedUniversity=@uni
                                       WHERE UserId=@uid";
+
                     SqlCommand cmdE = new SqlCommand(sqlEdu, conn, tran);
                     cmdE.Parameters.AddWithValue("@qual", qualification);
                     cmdE.Parameters.AddWithValue("@uni", university);
@@ -144,14 +174,14 @@ namespace WAPP
                     lblMsg.Text = "✅ Profile updated successfully!";
                     lblMsg.ForeColor = System.Drawing.Color.Green;
 
+                    // ✅ Refresh + restore read-only state
                     LoadEducatorProfile();
-
                     txtFullName.ReadOnly = true;
-                    txtEmail.ReadOnly = true;
                     txtAge.ReadOnly = true;
                     txtUniversity.ReadOnly = true;
                     ddlGender.Enabled = false;
                     ddlQualification.Enabled = false;
+                    fileUploadProfile.Visible = false;
 
                     btnEdit.Visible = true;
                     btnSave.Visible = false;
@@ -175,7 +205,7 @@ namespace WAPP
             {
                 conn.Open();
 
-                // 1️⃣ Get EducatorId based on UserId
+                // Get EducatorId
                 SqlCommand getEid = new SqlCommand("SELECT Id FROM Educator WHERE UserId=@uid", conn);
                 getEid.Parameters.AddWithValue("@uid", userId);
                 object eidObj = getEid.ExecuteScalar();
@@ -190,30 +220,29 @@ namespace WAPP
 
                 educatorId = Convert.ToInt32(eidObj);
 
-                // 2️⃣ Courses Created
+                // Courses Created
                 SqlCommand cmdCourses = new SqlCommand("SELECT COUNT(*) FROM Course WHERE EducatorId=@eid", conn);
                 cmdCourses.Parameters.AddWithValue("@eid", educatorId);
                 lblCoursesCreated.Text = cmdCourses.ExecuteScalar()?.ToString() ?? "0";
 
-                // 3️⃣ Total Students (distinct)
+                // Total Students
                 SqlCommand cmdStudents = new SqlCommand(@"
                     SELECT COUNT(DISTINCT scp.StudentId)
                     FROM StudentCourseProgress scp
                     INNER JOIN Course c ON scp.CourseId = c.Id
                     WHERE c.EducatorId = @eid", conn);
-                        cmdStudents.Parameters.AddWithValue("@eid", educatorId);
+                cmdStudents.Parameters.AddWithValue("@eid", educatorId);
                 lblTotalStudents.Text = cmdStudents.ExecuteScalar()?.ToString() ?? "0";
 
-                // 4️⃣ Completed Courses
+                // Completed Courses
                 SqlCommand cmdCompleted = new SqlCommand(@"
                     SELECT COUNT(*)
                     FROM StudentCourseProgress scp
                     INNER JOIN Course c ON scp.CourseId = c.Id
                     WHERE c.EducatorId = @eid AND scp.Status = 'Completed'", conn);
-                        cmdCompleted.Parameters.AddWithValue("@eid", educatorId);
+                cmdCompleted.Parameters.AddWithValue("@eid", educatorId);
                 lblCompletions.Text = cmdCompleted.ExecuteScalar()?.ToString() ?? "0";
             }
         }
-
     }
 }

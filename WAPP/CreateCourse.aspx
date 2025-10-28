@@ -85,7 +85,7 @@
 
         .page-wrap {
             max-width: 1100px;
-            margin: 0 auto 60px;
+            margin: 40px auto 60px;
         }
 
         .card {
@@ -204,15 +204,6 @@
     </style>
 
     <!-- Top bar -->
-    <div class="top-header">
-        <div class="left-panel">
-            <a href="Educator_dashboard.aspx" class="back-link">Back to Dashboard</a>
-        </div>
-        <div class="right-panel">
-            <asp:Label ID="lblEducatorName" runat="server" Text="Educator" />
-        </div>
-    </div>
-
     <div class="page-wrap">
         <div class="card">
             <div class="title">Create New Course</div>
