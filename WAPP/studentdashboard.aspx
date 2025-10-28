@@ -181,15 +181,15 @@
             </div>
 
             <div class="course-list">
-                <asp:Repeater ID="rptPublicCourses" runat="server">
+                <asp:Repeater ID="rptPublicCourses" runat="server" OnItemCommand="rptPublicCourses_ItemCommand">
                     <ItemTemplate>
                         <div class="course-card">
                             <div>
                                 <h4><%# Eval("Title") %></h4>
                                 <p>By <%# Eval("EducatorName") %></p>
                             </div>
-                            <button class="btn" type="button"
-                                onclick="window.location='StudentCourseContent.aspx?courseId=<%# Eval("Id") %>'">Start Learning</button>
+                            <asp:Button ID="btnStartCourse" runat="server" Text="Start Learning" CssClass="btn"
+                                CommandName="StartCourse" CommandArgument='<%# Eval("Id") %>' />
                         </div>
                     </ItemTemplate>
                 </asp:Repeater>

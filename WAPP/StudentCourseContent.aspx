@@ -11,12 +11,21 @@
             box-shadow:0 3px 8px rgba(0,0,0,0.1); padding:40px;
         }
 
-        .back-btn {
+        .top-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .back-btn, .complete-btn {
             background:#001eff; color:white; padding:10px 18px;
             border-radius:6px; border:none; cursor:pointer;
-            font-weight:600; margin-bottom:25px; transition:0.3s;
+            font-weight:600; transition:0.3s;
         }
-        .back-btn:hover { background:#3246ff; }
+        .back-btn:hover, .complete-btn:hover { background:#3246ff; }
+        .complete-btn[disabled] {
+            background:#d1d5db; color:#6b7280; cursor:not-allowed;
+        }
 
         .course-header {
             display:flex; justify-content:space-between; align-items:center;
@@ -65,11 +74,21 @@
             color:#b91c1c; padding:10px; border-radius:8px;
             margin-top:15px; font-weight:500;
         }
+        .success-message {
+            background:#d1fae5; border:1px solid #6ee7b7;
+            color:#065f46; padding:10px; border-radius:8px;
+            margin-top:15px; font-weight:500;
+        }
     </style>
 
     <div class="course-container">
-        <asp:Button ID="btnBackDashboard" runat="server" CssClass="back-btn"
-            Text="← Back to Dashboard" OnClick="btnBackDashboard_Click" />
+        <div class="top-buttons">
+            <asp:Button ID="btnBackDashboard" runat="server" CssClass="back-btn"
+                Text="← Back to Dashboard" OnClick="btnBackDashboard_Click" />
+
+            <asp:Button ID="btnCompleteCourse" runat="server" CssClass="complete-btn"
+                Text="✅ Complete Course" OnClick="btnCompleteCourse_Click" Enabled="false" />
+        </div>
 
         <div class="course-header">
             <div>
@@ -108,8 +127,6 @@
             </asp:Repeater>
         </div>
 
-       
-
         <!-- Quizzes -->
         <div class="quiz-list">
             <h2 class="section-title">🧩 Quizzes</h2>
@@ -130,5 +147,6 @@
         </div>
 
         <asp:Label ID="lblError" runat="server" Visible="false" CssClass="error-message" />
+        <asp:Label ID="lblSuccess" runat="server" Visible="false" CssClass="success-message" />
     </div>
 </asp:Content>
