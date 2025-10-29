@@ -2,67 +2,185 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <style>
+        /* ===== General Page Style ===== */
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #e9efff, #ffffff);
+            margin: 0;
+            padding: 0;
+        }
+
+        h2 {
+            color: #111827;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        p.text-muted {
+            color: #666;
+        }
+
+        p.text {
+            color: #666;
+            text-align: left;
+        }
+
+        /* ===== Container (Main Panel) ===== */
+        .my-posts-container {
+            padding: 40px;
+            max-width: 1200px;
+            margin: auto;
+            text-align: left;
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 12px;
+            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        /* ===== Buttons ===== */
+        .btn {
+            background-color: #001eff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 16px;
+            font-size: 14px;
+            cursor: pointer;
+            margin: 5px;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 30, 255, 0.25);
+            opacity: 0.95;
+        }
+
+        .btn-delete {
+            background-color: white;
+            color: red;
+            border-radius: 6px;
+            padding: 6px 14px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.25s ease;
+            font-size: 14px;
+            text-decoration: none;
+            border: 1px solid rgba(255, 0, 0, 0.2);
+        }
+
+        .btn-delete:hover {
+            background-color: red;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* ===== Card / Post Styling ===== */
+        .card {
+            background-color: rgba(255, 255, 255, 0.85);
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-top: 25px;
+        }
+
+        .card-body strong {
+            color: #111827;
+        }
+
+        .badge {
+            background-color: #001eff;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+        }
+
+        /* ===== Replies Section ===== */
         .reply-container {
-            max-height: 200px;          
-            overflow-y: auto;           
-            background-color: #f8f9fa;  
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
             padding: 10px;
-            border-radius: 8px;
-            border: 1px solid #dee2e6;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 10px;
         }
 
         .reply-item {
             background-color: #fff;
             border-radius: 6px;
-            padding: 8px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            padding: 10px;
+            margin-bottom: 8px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
         }
 
+        .reply-item strong {
+            color: #001eff;
+        }
+
+        .reply-item p {
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .text-muted.small {
+            color: #777;
+            font-size: 12px;
+        }
+
+        /* ===== No Posts Label ===== */
+        .text-muted.d-block.text-center {
+            color: #777;
+        }
     </style>
-    <div class="container mt-4">
-        <h2 class="mb-4 text-center">My Posts</h2>
 
-        <!-- User Post List -->
-        <asp:Repeater ID="rptMyPosts" runat="server" OnItemCommand="rptMyPosts_ItemCommand">
-            <ItemTemplate>
-                <div class="card mb-4 shadow-sm border-0">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between">
-                            <div>
-                                <strong><%# Eval("FullName") %></strong>
-                                <span class="badge bg-secondary ms-2"><%# Eval("Role") %></span>
-                                <p class="text-muted small mb-1"><%# Eval("PostDateTime", "{0:g}") %></p>
-                            </div>
-                            <asp:LinkButton ID="btnDeletePost" runat="server"
-                                CommandName="DeletePost"
-                                CommandArgument='<%# Eval("Id") %>'
-                                CssClass="btn btn-sm btn-outline-danger">Delete</asp:LinkButton>
+<div class="my-posts-container mt-4">
+    <h2 class="mb-4">My Posts</h2>
+
+    <!-- User Post List -->
+    <asp:Repeater ID="rptMyPosts" runat="server" OnItemCommand="rptMyPosts_ItemCommand">
+        <ItemTemplate>
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <strong><%# Eval("FullName") %></strong>
+                            <span class="badge ms-2"><%# Eval("Role") %></span>
+                            <p class="text-muted small mb-1"><%# Eval("PostDateTime", "{0:g}") %></p>
                         </div>
-                        <p class="mt-2"><%# Eval("PostContent") %></p>
+                        <asp:LinkButton ID="btnDeletePost" runat="server"
+                            CommandName="DeletePost"
+                            CommandArgument='<%# Eval("Id") %>'
+                            CssClass="btn-delete">Delete</asp:LinkButton>
+                    </div>
+                    <p class="mt-2"><%# Eval("PostContent") %></p>
 
-                        <!-- Replies Section -->
-                        <div class="mt-3 ps-3 border-start">
-                            <h6 class="text-muted">Replies</h6>
-                            <div class="reply-container">
-                                <asp:Repeater ID="rptReplies" runat="server" DataSource='<%# Eval("Replies") %>'>
-                                    <ItemTemplate>
-                                        <div class="reply-item mb-2">
-                                            <strong><%# Eval("FullName") %></strong>
-                                            <p class="mb-1"><%# Eval("ReplyContent") %></p>
-                                            <p class="text-muted small"><%# Eval("ReplyDateTime", "{0:g}") %></p>
-                                        </div>
-                                    </ItemTemplate>
-                                </asp:Repeater>
-                            </div>
+                    <!-- Replies Section -->
+                    <div class="mt-3 ps-3 border-start">
+                        <h6 class="text-muted">Replies</h6>
+                        <div class="reply-container">
+                            <asp:Repeater ID="rptReplies" runat="server" DataSource='<%# Eval("Replies") %>'>
+                                <ItemTemplate>
+                                    <div class="reply-item">
+                                        <strong><%# Eval("FullName") %></strong>
+                                        <p><%# Eval("ReplyContent") %></p>
+                                        <p class="text-muted small"><%# Eval("ReplyDateTime", "{0:g}") %></p>
+                                    </div>
+                                </ItemTemplate>
+                            </asp:Repeater>
                         </div>
                     </div>
                 </div>
-            </ItemTemplate>
-        </asp:Repeater>
+            </div>
+        </ItemTemplate>
+    </asp:Repeater>
 
-        <!-- If no posts -->
-        <asp:Label ID="lblNoPosts" runat="server" CssClass="text-muted d-block text-center mt-4" Visible="false">
-            You haven’t created any posts yet.
-        </asp:Label>
-    </div>
+    <!-- If no posts -->
+    <asp:Label ID="lblNoPosts" runat="server" CssClass="text-muted d-block text-center mt-4" Visible="false">
+        You haven’t created any posts yet.
+    </asp:Label>
+</div>
+
 </asp:Content>
