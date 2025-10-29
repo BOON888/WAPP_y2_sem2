@@ -4,6 +4,7 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <style>
+        /* 1. LAYOUT ADJUSTMENTS */
         body {
             font-family: 'Segoe UI', sans-serif;
             background-color: #f8f9fc;
@@ -11,7 +12,8 @@
 
         .page-wrap {
             max-width: 1100px;
-            margin: 40px auto;
+            /* 🚀 FIX: Reduce top margin to pull content closer to the header */
+            margin: 20px auto 40px; 
             padding: 20px;
         }
 
@@ -19,28 +21,46 @@
             font-size: 28px;
             font-weight: 700;
             margin-bottom: 10px;
+            color: #111827; /* Ensure clear title color */
         }
 
+        /* 2. TAB BUTTONS (Implementing Blue Hover Effect) */
         .tab-buttons {
             display: flex;
             justify-content: center;
-            gap: 20px;
+            gap: 15px; /* Slightly reduced gap */
             margin: 20px 0;
         }
 
         .tab-button {
             background-color: #001eff;
             color: white;
-            border: none;
+            border: 1px solid #001eff; /* Add border for consistency */
             padding: 10px 24px;
-            border-radius: 6px;
+            border-radius: 8px; /* Slightly larger radius */
             cursor: pointer;
             font-weight: 600;
-            transition: background 0.3s;
+            transition: all 0.25s ease; /* Smooth transitions */
+        }
+
+        .tab-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 30, 255, 0.2);
+            /* 🚀 FIX: Apply white-on-blue hover for consistency (Blue to Blue is acceptable, but this adds lift) */
+            opacity: 0.95; 
         }
 
         .tab-button.active {
-            background-color: #111827;
+            /* 🚀 FIX: Remove black background, use a stronger blue or inverse style */
+            background-color: white; /* Inverse style for active tab */
+            color: #001eff;
+            border-color: #001eff;
+            box-shadow: 0 4px 10px rgba(0, 30, 255, 0.2);
+        }
+        
+        .tab-button.active:hover {
+            transform: none; /* Prevent active tab from moving */
+            box-shadow: 0 4px 10px rgba(0, 30, 255, 0.2);
         }
 
         .info-message {
@@ -51,11 +71,11 @@
             font-style: italic;
         }
 
-        /* Student list horizontal layout */
+        /* 3. STUDENT LIST STYLING (Applying Soft Shadow) */
         .students-list {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px; /* Slightly increased gap for visual separation */
             margin-top: 15px;
         }
 
@@ -64,10 +84,17 @@
             align-items: center;
             justify-content: space-between;
             background: #fff;
-            border: 1px solid #e5e7eb;
+            /* 🚀 FIX: Apply the soft glow shadow instead of just a border */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04); 
+            border: none;
             border-radius: 10px;
             padding: 12px 16px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .student-row:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
         }
 
         .student-info {
@@ -105,21 +132,23 @@
             color: #6b7280;
         }
 
+        /* 4. STATUS LABELS */
         .status-label {
             padding: 5px 10px;
-            border-radius: 6px;
+            border-radius: 12px; /* Pill shape */
             font-size: 12px;
-            font-weight: 600;
+            font-weight: 700;
+            text-transform: uppercase;
         }
 
         .status-complete {
             background-color: #dcfce7;
-            color: #065f46;
+            color: #047857; /* Darker green for readability */
         }
 
         .status-incomplete {
             background-color: #fee2e2;
-            color: #991b1b;
+            color: #b91c1c; /* Darker red for readability */
         }
 
         .no-data {
