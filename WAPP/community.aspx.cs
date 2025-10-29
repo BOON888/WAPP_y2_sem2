@@ -150,7 +150,7 @@ namespace WAPP
                 {
                     conn.Open();
 
-                    // 🧹 Step 1: Delete all replies linked to this post
+                    //Step 1: Delete all replies linked to this post
                     string deleteReplies = "DELETE FROM Reply WHERE PostId = @PostId";
                     using (SqlCommand cmdReplies = new SqlCommand(deleteReplies, conn))
                     {
@@ -158,7 +158,7 @@ namespace WAPP
                         cmdReplies.ExecuteNonQuery();
                     }
 
-                    // 🗑️ Step 2: Delete the post itself
+                    //Step 2: Delete the post itself
                     string deletePost = "DELETE FROM CommunityPost WHERE Id = @PostId AND UserId = @UserId";
                     using (SqlCommand cmdPost = new SqlCommand(deletePost, conn))
                     {
@@ -170,6 +170,11 @@ namespace WAPP
 
                 LoadPosts();
             }
+        }
+        protected void btnDelete_PreRender(object sender, EventArgs e)
+        {
+            LinkButton btn = (LinkButton)sender;
+            btn.Attributes["data-uniqueid"] = btn.UniqueID;
         }
 
         protected void rptPosts_ItemDataBound(object sender, RepeaterItemEventArgs e)

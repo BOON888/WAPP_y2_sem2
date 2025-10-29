@@ -2,6 +2,15 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <style>
+
+        html {
+            scrollbar-width: none; /* Firefox */
+        }
+
+        html::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Edge */
+        }
+
         /* ===== General Page Style ===== */
         body {
             font-family: 'Segoe UI', sans-serif;
@@ -150,10 +159,13 @@
                             <span class="badge ms-2"><%# Eval("Role") %></span>
                             <p class="text-muted small mb-1"><%# Eval("PostDateTime", "{0:g}") %></p>
                         </div>
-                        <asp:LinkButton ID="btnDeletePost" runat="server"
+                        <asp:LinkButton ID="btnDelete" runat="server"
                             CommandName="DeletePost"
                             CommandArgument='<%# Eval("Id") %>'
-                            CssClass="btn-delete">Delete</asp:LinkButton>
+                            CssClass="btn-delete delete-post"
+                            OnPreRender="btnDelete_PreRender">
+                            Delete
+                        </asp:LinkButton>
                     </div>
                     <p class="mt-2"><%# Eval("PostContent") %></p>
 
@@ -176,6 +188,49 @@
             </div>
         </ItemTemplate>
     </asp:Repeater>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.delete-post').forEach(function (btn) {
+                btn.addEventListener('click', function (event) {
+                    event.preventDefault(); // stop normal postback
+
+                    const uniqueID = btn.getAttribute('data-uniqueid'); // server control UniqueID
+
+                    Swal.fire({
+                        html: `
+                        <div class="logout-container">
+                            <h4 style="margin-bottom:15px; color:black;">Confirm Delete</h4>
+                                <p style="margin-bottom:25px; color:#333;">
+                                    Are you sure you want to delete this post?<br>
+                                </p>
+                                <div style="display:flex; justify-content:center; gap:20px;">
+                                    <button id="confirmDelete" class="btn-delete">Delete</button>
+                                    <button id="cancelDelete" class="btn-cancel">Cancel</button>
+                                </div>
+                            </div>
+                        `,
+                            showConfirmButton: false,
+                            showCancelButton: false,
+                            background: 'transparent',
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                        });
+
+                        // Popup button logic
+                        setTimeout(() => {
+                            document.getElementById('confirmDelete').addEventListener('click', function () {
+                                __doPostBack(uniqueID, ''); // ✅ triggers ASP.NET DeletePost
+                            });
+                            document.getElementById('cancelDelete').addEventListener('click', function () {
+                                Swal.close();
+                            });
+                        }, 100);
+                    });
+                });
+            });
+        </script>
 
     <!-- If no posts -->
     <asp:Label ID="lblNoPosts" runat="server" CssClass="text-muted d-block text-center mt-4" Visible="false">

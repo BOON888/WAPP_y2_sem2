@@ -5,6 +5,7 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
 
     <style>
+
         /* ===== Remove Scrollbar ===== */
         html {
             scrollbar-width: none; /* Firefox */
@@ -177,10 +178,12 @@
                         <asp:LinkButton ID="btnDelete" runat="server"
                             CommandName="DeletePost"
                             CommandArgument='<%# Eval("Id") %>'
-                            CssClass="btn-delete"
-                            Visible="false">
+                            CssClass="btn-delete delete-post"
+                            Visible="false"
+                            OnPreRender="btnDelete_PreRender">
                             Delete
                         </asp:LinkButton>
+
                     </div>
 
                     <hr />
@@ -212,6 +215,51 @@
                 </div>
             </ItemTemplate>
         </asp:Repeater>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                document.querySelectorAll('.delete-post').forEach(function (btn) {
+                    btn.addEventListener('click', function (event) {
+                        event.preventDefault();
+
+                        const postId = btn.getAttribute('commandargument');
+                        const uniqueID = btn.getAttribute('data-uniqueid');
+
+                        Swal.fire({
+                            html: `
+                            <div class="logout-container">
+                                <h4 style="margin-bottom:15px; color:black;">Confirm Delete</h4>
+                                <p style="margin-bottom:25px; color:#333;">
+                                    Are you sure you want to delete this post?<br>
+                                </p>
+                                <div style="display:flex; justify-content:center; gap:20px;">
+                                    <button id="confirmDelete" class="btn-delete">Delete</button>
+                                    <button id="cancelDelete" class="btn-cancel">Cancel</button>
+                                </div>
+                            </div>
+                        `,
+                            showConfirmButton: false,
+                            showCancelButton: false,
+                            background: 'transparent',
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                        });
+
+                        setTimeout(() => {
+                            document.getElementById('confirmDelete').addEventListener('click', function () {
+                                // ✅ Correctly trigger postback with the server's unique ID
+                                __doPostBack(uniqueID, '');
+                            });
+
+                            document.getElementById('cancelDelete').addEventListener('click', function () {
+                                Swal.close();
+                            });
+                        }, 100);
+                    });
+                });
+            });
+        </script>
 
         <asp:Label ID="lblMessage" runat="server" CssClass="text-danger"></asp:Label>
 

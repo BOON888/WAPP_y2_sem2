@@ -2,6 +2,7 @@
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.Web.UI.WebControls;
 
 namespace WAPP
 {
@@ -79,6 +80,14 @@ namespace WAPP
 
             return dtReplies;
         }
+
+        protected void btnDelete_PreRender(object sender, EventArgs e)
+        {
+            LinkButton btn = (LinkButton)sender;
+            btn.Attributes["data-uniqueid"] = btn.UniqueID;
+            btn.Visible = true; // Make it visible after assigning the attribute
+        }
+
 
         protected void rptMyPosts_ItemCommand(object source, System.Web.UI.WebControls.RepeaterCommandEventArgs e)
         {
