@@ -24,15 +24,12 @@ namespace WAPP
                     Session["EducatorID"] = 3000;
                     Session["EducatorName"] = "Educator";
                 }
-                // create draft course if needed
-                if (Session["NewCourseId"] == null)
-                {
-                    int newCourseId = CreateDraftCourse();
-                    Session["NewCourseId"] = newCourseId;
-                }
 
-                LoadCourseInfoToUI();
-                BindLessons();
+                if (Session["NewCourseId"] != null)
+                {
+                    LoadCourseInfoToUI();
+                    BindLessons();
+                }
                 pnlQuiz.Visible = false;
             }
 
@@ -148,8 +145,16 @@ namespace WAPP
 
         protected void btnAddLesson_Click(object sender, EventArgs e)
         {
-            if (Session["NewCourseId"] == null) return;
-            int courseId = Convert.ToInt32(Session["NewCourseId"]);
+            int courseId;
+            if (Session["NewCourseId"] == null)
+            {
+                courseId = CreateDraftCourse();
+                Session["NewCourseId"] = courseId;
+            }
+            else
+            {
+                courseId = Convert.ToInt32(Session["NewCourseId"]);
+            }
 
             string lessonTitle = txtNewLessonTitle.Text.Trim();
             string lessonContent = txtNewLessonContent.Text.Trim();
