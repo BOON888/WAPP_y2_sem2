@@ -10,17 +10,17 @@
             background-color: white;
             border-radius: 12px;
             padding: 40px;
-            background: rgba(255, 255, 255, 0.25); /* half-transparent white */
+            background: rgba(255, 255, 255, 0.25); 
             width: 99%;
             max-width: 1900px;
-            margin: 60px auto;
-            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25); /* soft blue shadow */ 
+            margin: 0px auto 50px;
+            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25);
 
-            backdrop-filter: blur(10px); /* frosted glass effect */ 
+            backdrop-filter: blur(10px); 
 
-            -webkit-backdrop-filter: blur(10px); /* Safari support */ 
+            -webkit-backdrop-filter: blur(10px); 
 
-            border: 1px solid rgba(255, 255, 255, 0.3); /* subtle border for glass look */ 
+            border: 1px solid rgba(255, 255, 255, 0.3); 
         }
         .header {
             text-align: center;
@@ -45,13 +45,13 @@
             flex: 1;
             min-width: 230px;
             padding: 20px;
-            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25); /* soft blue shadow */ 
+            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25);
 
-            backdrop-filter: blur(10px); /* frosted glass effect */ 
+            backdrop-filter: blur(10px); 
 
-            -webkit-backdrop-filter: blur(10px); /* Safari support */ 
+            -webkit-backdrop-filter: blur(10px);
 
-            border: 1px solid rgba(255, 255, 255, 0.3); /* subtle border for glass look */
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
         .stat-card h2 { color: #001eff; font-size: 28px; margin: 0; }
         .stat-card p { color: #6b7280; margin: 5px 0 0; }
@@ -124,13 +124,22 @@
         .auto-style1 {
             font-size: xx-large;
         }
-        /* Highlight current user row */
+       
         .highlighted {
-            background-color: #e0e7ff !important;  /* light blue */
+            background-color: #e0e7ff !important; 
             border: 2px solid #001eff !important;
             box-shadow: 0 0 10px rgba(0, 30, 255, 0.3);
             transition: all 0.3s ease;
         }
+
+        html { 
+          scrollbar-width: none;
+        } 
+ 
+        html::-webkit-scrollbar { 
+          display: none; 
+        }
+
     </style>
 
     <div class="leaderboard-container">

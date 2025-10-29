@@ -16,12 +16,12 @@
             box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25);
             width: 99%;
             max-width: 1900px;
-            margin: 60px auto;
-            backdrop-filter: blur(10px); /* frosted glass effect */ 
+            margin: 0px auto 50px;
+            backdrop-filter: blur(10px);
 
-            -webkit-backdrop-filter: blur(10px); /* Safari support */ 
+            -webkit-backdrop-filter: blur(10px);
 
-            border: 1px solid rgba(255, 255, 255, 0.3); /* subtle border for glass look */ 
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         .feedback-container h1 {
@@ -63,13 +63,13 @@
             background-color: #f9fafb;
             font-size: 15px;
             transition: border-color 0.2s;
-            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25); /* soft blue shadow */ 
+            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25);
 
-            backdrop-filter: blur(10px); /* frosted glass effect */ 
+            backdrop-filter: blur(10px);
 
-            -webkit-backdrop-filter: blur(10px); /* Safari support */ 
+            -webkit-backdrop-filter: blur(10px);
 
-            border: 1px solid rgba(255, 255, 255, 0.3); /* subtle border for glass look */
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         .feedback-form input:focus,
@@ -170,6 +170,15 @@
             padding: 3px 10px;
             border-radius: 6px;
         }
+
+        html { 
+          scrollbar-width: none;
+        } 
+ 
+        html::-webkit-scrollbar { 
+          display: none; 
+        }
+
     </style>
 
     <div class="feedback-container">

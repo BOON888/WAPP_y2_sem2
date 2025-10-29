@@ -16,15 +16,15 @@
             
             width: 99%;
             max-width: 1900px;
-            margin: 60px auto;
-            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25); /* soft blue shadow */ 
+            margin: 0px auto 50px;
+            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25);
 
-            backdrop-filter: blur(10px); /* frosted glass effect */ 
+            backdrop-filter: blur(10px);
 
-            -webkit-backdrop-filter: blur(10px); /* Safari support */ 
+            -webkit-backdrop-filter: blur(10px);
 
-            border: 1px solid rgba(255, 255, 255, 0.3); /* subtle border for glass look */ 
-            background: rgba(255, 255, 255, 0.25); /* half-transparent white */
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.25);
         }
 
         h1 {
@@ -126,7 +126,13 @@
             margin-bottom: 10px;
         }
 
-        
+        html { 
+          scrollbar-width: none;
+        } 
+ 
+        html::-webkit-scrollbar { 
+          display: none; 
+        }
 
     </style>
 

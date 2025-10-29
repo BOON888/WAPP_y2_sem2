@@ -6,7 +6,7 @@
         .lesson-view-container {
             width: 99%;
             max-width: 1900px;
-            margin: 40px auto;
+            margin: 0px auto 50px;
             
             border-radius: 10px;
             
@@ -106,6 +106,15 @@
             color:#b91c1c; padding:10px; border-radius:8px;
             margin-top:15px; font-weight:500;
         }
+
+        html { 
+          scrollbar-width: none;
+        } 
+ 
+        html::-webkit-scrollbar { 
+          display: none; 
+        }
+
     </style>
 
     <div class="lesson-view-container">

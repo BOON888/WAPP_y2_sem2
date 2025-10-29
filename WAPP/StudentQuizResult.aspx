@@ -15,7 +15,7 @@
 
         .result-wrapper {
             max-width: 800px;
-            margin: 50px auto;
+            margin: 0px auto 50px;
             padding: 30px;
             background-color: #fff;
             border-radius: 12px;
@@ -181,6 +181,15 @@
             margin-top: 15px; font-weight: 500;
             text-align: left;
         }
+
+        html { 
+          scrollbar-width: none;
+        } 
+ 
+        html::-webkit-scrollbar { 
+          display: none; 
+        }
+
     </style>
 
     <div class="result-wrapper" id="pnlResult" runat="server"> 

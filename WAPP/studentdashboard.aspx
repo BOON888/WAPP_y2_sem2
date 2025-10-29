@@ -16,26 +16,26 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             width: 99%;
             max-width: 1900px;
-            margin: 60px auto;
-            background: rgba(255, 255, 255, 0.25); /* half-transparent white */ 
+            margin: 0px auto 50px;
+            background: rgba(255, 255, 255, 0.25);
 
             border-radius: 12px; 
 
-            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25); /* soft blue shadow */ 
+            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25); 
 
-            backdrop-filter: blur(10px); /* frosted glass effect */ 
+            backdrop-filter: blur(10px);
 
-            -webkit-backdrop-filter: blur(10px); /* Safari support */ 
+            -webkit-backdrop-filter: blur(10px);
 
-            border: 1px solid rgba(255, 255, 255, 0.3); /* subtle border for glass look */ 
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         html { 
-          scrollbar-width: none; /* Firefox */ 
+          scrollbar-width: none;
         } 
  
         html::-webkit-scrollbar { 
-          display: none; /* Chrome, Safari, Edge */ 
+          display: none; 
         }
 
         .welcome {

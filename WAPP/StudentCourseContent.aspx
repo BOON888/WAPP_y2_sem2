@@ -6,7 +6,8 @@
         body { background-color:#f9fafb; font-family:'Segoe UI',sans-serif; }
 
         .course-container {
-            width:99%; max-width:1900px; margin:20px auto;
+            width:99%; max-width:1900px; 
+            margin: 0px auto 50px;
             border-radius:10px;
             padding:40px;
             box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25);
@@ -103,6 +104,15 @@
             color:#065f46; padding:10px; border-radius:8px;
             margin-top:15px; font-weight:500;
         }
+
+        html { 
+          scrollbar-width: none;
+        } 
+ 
+        html::-webkit-scrollbar { 
+          display: none; 
+        }
+
     </style>
 
     <div class="course-container">

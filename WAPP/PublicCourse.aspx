@@ -16,7 +16,7 @@
             
             width: 99%;
             max-width: 1900px;
-            margin: 60px auto;
+            margin: 0px auto 50px;
             box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25);
 
             backdrop-filter: blur(10px);
@@ -106,6 +106,15 @@
             font-size: 14px;
             margin-bottom: 10px;
         }
+
+        html { 
+          scrollbar-width: none;
+        } 
+ 
+        html::-webkit-scrollbar { 
+          display: none; 
+        }
+
     </style>
 
     <div class="page-container">
