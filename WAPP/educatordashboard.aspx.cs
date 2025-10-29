@@ -15,28 +15,54 @@ namespace WAPP
         {
             if (!IsPostBack)
             {
-                // If your login sets these sessions, use them; else fallback demo
-                if (Session["EducatorID"] != null)
-                    int.TryParse(Session["EducatorID"].ToString(), out _educatorId);
-                else if (Session["UserID"] != null)
+                // ✅ Must be logged in as educator
+                if (Session["UserId"] == null || Session["Role"] == null || Session["Role"].ToString().ToLower() != "educator")
                 {
-                    int userId;
-                    if (int.TryParse(Session["UserID"].ToString(), out userId))
-                        _educatorId = LookupEducatorIdByUserId(userId);
+                    Response.Redirect("sign_in.aspx");
+                    return;
                 }
 
-                if (_educatorId <= 0)
+                // ✅ Load EducatorID if not already set
+                if (Session["EducatorID"] == null)
                 {
-                    _educatorId = 3000;
-                    Session["EducatorID"] = _educatorId;
-                    Session["EducatorName"] = "Educator";
+                    int userId = Convert.ToInt32(Session["UserId"]);
+                    using (SqlConnection conn = new SqlConnection(connString))
+                    {
+                        conn.Open();
+                        SqlCommand cmd = new SqlCommand("SELECT Id FROM Educator WHERE UserId = @uid", conn);
+                        cmd.Parameters.AddWithValue("@uid", userId);
+                        object result = cmd.ExecuteScalar();
+
+                        if (result != null)
+                        {
+                            Session["EducatorID"] = Convert.ToInt32(result);
+                            Session["EducatorName"] = Session["FullName"];
+                        }
+                        else
+                        {
+                            // optional: create educator profile if not found
+                            SqlCommand insert = new SqlCommand(
+                                "INSERT INTO Educator (UserId, EducationQualification) VALUES (@uid, 'Not Set'); SELECT SCOPE_IDENTITY();",
+                                conn
+                            );
+                            insert.Parameters.AddWithValue("@uid", userId);
+                            object newId = insert.ExecuteScalar();
+
+                            Session["EducatorID"] = Convert.ToInt32(newId);
+                            Session["EducatorName"] = Session["FullName"];
+                        }
+                    }
                 }
 
-                lblEducatorName.Text = Session["EducatorName"] != null ? Session["EducatorName"].ToString() : "Educator";
+                // ✅ Use the real EducatorID now
+                _educatorId = Convert.ToInt32(Session["EducatorID"]);
+                lblEducatorName.Text = Session["FullName"]?.ToString() ?? "Educator";
 
+                // Load stats and courses
                 BindDashboardStats();
                 BindCourses();
             }
+
         }
         protected void rptCourses_ItemCommand(object source, RepeaterCommandEventArgs e)
         {
@@ -58,6 +84,7 @@ namespace WAPP
 
         protected void btnCreateCourse_Click(object sender, EventArgs e)
         {
+            Session["NewCourseId"] = null; // Clear any leftover draft ID
             Response.Redirect("~/CreateCourse.aspx");
         }
 

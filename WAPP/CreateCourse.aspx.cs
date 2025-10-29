@@ -444,6 +444,7 @@ namespace WAPP
                 // ✅ Feedback message
                 lblMessage.Text = "Course created and published successfully!";
                 lblMessage.ForeColor = System.Drawing.Color.Green;
+                Session["NewCourseId"] = null; // Forces a new draft to be created next time
             }
             catch (Exception ex)
             {
