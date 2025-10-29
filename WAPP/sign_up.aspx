@@ -15,34 +15,6 @@
           display: none; /* Chrome, Safari, Edge */
         }
 
-        .btnSignIn, .btnSignUp {
-            position: relative;
-            color: white;
-            text-decoration: none;
-            font-size: 16px;
-            padding: 10px;
-            overflow: hidden; /* hides the wave box */
-            transition: color 0.3s ease;
-        }
-
-        .btnSignIn::after, .btnSignUp::after {
-            content: "";
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            width: 15px;
-            height: 8px;
-            background: rgba(255, 255, 255, 0.3);
-            transform: translate(-50%, -50%) scale(0);
-            transition: transform 0.6s ease, opacity 0.6s ease;
-            opacity: 0;
-            border-radius: 2px; /* makes corners slightly soft, optional */
-        }
-
-        .btnSignIn:hover, .btnSignUp:hover {
-            color: black;
-        }
-
         .btnSignIn:hover::after, .btnSignUp:hover::after {
             transform: translate(-50%, -50%) scale(6); /* expands outward like a wave */
             opacity: 1;

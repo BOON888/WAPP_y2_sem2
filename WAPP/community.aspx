@@ -1,4 +1,6 @@
-﻿<%@ Page Title="Community Forum" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="community.aspx.cs" Inherits="WAPP.community" %>
+﻿<%@ Page Title="Community Forum" Language="C#" MasterPageFile="~/Site.Master"
+    AutoEventWireup="true" CodeBehind="community.aspx.cs" Inherits="WAPP.community"
+    MaintainScrollPositionOnPostback="true" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
 
