@@ -129,6 +129,7 @@
     <Content Include="CreateCourse.aspx" />
     <Content Include="Default.aspx" />
     <Content Include="editCourse.aspx" />
+    <Content Include="edit_course.aspx" />
     <Content Include="EducatorCourseStudents.aspx" />
     <Content Include="educatordashboard.aspx" />
     <Content Include="educatorProfile.aspx" />
@@ -289,6 +290,13 @@
     </Compile>
     <Compile Include="editCourse.aspx.designer.cs">
       <DependentUpon>editCourse.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="edit_course.aspx.cs">
+      <DependentUpon>edit_course.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="edit_course.aspx.designer.cs">
+      <DependentUpon>edit_course.aspx</DependentUpon>
     </Compile>
     <Compile Include="EducatorCourseStudents.aspx.cs">
       <DependentUpon>EducatorCourseStudents.aspx</DependentUpon>
