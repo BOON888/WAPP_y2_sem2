@@ -61,17 +61,16 @@
             flex: 1;
             text-align: center;
             min-width: 250px;
-            background: rgba(255, 255, 255, 0.25); /* half-transparent white */ 
+            background: rgba(255, 255, 255, 0.25);
 
             border-radius: 12px; 
 
-            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25); /* soft blue shadow */ 
+            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25);
 
-            backdrop-filter: blur(10px); /* frosted glass effect */ 
+            backdrop-filter: blur(10px); 
 
-            -webkit-backdrop-filter: blur(10px); /* Safari support */ 
-
-            border: 1px solid rgba(255, 255, 255, 0.3); /* subtle border for glass look */ 
+            -webkit-backdrop-filter: blur(10px); 
+            border: 1px solid rgba(255, 255, 255, 0.3);  
         }
 
         .card h3 {
