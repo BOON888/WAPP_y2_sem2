@@ -101,7 +101,7 @@
   <ItemGroup>
     <Content Include="About.aspx" />
     <Content Include="admin_dashboard.aspx" />
-    <Content Include="admin_manageads.aspx" />
+    
     <Content Include="App_Data\sealearner.mdf" />
     <Content Include="App_Data\sealearner_log.ldf">
       <DependentUpon>sealearner.mdf</DependentUpon>
@@ -232,13 +232,7 @@
     <Compile Include="admin_dashboard.aspx.designer.cs">
       <DependentUpon>admin_dashboard.aspx</DependentUpon>
     </Compile>
-    <Compile Include="admin_manageads.aspx.cs">
-      <DependentUpon>admin_manageads.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="admin_manageads.aspx.designer.cs">
-      <DependentUpon>admin_manageads.aspx</DependentUpon>
-    </Compile>
+    
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="About.aspx.cs">
       <DependentUpon>About.aspx</DependentUpon>
