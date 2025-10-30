@@ -123,19 +123,35 @@ namespace WAPP
 
             string fileName = null;
 
-            // ✅ Handle profile picture upload
+            // Use a flag to track if a new file was uploaded
+            bool fileUploadedSuccessfully = false;
+
+            // 1. FILE UPLOAD LOGIC (Moved outside the using block for better flow, but inside its own try block)
             if (fileUploadProfile.HasFile)
             {
-                string extension = Path.GetExtension(fileUploadProfile.FileName);
-                fileName = "educator_" + userId + "_" + DateTime.Now.Ticks + extension;
+                try
+                {
+                    string extension = Path.GetExtension(fileUploadProfile.FileName);
+                    fileName = "educator_" + userId + "_" + DateTime.Now.Ticks + extension;
 
-                string folderPath = Server.MapPath("~/Image/");
-                if (!Directory.Exists(folderPath))
-                    Directory.CreateDirectory(folderPath);
+                    string folderPath = Server.MapPath("~/Image/");
+                    if (!Directory.Exists(folderPath))
+                        Directory.CreateDirectory(folderPath);
 
-                fileUploadProfile.SaveAs(Path.Combine(folderPath, fileName));
+                    // This is the critical line where permission issues occur
+                    fileUploadProfile.SaveAs(Path.Combine(folderPath, fileName));
+                    fileUploadedSuccessfully = true; // Set flag on success
+                }
+                catch (Exception fileEx)
+                {
+                    // If file upload fails (usually permission), display error and STOP the entire process.
+                    lblMsg.Text = "❌ File Upload Failed: " + fileEx.Message + ". Please check folder permissions.";
+                    lblMsg.ForeColor = System.Drawing.Color.Red;
+                    return;
+                }
             }
 
+            // 2. Database Logic
             using (SqlConnection conn = new SqlConnection(connStr))
             {
                 conn.Open();
@@ -143,10 +159,17 @@ namespace WAPP
 
                 try
                 {
+                    // If no new file was uploaded, we need to preserve the existing filename (if any).
+                    if (!fileUploadedSuccessfully)
+                    {
+                        // Get the existing file name from the session or database before updating.
+                        fileName = Session["ProfilePicture"]?.ToString();
+                    }
+
                     // ✅ Update Users
                     string sqlUser = @"UPDATE Users 
-                                       SET FullName=@name, Age=@age, Gender=@gender"
-                                       + (fileName != null ? ", ProfilePicture=@pic" : "")
+                               SET FullName=@name, Age=@age, Gender=@gender"
+                                       + (fileUploadedSuccessfully ? ", ProfilePicture=@pic" : "")
                                        + " WHERE Id=@uid";
 
                     SqlCommand cmdU = new SqlCommand(sqlUser, conn, tran);
@@ -154,14 +177,17 @@ namespace WAPP
                     cmdU.Parameters.AddWithValue("@age", age);
                     cmdU.Parameters.AddWithValue("@gender", gender);
                     cmdU.Parameters.AddWithValue("@uid", userId);
-                    if (fileName != null)
+
+                    // Only add the @pic parameter if a new file was uploaded successfully
+                    if (fileUploadedSuccessfully)
                         cmdU.Parameters.AddWithValue("@pic", fileName);
+
                     cmdU.ExecuteNonQuery();
 
                     // ✅ Update Educator
                     string sqlEdu = @"UPDATE Educator 
-                                      SET EducationQualification=@qual, GraduatedUniversity=@uni
-                                      WHERE UserId=@uid";
+                              SET EducationQualification=@qual, GraduatedUniversity=@uni
+                              WHERE UserId=@uid";
 
                     SqlCommand cmdE = new SqlCommand(sqlEdu, conn, tran);
                     cmdE.Parameters.AddWithValue("@qual", qualification);
@@ -187,15 +213,17 @@ namespace WAPP
                     btnSave.Visible = false;
                     btnCancel.Visible = false;
                 }
-                catch (Exception ex)
+                catch (Exception dbEx)
                 {
                     tran.Rollback();
-                    lblMsg.Text = "❌ Error updating profile: " + ex.Message;
+                    // This now catches database-specific errors only
+                    lblMsg.Text = "❌ Database Error: " + dbEx.Message;
                     lblMsg.ForeColor = System.Drawing.Color.Red;
+
+                    // Optional: If the file was saved but the DB update failed, you may want to delete the orphaned file here.
                 }
             }
         }
-
         private void LoadTeachingStats()
         {
             int userId = Convert.ToInt32(Session["UserId"]);
