@@ -34,13 +34,13 @@ namespace WAPP
             {
                 conn.Open();
                 string sql = @"
-                    SELECT 
-                        e.Id AS EducatorId,
-                        u.FullName, u.Age, u.Gender, u.ProfilePicture,
-                        e.EducationQualification, e.GraduatedUniversity
-                    FROM Users u
-                    JOIN Educator e ON u.Id = e.UserId
-                    WHERE u.Id = @uid";
+            SELECT 
+                e.Id AS EducatorId,
+                u.FullName, u.Age, u.Gender, u.ProfilePicture, u.Email,
+                e.EducationQualification, e.GraduatedUniversity
+            FROM Users u
+            JOIN Educator e ON u.Id = e.UserId
+            WHERE u.Id = @uid";
 
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@uid", userId);
@@ -60,10 +60,15 @@ namespace WAPP
                     txtAge.Text = dr["Age"].ToString();
                     lblEducatorId.Text = dr["EducatorId"].ToString();
 
+                    // ✅ Email (read-only)
+                    txtEmail.Text = dr["Email"].ToString();
+
+                    // ✅ Gender
                     string gender = dr["Gender"].ToString();
                     if (!string.IsNullOrEmpty(gender) && ddlGender.Items.FindByValue(gender) != null)
                         ddlGender.SelectedValue = gender;
 
+                    // ✅ Qualification
                     string qual = dr["EducationQualification"].ToString();
                     if (!string.IsNullOrEmpty(qual) && ddlQualification.Items.FindByValue(qual) != null)
                         ddlQualification.SelectedValue = qual;
@@ -78,6 +83,7 @@ namespace WAPP
                 dr.Close();
             }
         }
+
 
         protected void btnEdit_Click(object sender, EventArgs e)
         {

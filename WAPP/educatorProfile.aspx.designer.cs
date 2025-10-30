@@ -105,6 +105,15 @@ namespace WAPP
         protected global::System.Web.UI.WebControls.DropDownList ddlQualification;
 
         /// <summary>
+        /// txtEmail control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtEmail;
+
+        /// <summary>
         /// txtUniversity control.
         /// </summary>
         /// <remarks>
