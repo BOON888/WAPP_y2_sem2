@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="Edit Course" Language="C#" MasterPageFile="~/Site.Master"
-    AutoEventWireup="true" CodeBehind="editCourse.aspx.cs" Inherits="WAPP.editCourse" %>
+    AutoEventWireup="true" CodeBehind="editCourse.aspx.cs" Inherits="WAPP.editCourse" MaintainScrollPositionOnPostback="true" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
 
