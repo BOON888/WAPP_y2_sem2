@@ -79,12 +79,39 @@
             box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25);
         }
 
-        .file-upload {
-            font-size: 13px;
-            width: 140px;
-            padding: 4px;
-            text-align: center;
+        .file-upload::file-selector-button {
+            background: #001eff;
+            color: white;
+            padding: 1px 8px; /* 🔹 Much smaller size */
+            font-size: 10px; /* 🔹 Tiny text */
+            border: 1px solid #001eff;
+            border-radius: 4px; /* 🔹 Subtle curve */
+            cursor: pointer;
+            font-weight: 600;
+            box-shadow: 0 2px 6px rgba(0, 30, 255, 0.15);
+            transition: all 0.2s ease;
         }
+
+        .file-upload {
+            font-size: 10px; /* 🔹 Shrinks BOTH the label and text */
+            width: 100px; /* 🔹 Makes the entire input narrower */
+            height: 23px; /* 🔹 Tiny height */
+            padding: 2px; /* 🔹 Compact spacing */
+            overflow: hidden; /* Prevents long text overflow */
+        }
+
+            .file-upload:hover::file-selector-button {
+                transform: translateY(-1px);
+                background: white;
+                color: #001eff;
+                box-shadow: 0 3px 8px rgba(0, 30, 255, 0.25);
+            }
+
+            .file-upload:hover {
+                /* Apply the hover effect/shadow to the visible area */
+                box-shadow: 0 6px 15px rgba(0, 30, 255, 0.25);
+                border-color: #001eff;
+            }
 
         .profile-info-text h1 {
             font-size: 28px;
@@ -255,7 +282,7 @@
             <div class="profile-info">
                 <div class="profile-pic-container">
                     <asp:Image ID="imgProfile" runat="server" CssClass="img-profile" />
-                    <asp:FileUpload ID="fileUploadProfile" runat="server" CssClass="file-upload" />
+                    <asp:FileUpload ID="fileUploadProfile" runat="server" CssClass="file-upload" Visible="false" />
                 </div>
                 <div class="profile-info-text">
                     <h1>
@@ -305,7 +332,7 @@
                         <asp:ListItem Text="Diploma" Value="Diploma" />
                     </asp:DropDownList>
                 </div>
-                
+
 
                 <!-- 🆕 Added Email field (read-only) -->
                 <div>
