@@ -118,6 +118,7 @@ namespace WAPP
                       currentPage == "educatorprofile" ||
                       currentPage == "createcourse" ||
                       currentPage == "educatorcoursestudents" ||
+                      currentPage == "editcourse"||
                       (currentPage == "community" && userRole == "educator")||
                       (currentPage == "my_post" && userRole == "educator")))
             {

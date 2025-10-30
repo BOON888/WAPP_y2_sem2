@@ -11,7 +11,7 @@ namespace WAPP
 {
 
 
-    public partial class CreateCourse
+    public partial class createcourse
     {
 
         /// <summary>
@@ -24,49 +24,58 @@ namespace WAPP
         protected global::System.Web.UI.WebControls.TextBox txtCourseTitle;
 
         /// <summary>
-        /// rblCourseType control.
+        /// ddlCourseType control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButtonList rblCourseType;
+        protected global::System.Web.UI.WebControls.DropDownList ddlCourseType;
 
         /// <summary>
-        /// priceContainer control.
+        /// coinDiv control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl priceContainer;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl coinDiv;
 
         /// <summary>
-        /// txtCoursePrice control.
+        /// txtCourseCoin control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtCoursePrice;
+        protected global::System.Web.UI.WebControls.TextBox txtCourseCoin;
 
         /// <summary>
-        /// revCoursePrice control.
+        /// txtLessonTitle control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RegularExpressionValidator revCoursePrice;
+        protected global::System.Web.UI.WebControls.TextBox txtLessonTitle;
 
         /// <summary>
-        /// lblCourseInfoMsg control.
+        /// fuContentFile control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblCourseInfoMsg;
+        protected global::System.Web.UI.WebControls.FileUpload fuContentFile;
+
+        /// <summary>
+        /// txtTextContent control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtTextContent;
 
         /// <summary>
         /// btnAddLesson control.
@@ -78,112 +87,139 @@ namespace WAPP
         protected global::System.Web.UI.WebControls.Button btnAddLesson;
 
         /// <summary>
-        /// hfEditingLessonId control.
+        /// lblLessonCount control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HiddenField hfEditingLessonId;
+        protected global::System.Web.UI.WebControls.Label lblLessonCount;
 
         /// <summary>
-        /// txtNewLessonTitle control.
+        /// gvLessons control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtNewLessonTitle;
+        protected global::System.Web.UI.WebControls.GridView gvLessons;
 
         /// <summary>
-        /// txtNewLessonContent control.
+        /// ddlQuizLesson control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtNewLessonContent;
+        protected global::System.Web.UI.WebControls.DropDownList ddlQuizLesson;
 
         /// <summary>
-        /// fuLessonFile control.
+        /// txtQuizRewardCoins control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.FileUpload fuLessonFile;
+        protected global::System.Web.UI.WebControls.TextBox txtQuizRewardCoins;
 
         /// <summary>
-        /// btnOpenQuiz control.
+        /// txtQuestionText control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnOpenQuiz;
+        protected global::System.Web.UI.WebControls.TextBox txtQuestionText;
 
         /// <summary>
-        /// lblAddLessonMsg control.
+        /// txtOptionA control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblAddLessonMsg;
+        protected global::System.Web.UI.WebControls.TextBox txtOptionA;
 
         /// <summary>
-        /// pnlQuiz control.
+        /// txtOptionB control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlQuiz;
+        protected global::System.Web.UI.WebControls.TextBox txtOptionB;
 
         /// <summary>
-        /// txtQuizCoins control.
+        /// txtOptionC control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtQuizCoins;
+        protected global::System.Web.UI.WebControls.TextBox txtOptionC;
 
         /// <summary>
-        /// revQuizCoins control.
+        /// txtOptionD control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RegularExpressionValidator revQuizCoins;
+        protected global::System.Web.UI.WebControls.TextBox txtOptionD;
 
         /// <summary>
-        /// questionsContainer control.
+        /// ddlCorrectAnswer control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl questionsContainer;
+        protected global::System.Web.UI.WebControls.DropDownList ddlCorrectAnswer;
 
         /// <summary>
-        /// hfQuizData control.
+        /// btnAddQuestion control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HiddenField hfQuizData;
+        protected global::System.Web.UI.WebControls.Button btnAddQuestion;
 
         /// <summary>
-        /// lvLessons control.
+        /// lblQuizStatus control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ListView lvLessons;
+        protected global::System.Web.UI.WebControls.Label lblQuizStatus;
+
+        /// <summary>
+        /// gvTempQuestions control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView gvTempQuestions;
+
+        /// <summary>
+        /// btnSaveQuiz control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnSaveQuiz;
+
+        /// <summary>
+        /// btnCancelQuizEdit control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnCancelQuizEdit;
 
         /// <summary>
         /// btnCreateCourse control.
@@ -195,12 +231,12 @@ namespace WAPP
         protected global::System.Web.UI.WebControls.Button btnCreateCourse;
 
         /// <summary>
-        /// lblMessage control.
+        /// lblStatus control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblMessage;
+        protected global::System.Web.UI.WebControls.Label lblStatus;
     }
 }

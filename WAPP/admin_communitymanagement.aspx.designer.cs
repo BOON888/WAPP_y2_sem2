@@ -11,7 +11,7 @@ namespace WAPP
 {
 
 
-    public partial class admin_manageads
+    public partial class admin_communitymanagement
     {
     }
 }

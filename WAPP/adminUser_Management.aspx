@@ -440,10 +440,10 @@
     <!-- ===== NAVIGATION BAR ===== -->
     <div class="navbar">
         <asp:LinkButton ID="LinkButton1" runat="server" PostBackUrl="~/admin_dashboard.aspx">Dashboard</asp:LinkButton>
-        <asp:LinkButton ID="LinkButton2" runat="server" PostBackUrl="~/community.aspx">Community</asp:LinkButton>
-        <asp:LinkButton ID="LinkButton3" runat="server" CssClass="active" PostBackUrl="~/user_management.aspx">User Management</asp:LinkButton>
-        <asp:LinkButton ID="LinkButton4" runat="server" PostBackUrl="~/feedback.aspx">Feedback</asp:LinkButton>
-        <asp:LinkButton ID="LinkButton5" runat="server" PostBackUrl="~/manage_ads.aspx">Manage Ads</asp:LinkButton>
+        <asp:LinkButton ID="LinkButton2" runat="server" PostBackUrl="~/admin_communitymanagement.aspx">Community</asp:LinkButton>
+        <asp:LinkButton ID="LinkButton3" runat="server" PostBackUrl="~/adminUser_Management.aspx">User Management</asp:LinkButton>
+        <asp:LinkButton ID="LinkButton4" runat="server" PostBackUrl="~/admin_feedbackmanagement.aspx">Feedback</asp:LinkButton>
+        <asp:LinkButton ID="LinkButton5" runat="server" CssClass="active" PostBackUrl="~/adminManage_Ads.aspx">Manage Ads</asp:LinkButton>
     </div>
 
     <br />
@@ -455,6 +455,7 @@
     
     <asp:Panel ID="pnlError" runat="server" CssClass="error-message" Visible="false">
         <asp:Label ID="lblError" runat="server" Text=""></asp:Label>
+
     </asp:Panel>
 
     <div class="user-management-header">

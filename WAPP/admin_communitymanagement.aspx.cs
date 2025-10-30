@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 
 namespace WAPP
 {
-    public partial class admin_manageads : System.Web.UI.Page
+    public partial class admin_communitymanagement : System.Web.UI.Page
     {
         protected void Page_Load(object sender, EventArgs e)
         {
