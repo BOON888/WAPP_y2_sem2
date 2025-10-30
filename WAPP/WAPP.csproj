@@ -100,8 +100,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="About.aspx" />
+    <Content Include="admin_communitymanagement.aspx" />
     <Content Include="admin_dashboard.aspx" />
-    
+    <Content Include="admin_feedbackmanagement.aspx" />
     <Content Include="App_Data\sealearner.mdf" />
     <Content Include="App_Data\sealearner_log.ldf">
       <DependentUpon>sealearner.mdf</DependentUpon>
@@ -225,6 +226,13 @@
     <Content Include="Site.Mobile.Master" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="admin_communitymanagement.aspx.cs">
+      <DependentUpon>admin_communitymanagement.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="admin_communitymanagement.aspx.designer.cs">
+      <DependentUpon>admin_communitymanagement.aspx</DependentUpon>
+    </Compile>
     <Compile Include="admin_dashboard.aspx.cs">
       <DependentUpon>admin_dashboard.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -232,7 +240,13 @@
     <Compile Include="admin_dashboard.aspx.designer.cs">
       <DependentUpon>admin_dashboard.aspx</DependentUpon>
     </Compile>
-    
+    <Compile Include="admin_feedbackmanagement.aspx.cs">
+      <DependentUpon>admin_feedbackmanagement.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="admin_feedbackmanagement.aspx.designer.cs">
+      <DependentUpon>admin_feedbackmanagement.aspx</DependentUpon>
+    </Compile>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="About.aspx.cs">
       <DependentUpon>About.aspx</DependentUpon>
