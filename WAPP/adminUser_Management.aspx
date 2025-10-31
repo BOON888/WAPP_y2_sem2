@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="user_management.aspx.cs" Inherits="WAPP.user_management" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="user_management.aspx.cs" Inherits="WAPP.user_management" MaintainScrollPositionOnPostback="true" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <style>
@@ -368,24 +368,6 @@
             background: #545b62;
         }
 
-        /* Success message */
-        .success-message {
-            background-color: #d4edda;
-            border: 1px solid #c3e6cb;
-            color: #155724;
-            padding: 12px 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-
-        .error-message {
-            background-color: #f8d7da;
-            border: 1px solid #f5c6cb;
-            color: #721c24;
-            padding: 12px 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
         /* Button Styles */
         .disable-btn, .enable-btn {
             padding: 10px 20px;
@@ -435,15 +417,21 @@
             border-radius: 8px;
             margin-bottom: 20px;
         }
+
+        .user-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
     </style>
 
     <!-- ===== NAVIGATION BAR ===== -->
     <div class="navbar">
         <asp:LinkButton ID="LinkButton1" runat="server" PostBackUrl="~/admin_dashboard.aspx">Dashboard</asp:LinkButton>
         <asp:LinkButton ID="LinkButton2" runat="server" PostBackUrl="~/admin_communitymanagement.aspx">Community</asp:LinkButton>
-        <asp:LinkButton ID="LinkButton3" runat="server" PostBackUrl="~/adminUser_Management.aspx">User Management</asp:LinkButton>
+        <asp:LinkButton ID="LinkButton3" runat="server" PostBackUrl="~/adminUser_Management.aspx" CssClass="active">User Management</asp:LinkButton>
         <asp:LinkButton ID="LinkButton4" runat="server" PostBackUrl="~/admin_feedbackmanagement.aspx">Feedback</asp:LinkButton>
-        <asp:LinkButton ID="LinkButton5" runat="server" CssClass="active" PostBackUrl="~/adminManage_Ads.aspx">Manage Ads</asp:LinkButton>
+        <asp:LinkButton ID="LinkButton5" runat="server" PostBackUrl="~/adminManage_Ads.aspx">Manage Ads</asp:LinkButton>
     </div>
 
     <br />
@@ -455,7 +443,6 @@
     
     <asp:Panel ID="pnlError" runat="server" CssClass="error-message" Visible="false">
         <asp:Label ID="lblError" runat="server" Text=""></asp:Label>
-
     </asp:Panel>
 
     <div class="user-management-header">
@@ -534,4 +521,20 @@
             <asp:Label ID="lblNoUsers" runat="server" Text="No users found." CssClass="no-users" Visible="false"></asp:Label>
         </div>
     </div>
+
+    <script type="text/javascript">
+        function confirmDisable(userId, userName) {
+            if (confirm('Are you sure you want to disable user: ' + userName + '?')) {
+                __doPostBack('DisableUser', userId);
+            }
+            return false;
+        }
+
+        function confirmEnable(userId, userName) {
+            if (confirm('Are you sure you want to enable user: ' + userName + '?')) {
+                __doPostBack('EnableUser', userId);
+            }
+            return false;
+        }
+    </script>
 </asp:Content>

@@ -1,38 +1,7 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="admin_dashboard.aspx.cs" Inherits="WAPP.WebForm1" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="admin_dashboard.aspx.cs" Inherits="WAPP.WebForm1" MaintainScrollPositionOnPostback="true" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <style>
-        /* ===== Navigation Bar ===== */
-        .navbar {
-            background-color: #ffffff;
-            padding: 12px 20px;
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-        }
-        .navbar a,
-        .navbar asp\:LinkButton {
-            color: black;
-            text-decoration: none;
-            margin-right: 30px;
-            font-weight: 500;
-            font-size: 16px;
-            transition: color 0.3s ease, transform 0.3s ease;
-        }
-        .navbar a:hover,
-        .navbar asp\:LinkButton:hover {
-            color: #38bdf8;
-            transform: translateY(-2px);
-        }
-        .navbar .active {
-            color: #38bdf8;
-            border-bottom: 2px solid #38bdf8;
-            padding-bottom: 4px;
-        }
-
-        /* ===== Card Layout ===== */
         .card-container {
             display: grid !important;
             grid-template-columns: repeat(4, 1fr) !important;
@@ -71,7 +40,6 @@
             color: #007bff;
         }
 
-        /* ===== Course Management ===== */
         .course-management-header {
             display: flex;
             justify-content: space-between;
@@ -118,33 +86,28 @@
             background-color: #0056b3;
         }
 
-        .course-container {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
+        .course-gridview {
+            width: 100%;
+            border-collapse: collapse;
             margin-top: 20px;
         }
 
-        .course-row {
-            display: grid;
-            grid-template-columns: 80px 1fr 120px 120px 100px 120px;
-            gap: 15px;
+        .course-gridview th {
+            background-color: #f8f9fa;
             padding: 15px;
-            background-color: #fff;
-            border: 1px solid #e1e1e1;
-            border-radius: 8px;
-            align-items: center;
-            transition: box-shadow 0.2s ease;
-        }
-
-        .course-row:hover {
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        .course-header {
+            text-align: left;
             font-weight: bold;
-            background-color: #f8f9fa !important;
             border: 2px solid #e9ecef;
+        }
+
+        .course-gridview td {
+            padding: 15px;
+            border-bottom: 1px solid #e1e1e1;
+            background-color: #fff;
+        }
+
+        .course-gridview tr:hover td {
+            background-color: #f8f9fa;
         }
 
         .course-id {
@@ -163,6 +126,7 @@
             font-size: 12px;
             font-weight: bold;
             text-align: center;
+            display: inline-block;
         }
 
         .free {
@@ -180,6 +144,7 @@
             border-radius: 12px;
             font-size: 12px;
             text-align: center;
+            display: inline-block;
         }
 
         .active {
@@ -271,22 +236,36 @@
             font-style: italic;
             padding: 40px;
             width: 100%;
-            grid-column: 1 / -1;
+        }
+
+        .message-container {
+            margin: 15px 0;
+            padding: 12px;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+
+        .message-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
         }
     </style>
-
-    <!-- ===== NAVIGATION BAR ===== -->
-    <div class="navbar">
-        <asp:LinkButton ID="LinkButton1" runat="server" CssClass="active" PostBackUrl="~/admin_dashboard.aspx">Dashboard</asp:LinkButton>
-        <asp:LinkButton ID="LinkButton2" runat="server" PostBackUrl="~/admin_communitymanagement.aspx">Community</asp:LinkButton>
-        <asp:LinkButton ID="LinkButton3" runat="server" PostBackUrl="~/adminUser_Management.aspx">User Management</asp:LinkButton>
-        <asp:LinkButton ID="LinkButton4" runat="server" PostBackUrl="~/admin_feedbackmanagement.aspx">Feedback</asp:LinkButton>
-        <asp:LinkButton ID="LinkButton5" runat="server" PostBackUrl="~/adminManage_Ads.aspx">Manage Ads</asp:LinkButton>
-    </div>
 
     <br />
     <h1>Admin Dashboard</h1>
     <p>Manage the Sea Learner Platform</p>
+
+    <!-- Message Display Area -->
+    <asp:Panel ID="pnlMessage" runat="server" CssClass="message-container" Visible="false">
+        <asp:Label ID="lblMessage" runat="server"></asp:Label>
+    </asp:Panel>
 
     <!-- ===== DASHBOARD CARDS ===== -->
     <div class="card-container">
@@ -359,25 +338,40 @@
         </div>
     </div>
 
-    <!-- Course Table -->
-    <div class="course-container">
-        <!-- Header Row -->
-        <div class="course-row course-header">
-            <div>ID</div>
-            <div>Course Title</div>
-            <div>Educator ID</div>
-            <div>Type</div>
-            <div>Status</div>
-            <div>Actions</div>
-        </div>
-
-        <!-- Course Rows -->
-        <asp:Panel ID="pnlCourseContainer" runat="server">
-            <!-- Course rows will be dynamically added here -->
-        </asp:Panel>
-
-        <asp:Label ID="lblNoCourses" runat="server" Text="No courses found." CssClass="no-courses" Visible="false"></asp:Label>
-    </div>
+    <!-- Course GridView -->
+    <asp:GridView ID="gvCourses" runat="server" AutoGenerateColumns="False" 
+        CssClass="course-gridview" OnRowCommand="gvCourses_RowCommand"
+        OnRowDataBound="gvCourses_RowDataBound" ShowHeader="True"
+        EmptyDataText="No courses found." EmptyDataRowStyle-CssClass="no-courses">
+        <Columns>
+            <asp:BoundField DataField="Id" HeaderText="ID" ItemStyle-CssClass="course-id" />
+            <asp:BoundField DataField="Title" HeaderText="Course Title" ItemStyle-CssClass="course-title" />
+            <asp:BoundField DataField="EducatorId" HeaderText="Educator ID" />
+            <asp:TemplateField HeaderText="Type">
+                <ItemTemplate>
+                    <span class='course-type <%# GetCourseTypeClass(Eval("CourseType").ToString()) %>'>
+                        <%# Eval("CourseType") %>
+                    </span>
+                </ItemTemplate>
+            </asp:TemplateField>
+            <asp:TemplateField HeaderText="Status">
+                <ItemTemplate>
+                    <span class='course-status <%# GetStatusClass(Eval("Status").ToString()) %>'>
+                        <%# Eval("Status") %>
+                    </span>
+                </ItemTemplate>
+            </asp:TemplateField>
+            <asp:TemplateField HeaderText="Actions" ItemStyle-CssClass="course-actions">
+                <ItemTemplate>
+                    <asp:Button ID="btnView" runat="server" Text="View" CssClass="btn btn-view" 
+                        CommandName="ViewCourse" CommandArgument='<%# Eval("Id") %>' />
+                    <asp:Button ID="btnDelete" runat="server" Text="Delete" CssClass="btn btn-delete" 
+                        CommandName="DeleteCourse" CommandArgument='<%# Eval("Id") + "|" + Eval("Title") %>'
+                        OnClientClick='<%# "return confirm(\"Are you sure you want to delete the course \\\"" + Eval("Title") + "\\\" (ID: " + Eval("Id") + ")? This action cannot be undone.\");" %>' />
+                </ItemTemplate>
+            </asp:TemplateField>
+        </Columns>
+    </asp:GridView>
 
     <!-- Pagination -->
     <div class="pagination">

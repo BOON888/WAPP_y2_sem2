@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using System.Configuration;
+using System.Web;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 
 namespace WAPP
@@ -57,7 +59,7 @@ namespace WAPP
                 // Total Students
                 using (SqlConnection conn = new SqlConnection(connString))
                 {
-                    string query = "SELECT COUNT(*) FROM Student"; // Adjust table name as needed
+                    string query = "SELECT COUNT(*) FROM Student";
                     SqlCommand cmd = new SqlCommand(query, conn);
                     conn.Open();
                     lblTotalStudents.Text = cmd.ExecuteScalar().ToString();
@@ -66,7 +68,7 @@ namespace WAPP
                 // Total Educators
                 using (SqlConnection conn = new SqlConnection(connString))
                 {
-                    string query = "SELECT COUNT(*) FROM Educator"; // Adjust table name as needed
+                    string query = "SELECT COUNT(*) FROM Educator";
                     SqlCommand cmd = new SqlCommand(query, conn);
                     conn.Open();
                     lblTotalTeachers.Text = cmd.ExecuteScalar().ToString();
@@ -84,7 +86,7 @@ namespace WAPP
                 // Pending Feedback
                 using (SqlConnection conn = new SqlConnection(connString))
                 {
-                    string query = "SELECT COUNT(*) FROM Feedback WHERE Status = 'Pending'"; // Adjust table/column names
+                    string query = "SELECT COUNT(*) FROM Feedback WHERE Status = 'Pending'";
                     SqlCommand cmd = new SqlCommand(query, conn);
                     conn.Open();
                     lblPendingFeedback.Text = cmd.ExecuteScalar().ToString();
@@ -92,8 +94,7 @@ namespace WAPP
             }
             catch (Exception ex)
             {
-                // Handle database errors - you might want to show a message
-                System.Diagnostics.Debug.WriteLine($"Error loading dashboard stats: {ex.Message}");
+                // Silent fail - don't show error messages for stats
             }
         }
 
@@ -103,7 +104,6 @@ namespace WAPP
 
             try
             {
-                string whereClause = BuildWhereClause();
                 var (whereSql, parameters) = BuildWhereClauseWithParameters();
 
                 // Get total count for pagination
@@ -141,34 +141,15 @@ namespace WAPP
                     DataTable dt = new DataTable();
                     da.Fill(dt);
 
-                    pnlCourseContainer.Controls.Clear();
-
-                    if (dt.Rows.Count > 0)
-                    {
-                        foreach (DataRow row in dt.Rows)
-                        {
-                            AddCourseRow(
-                                row["Id"].ToString(),
-                                row["Title"] != DBNull.Value ? row["Title"].ToString() : "No Title",
-                                row["EducatorId"].ToString(),
-                                row["CourseType"].ToString(),
-                                row["Status"].ToString()
-                            );
-                        }
-                        lblNoCourses.Visible = false;
-                    }
-                    else
-                    {
-                        lblNoCourses.Visible = true;
-                    }
+                    gvCourses.DataSource = dt;
+                    gvCourses.DataBind();
                 }
             }
             catch (Exception ex)
             {
-                // Handle database errors
-                System.Diagnostics.Debug.WriteLine($"Error loading courses: {ex.Message}");
-                lblNoCourses.Text = "Error loading courses. Please try again.";
-                lblNoCourses.Visible = true;
+                ShowMessage("Error loading courses. Please try again.", "error");
+                gvCourses.DataSource = null;
+                gvCourses.DataBind();
             }
         }
 
@@ -181,7 +162,6 @@ namespace WAPP
                 string query = $"SELECT COUNT(*) FROM Course {whereSql}";
                 SqlCommand cmd = new SqlCommand(query, conn);
 
-                // Add parameters to prevent SQL injection
                 foreach (var param in parameters)
                 {
                     cmd.Parameters.AddWithValue(param.Key, param.Value);
@@ -192,27 +172,107 @@ namespace WAPP
             }
         }
 
-        private string BuildWhereClause()
+        // GridView Events
+        protected void gvCourses_RowCommand(object sender, GridViewCommandEventArgs e)
         {
-            if (string.IsNullOrEmpty(SearchValue) || FilterType == "All")
-                return "";
-
-            switch (FilterType)
+            if (e.CommandName == "DeleteCourse")
             {
-                case "CourseID":
-                    return $"WHERE Id = '{SearchValue}'";
-                case "EducatorID":
-                    return $"WHERE EducatorId = '{SearchValue}'";
-                case "CourseType":
-                    return $"WHERE CourseType LIKE '%{SearchValue}%'";
-                case "Status":
-                    return $"WHERE Status LIKE '%{SearchValue}%'";
-                default:
-                    return "";
+                string[] args = e.CommandArgument.ToString().Split('|');
+                string courseId = args[0];
+                string courseTitle = args.Length > 1 ? args[1] : "Unknown Course";
+
+                try
+                {
+                    bool deleted = DeleteCourseAndAllRelatedData(courseId);
+                    if (deleted)
+                    {
+                        ShowMessage($"Course '{courseTitle}' (ID: {courseId}) has been successfully deleted.", "success");
+                        LoadCourses();
+                        LoadDashboardStats();
+                    }
+                    else
+                    {
+                        ShowMessage($"Course '{courseTitle}' (ID: {courseId}) was not found or could not be deleted.", "error");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ShowMessage($"Error deleting course: {ex.Message}", "error");
+                }
+            }
+            else if (e.CommandName == "ViewCourse")
+            {
+                string courseId = e.CommandArgument.ToString();
+                Response.Redirect($"CourseDetails.aspx?id={courseId}");
             }
         }
 
-        // New method with parameterized queries to prevent SQL injection
+        // Clean method to delete course and all related data
+        private bool DeleteCourseAndAllRelatedData(string courseId)
+        {
+            string connStr = ConfigurationManager.ConnectionStrings["SeaLearnerConnection"].ConnectionString;
+            using (SqlConnection conn = new SqlConnection(connStr))
+            {
+                conn.Open();
+                SqlTransaction transaction = conn.BeginTransaction();
+
+                try
+                {
+                    // Delete in correct order to respect foreign key constraints
+                    string[] deleteQueries = {
+                        // Delete from tables that reference other tables first
+                        "DELETE FROM StudentQuizProgress WHERE QuizId IN (SELECT Id FROM Quiz WHERE LessonId IN (SELECT Id FROM Lesson WHERE CourseId = @CourseID))",
+                        "DELETE FROM Question WHERE QuizId IN (SELECT Id FROM Quiz WHERE LessonId IN (SELECT Id FROM Lesson WHERE CourseId = @CourseID))",
+                        
+                        // Then delete from intermediate tables
+                        "DELETE FROM Quiz WHERE LessonId IN (SELECT Id FROM Lesson WHERE CourseId = @CourseID)",
+                        "DELETE FROM StudentCourseProgress WHERE CourseId = @CourseID",
+                        "DELETE FROM Lesson WHERE CourseId = @CourseID",
+                        
+                        // Finally delete the course
+                        "DELETE FROM Course WHERE Id = @CourseID"
+                    };
+
+                    foreach (string query in deleteQueries)
+                    {
+                        using (SqlCommand cmd = new SqlCommand(query, conn, transaction))
+                        {
+                            cmd.Parameters.AddWithValue("@CourseID", courseId);
+                            cmd.ExecuteNonQuery();
+                        }
+                    }
+
+                    transaction.Commit();
+                    return true;
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    throw;
+                }
+            }
+        }
+
+        protected void gvCourses_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            // Additional row binding logic if needed
+        }
+
+        // Helper methods for GridView templates
+        public string GetCourseTypeClass(string courseType)
+        {
+            if (string.IsNullOrEmpty(courseType) || courseType == "Not Set")
+                return "free";
+            return courseType.ToLower().Contains("free") ? "free" : "premium";
+        }
+
+        public string GetStatusClass(string status)
+        {
+            if (string.IsNullOrEmpty(status) || status == "Not Set")
+                return "active";
+            return status.ToLower().Contains("active") ? "active" : "inactive";
+        }
+
         private (string whereSql, System.Collections.Generic.Dictionary<string, object> parameters) BuildWhereClauseWithParameters()
         {
             var parameters = new System.Collections.Generic.Dictionary<string, object>();
@@ -224,12 +284,26 @@ namespace WAPP
             switch (FilterType)
             {
                 case "CourseID":
-                    whereSql += "Id = @SearchValue";
-                    parameters.Add("@SearchValue", SearchValue);
+                    if (int.TryParse(SearchValue, out int courseId))
+                    {
+                        whereSql += "Id = @SearchValue";
+                        parameters.Add("@SearchValue", courseId);
+                    }
+                    else
+                    {
+                        whereSql += "1 = 0";
+                    }
                     break;
                 case "EducatorID":
-                    whereSql += "EducatorId = @SearchValue";
-                    parameters.Add("@SearchValue", SearchValue);
+                    if (int.TryParse(SearchValue, out int educatorId))
+                    {
+                        whereSql += "EducatorId = @SearchValue";
+                        parameters.Add("@SearchValue", educatorId);
+                    }
+                    else
+                    {
+                        whereSql += "1 = 0";
+                    }
                     break;
                 case "CourseType":
                     whereSql += "CourseType LIKE @SearchValue";
@@ -244,90 +318,6 @@ namespace WAPP
             }
 
             return (whereSql, parameters);
-        }
-
-        private void AddCourseRow(string courseId, string title, string educatorId, string courseType, string status)
-        {
-            Panel courseRow = new Panel();
-            courseRow.CssClass = "course-row";
-
-            // Course ID
-            Label lblId = new Label();
-            lblId.Text = $"<div class='course-id'>{courseId}</div>";
-            courseRow.Controls.Add(lblId);
-
-            // Course Title
-            Label lblTitle = new Label();
-            lblTitle.Text = $"<div class='course-title'>{title}</div>";
-            courseRow.Controls.Add(lblTitle);
-
-            // Educator ID
-            Label lblEducator = new Label();
-            lblEducator.Text = $"<div>{educatorId}</div>";
-            courseRow.Controls.Add(lblEducator);
-
-            // Course Type
-            Label lblType = new Label();
-            string typeClass = GetCourseTypeClass(courseType);
-            lblType.Text = $"<div class='course-type {typeClass}'>{courseType}</div>";
-            courseRow.Controls.Add(lblType);
-
-            // Status
-            Label lblStatus = new Label();
-            string statusClass = GetStatusClass(status);
-            lblStatus.Text = $"<div class='course-status {statusClass}'>{status}</div>";
-            courseRow.Controls.Add(lblStatus);
-
-            // Actions
-            Panel actionsPanel = new Panel();
-            actionsPanel.CssClass = "course-actions";
-
-            Button btnView = new Button();
-            btnView.Text = "View";
-            btnView.CssClass = "btn btn-view";
-            btnView.CommandArgument = courseId;
-            btnView.Click += btnView_Click;
-            actionsPanel.Controls.Add(btnView);
-
-            Button btnDelete = new Button();
-            btnDelete.Text = "Delete";
-            btnDelete.CssClass = "btn btn-delete";
-            btnDelete.CommandArgument = courseId;
-            btnDelete.Click += btnDelete_Click;
-            btnDelete.OnClientClick = "return confirm('Are you sure you want to delete this course?');";
-            actionsPanel.Controls.Add(btnDelete);
-
-            courseRow.Controls.Add(actionsPanel);
-            pnlCourseContainer.Controls.Add(courseRow);
-        }
-
-        protected void btnView_Click(object sender, EventArgs e)
-        {
-            Button btn = (Button)sender;
-            string courseId = btn.CommandArgument;
-            Response.Redirect($"CourseDetails.aspx?id={courseId}");
-        }
-
-        protected void btnDelete_Click(object sender, EventArgs e)
-        {
-            Button btn = (Button)sender;
-            string courseId = btn.CommandArgument;
-            DeleteCourse(courseId);
-            LoadCourses(); // Refresh the course list
-            LoadDashboardStats(); // Refresh stats
-        }
-
-        private void DeleteCourse(string courseId)
-        {
-            string connStr = ConfigurationManager.ConnectionStrings["SeaLearnerConnection"].ConnectionString;
-            using (SqlConnection conn = new SqlConnection(connStr))
-            {
-                string deleteQuery = "DELETE FROM Course WHERE Id = @CourseID";
-                SqlCommand cmd = new SqlCommand(deleteQuery, conn);
-                cmd.Parameters.AddWithValue("@CourseID", courseId);
-                conn.Open();
-                cmd.ExecuteNonQuery();
-            }
         }
 
         // Filter and Search Events
@@ -383,19 +373,27 @@ namespace WAPP
             }
         }
 
-        // Helper methods
-        private string GetCourseTypeClass(string courseType)
+        // Message display method
+        private void ShowMessage(string message, string type)
         {
-            if (string.IsNullOrEmpty(courseType))
-                return "free";
-            return courseType.ToLower().Contains("free") ? "free" : "premium";
-        }
+            pnlMessage.Visible = true;
+            lblMessage.Text = message;
 
-        private string GetStatusClass(string status)
-        {
-            if (string.IsNullOrEmpty(status))
-                return "active";
-            return status.ToLower().Contains("active") ? "active" : "inactive";
+            if (type == "success")
+            {
+                pnlMessage.CssClass = "message-container message-success";
+            }
+            else
+            {
+                pnlMessage.CssClass = "message-container message-error";
+            }
+
+            // Auto-hide success messages after 5 seconds
+            if (type == "success")
+            {
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "hideMessage",
+                    "setTimeout(function() { document.getElementById('" + pnlMessage.ClientID + "').style.display = 'none'; }, 5000);", true);
+            }
         }
     }
 }

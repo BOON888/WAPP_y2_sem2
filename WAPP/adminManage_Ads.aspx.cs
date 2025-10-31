@@ -2,6 +2,7 @@
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -40,13 +41,15 @@ namespace WAPP
                     string countQuery = "SELECT COUNT(*) FROM Advertisement WHERE AdminId = @AdminId";
                     SqlCommand countCmd = new SqlCommand(countQuery, conn);
                     countCmd.Parameters.AddWithValue("@AdminId", ADMIN_ID);
-                    lblTotalAnnouncements.Text = countCmd.ExecuteScalar().ToString();
+                    int totalCount = Convert.ToInt32(countCmd.ExecuteScalar());
+                    lblTotalAnnouncements.Text = totalCount.ToString();
 
                     // Get announcements
                     string query = @"
                         SELECT 
                             Id, 
                             AdContent,
+                            AdImage,
                             StartDate,
                             EndDate
                         FROM Advertisement 
@@ -69,6 +72,7 @@ namespace WAPP
                             CreateAnnouncementCard(
                                 row["Id"].ToString(),
                                 row["AdContent"].ToString(),
+                                row["AdImage"] != DBNull.Value ? row["AdImage"].ToString() : null,
                                 row["StartDate"] != DBNull.Value ? Convert.ToDateTime(row["StartDate"]) : (DateTime?)null,
                                 row["EndDate"] != DBNull.Value ? Convert.ToDateTime(row["EndDate"]) : (DateTime?)null
                             );
@@ -90,9 +94,8 @@ namespace WAPP
             }
         }
 
-        private void CreateAnnouncementCard(string id, string content, DateTime? startDate, DateTime? endDate)
+        private void CreateAnnouncementCard(string id, string content, string imagePath, DateTime? startDate, DateTime? endDate)
         {
-            // Parse the content to extract title, content, and type
             string title = "Announcement";
             string announcementType = "promotion"; // default type
             string announcementContent = content;
@@ -100,24 +103,38 @@ namespace WAPP
             // Parse content format: "Title\n\nContent\n\n[type]"
             string[] sections = content.Split(new[] { "\n\n" }, StringSplitOptions.RemoveEmptyEntries);
 
-            if (sections.Length > 0)
+            if (sections.Length >= 1)
             {
                 title = sections[0].Trim();
 
-                if (sections.Length > 1)
+                if (sections.Length >= 2)
                 {
                     // Check if last section is the type in brackets
                     string lastSection = sections[sections.Length - 1].Trim();
                     if (lastSection.StartsWith("[") && lastSection.EndsWith("]"))
                     {
                         announcementType = lastSection.Substring(1, lastSection.Length - 2).ToLower();
-                        // Rebuild content without the type section
-                        announcementContent = string.Join("\n\n", sections, 1, sections.Length - 2);
+
+                        // Rebuild content without the type section and title
+                        if (sections.Length > 2)
+                        {
+                            announcementContent = string.Join("\n\n", sections, 1, sections.Length - 2);
+                        }
+                        else
+                        {
+                            announcementContent = ""; // Only title and type, no content
+                        }
                     }
                     else
                     {
+                        // No type found, use all sections after title as content
                         announcementContent = string.Join("\n\n", sections, 1, sections.Length - 1);
                     }
+                }
+                else
+                {
+                    // Only title exists, no content or type
+                    announcementContent = "";
                 }
             }
 
@@ -143,6 +160,26 @@ namespace WAPP
             header.Controls.Add(lblType);
 
             announcementCard.Controls.Add(header);
+
+            // Image (if exists)
+            if (!string.IsNullOrEmpty(imagePath))
+            {
+                Panel imagePanel = new Panel();
+                imagePanel.CssClass = "announcement-image";
+
+                Image img = new Image();
+
+                // Fix: Use ResolveUrl to get correct image path
+                string imageUrl = ResolveUrl("~/Image/" + imagePath);
+                img.ImageUrl = imageUrl;
+                img.AlternateText = title;
+                img.CssClass = "announcement-img";
+
+                imagePanel.Controls.Add(img);
+                announcementCard.Controls.Add(imagePanel);
+
+                System.Diagnostics.Debug.WriteLine($"Image URL for announcement {id}: {imageUrl}");
+            }
 
             // Content
             if (!string.IsNullOrEmpty(announcementContent))
@@ -218,6 +255,56 @@ namespace WAPP
             // Format content: Title + Content + [Type]
             string formattedContent = $"{title}\n\n{content}\n\n[{type}]";
 
+            string imagePath = null;
+
+            // Handle image upload from hidden fields
+            string fileName = hdnFileName.Value;
+            string fileData = hdnFileData.Value;
+
+            if (!string.IsNullOrEmpty(fileName) && !string.IsNullOrEmpty(fileData))
+            {
+                try
+                {
+                    string fileExtension = Path.GetExtension(fileName).ToLower();
+
+                    // Validate file type
+                    if (fileExtension != ".jpg" && fileExtension != ".jpeg" && fileExtension != ".png" && fileExtension != ".gif")
+                    {
+                        ScriptManager.RegisterStartupScript(this, this.GetType(), "showError", "alert('Please upload only JPG, PNG, or GIF images.');", true);
+                        return;
+                    }
+
+                    // Ensure Image directory exists
+                    string imageDir = Server.MapPath("~/Image/");
+                    if (!Directory.Exists(imageDir))
+                    {
+                        Directory.CreateDirectory(imageDir);
+                        System.Diagnostics.Debug.WriteLine($"Created directory: {imageDir}");
+                    }
+
+                    // Generate unique filename to avoid conflicts
+                    string uniqueFileName = Guid.NewGuid().ToString() + fileExtension;
+                    string fullPath = Path.Combine(imageDir, uniqueFileName);
+
+                    // Convert base64 string to image file
+                    byte[] imageBytes = Convert.FromBase64String(fileData.Split(',')[1]); // Remove data:image/xxx;base64, prefix
+                    File.WriteAllBytes(fullPath, imageBytes);
+
+                    // Set the image path for database - store only filename
+                    imagePath = uniqueFileName;
+
+                    System.Diagnostics.Debug.WriteLine($"Image saved successfully: {fullPath}");
+                    System.Diagnostics.Debug.WriteLine($"Database will store filename: {imagePath}");
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Error uploading image: {ex.Message}");
+                    System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "showError", "alert('Error uploading image. Please try again.');", true);
+                    return;
+                }
+            }
+
             string connString = ConfigurationManager.ConnectionStrings["SeaLearnerConnection"].ConnectionString;
 
             try
@@ -227,36 +314,59 @@ namespace WAPP
                     conn.Open();
 
                     string query = @"
-                        INSERT INTO Advertisement (AdminId, AdContent, StartDate, EndDate)
-                        VALUES (@AdminId, @AdContent, GETDATE(), DATEADD(month, 1, GETDATE()))";
+                        INSERT INTO Advertisement (AdminId, AdContent, AdImage, StartDate, EndDate)
+                        VALUES (@AdminId, @AdContent, @AdImage, GETDATE(), DATEADD(month, 1, GETDATE()))";
 
                     SqlCommand cmd = new SqlCommand(query, conn);
                     cmd.Parameters.AddWithValue("@AdminId", ADMIN_ID);
                     cmd.Parameters.AddWithValue("@AdContent", formattedContent);
 
-                    cmd.ExecuteNonQuery();
+                    if (!string.IsNullOrEmpty(imagePath))
+                    {
+                        cmd.Parameters.AddWithValue("@AdImage", imagePath);
+                        System.Diagnostics.Debug.WriteLine($"Saving to database with image: {imagePath}");
+                    }
+                    else
+                    {
+                        cmd.Parameters.AddWithValue("@AdImage", DBNull.Value);
+                        System.Diagnostics.Debug.WriteLine("Saving to database without image");
+                    }
 
-                    // Hide modal and refresh announcements
-                    ScriptManager.RegisterStartupScript(this, this.GetType(), "hideModal", "hideModal();", true);
+                    int result = cmd.ExecuteNonQuery();
+                    System.Diagnostics.Debug.WriteLine($"Database insert result: {result} rows affected");
 
-                    // Clear form fields
-                    txtTitle.Text = "";
-                    txtContent.Text = "";
-                    ddlType.SelectedIndex = 0;
+                    if (result > 0)
+                    {
+                        // Hide modal and refresh announcements
+                        ScriptManager.RegisterStartupScript(this, this.GetType(), "hideModal", "hideModal();", true);
 
-                    // Reload announcements
-                    LoadAnnouncements();
+                        // Clear form fields
+                        txtTitle.Text = "";
+                        txtContent.Text = "";
+                        ddlType.SelectedIndex = 0;
+                        hdnFileName.Value = "";
+                        hdnFileData.Value = "";
 
-                    // Update the update panel
-                    upAnnouncements.Update();
+                        // Reload announcements - THIS WILL UPDATE THE COUNT
+                        LoadAnnouncements();
 
-                    // Show success message
-                    ScriptManager.RegisterStartupScript(this, this.GetType(), "showSuccess", "alert('Announcement added successfully!');", true);
+                        // Update both update panels to ensure count refreshes
+                        upAnnouncements.Update();
+                        upModal.Update();
+
+                        // Show success message
+                        ScriptManager.RegisterStartupScript(this, this.GetType(), "showSuccess", "alert('Announcement added successfully!');", true);
+                    }
+                    else
+                    {
+                        ScriptManager.RegisterStartupScript(this, this.GetType(), "showError", "alert('Failed to save announcement to database.');", true);
+                    }
                 }
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Error adding announcement: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "showError", "alert('Error adding announcement. Please try again.');", true);
             }
         }
@@ -271,8 +381,17 @@ namespace WAPP
                 {
                     conn.Open();
 
-                    string query = "DELETE FROM Advertisement WHERE Id = @Id AND AdminId = @AdminId";
-                    SqlCommand cmd = new SqlCommand(query, conn);
+                    // First get the image path to delete the file
+                    string getImageQuery = "SELECT AdImage FROM Advertisement WHERE Id = @Id AND AdminId = @AdminId";
+                    SqlCommand getCmd = new SqlCommand(getImageQuery, conn);
+                    getCmd.Parameters.AddWithValue("@Id", announcementId);
+                    getCmd.Parameters.AddWithValue("@AdminId", ADMIN_ID);
+
+                    object imagePathObj = getCmd.ExecuteScalar();
+
+                    // Delete the announcement
+                    string deleteQuery = "DELETE FROM Advertisement WHERE Id = @Id AND AdminId = @AdminId";
+                    SqlCommand cmd = new SqlCommand(deleteQuery, conn);
                     cmd.Parameters.AddWithValue("@Id", announcementId);
                     cmd.Parameters.AddWithValue("@AdminId", ADMIN_ID);
 
@@ -280,15 +399,37 @@ namespace WAPP
 
                     if (rowsAffected > 0)
                     {
+                        // Delete the image file from Image folder
+                        if (imagePathObj != null && imagePathObj != DBNull.Value)
+                        {
+                            string imagePath = imagePathObj.ToString();
+                            if (!string.IsNullOrEmpty(imagePath))
+                            {
+                                string physicalPath = Server.MapPath("~/Image/" + imagePath);
+                                if (File.Exists(physicalPath))
+                                {
+                                    File.Delete(physicalPath);
+                                    System.Diagnostics.Debug.WriteLine($"Deleted image file: {physicalPath}");
+                                }
+                            }
+                        }
+
+                        // Reload announcements to update count and list
                         LoadAnnouncements();
                         upAnnouncements.Update();
+
                         ScriptManager.RegisterStartupScript(this, this.GetType(), "showSuccess", "alert('Announcement deleted successfully!');", true);
+                    }
+                    else
+                    {
+                        ScriptManager.RegisterStartupScript(this, this.GetType(), "showError", "alert('Failed to delete announcement.');", true);
                     }
                 }
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Error deleting announcement: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "showError", "alert('Error deleting announcement. Please try again.');", true);
             }
         }

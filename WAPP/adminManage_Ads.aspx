@@ -2,36 +2,6 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <style>
-        /* ===== Navigation Bar ===== */
-        .navbar {
-            background-color: #ffffff;
-            padding: 12px 20px;
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-        }
-        .navbar a,
-        .navbar asp\:LinkButton {
-            color: black;
-            text-decoration: none;
-            margin-right: 30px;
-            font-weight: 500;
-            font-size: 16px;
-            transition: color 0.3s ease, transform 0.3s ease;
-        }
-        .navbar a:hover,
-        .navbar asp\:LinkButton:hover {
-            color: #38bdf8;
-            transform: translateY(-2px);
-        }
-        .navbar .active {
-            color: #38bdf8;
-            border-bottom: 2px solid #38bdf8;
-            padding-bottom: 4px;
-        }
-
         /* ===== Main Content ===== */
         .management-header {
             margin: 30px 0 20px 0;
@@ -174,6 +144,18 @@
             font-size: 14px;
         }
 
+        .announcement-image {
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        .announcement-image img {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
         .announcement-footer {
             display: flex;
             justify-content: space-between;
@@ -204,21 +186,6 @@
             background-color: #c82333;
         }
 
-        .btn-edit {
-            background-color: #28a745;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            transition: background-color 0.3s ease;
-        }
-
-        .btn-edit:hover {
-            background-color: #218838;
-        }
-
         /* ===== Modal Styles ===== */
         .modal-backdrop {
             position: fixed;
@@ -238,7 +205,7 @@
             border-radius: 12px;
             padding: 30px;
             width: 90%;
-            max-width: 600px;
+            max-width: 700px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.15);
             max-height: 90vh;
             overflow-y: auto;
@@ -304,6 +271,68 @@
             resize: vertical;
             min-height: 120px;
             line-height: 1.5;
+        }
+
+        .file-upload-container {
+            border: 2px dashed #ddd;
+            border-radius: 6px;
+            padding: 20px;
+            text-align: center;
+            background: #fafafa;
+            transition: border-color 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .file-upload-container:hover {
+            border-color: #007bff;
+            background: #f0f8ff;
+        }
+
+        .file-upload-container.has-file {
+            border-color: #28a745;
+            background: #f8fff9;
+        }
+
+        .file-upload-label {
+            display: block;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .file-upload-label i {
+            font-size: 24px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .custom-file-input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .file-preview {
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .file-preview img {
+            max-width: 200px;
+            max-height: 150px;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .file-name {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #666;
+            font-weight: 500;
         }
 
         .form-actions {
@@ -375,7 +404,7 @@
             }
         }
 
-        /* Type-specific colors - Updated to match the three types */
+        /* Type-specific colors */
         .type-promotion {
             background: #d4edda !important;
             color: #155724 !important;
@@ -391,15 +420,6 @@
             color: #856404 !important;
         }
     </style>
-
-    <!-- ===== NAVIGATION BAR ===== -->
-    <div class="navbar">
-        <asp:LinkButton ID="LinkButton1" runat="server" PostBackUrl="~/admin_dashboard.aspx">Dashboard</asp:LinkButton>
-        <asp:LinkButton ID="LinkButton2" runat="server" PostBackUrl="~/admin_communitymanagement.aspx">Community</asp:LinkButton>
-        <asp:LinkButton ID="LinkButton3" runat="server" PostBackUrl="~/adminUser_Management.aspx">User Management</asp:LinkButton>
-        <asp:LinkButton ID="LinkButton4" runat="server" PostBackUrl="~/admin_feedbackmanagement.aspx">Feedback</asp:LinkButton>
-        <asp:LinkButton ID="LinkButton5" runat="server" CssClass="active" PostBackUrl="~/adminManage_Ads.aspx">Manage Ads</asp:LinkButton>
-    </div>
 
     <!-- ===== MAIN CONTENT ===== -->
     <div class="management-header">
@@ -451,7 +471,7 @@
                 <button type="button" class="close-modal" onclick="hideModal()">&times;</button>
             </div>
             
-            <asp:UpdatePanel ID="upModal" runat="server">
+            <asp:UpdatePanel ID="upModal" runat="server" UpdateMode="Conditional">
                 <ContentTemplate>
                     <div class="form-group">
                         <label for="txtTitle">Title</label>
@@ -472,10 +492,29 @@
                             <asp:ListItem Value="partner">Partner</asp:ListItem>
                         </asp:DropDownList>
                     </div>
+
+                    <div class="form-group">
+                        <label>Announcement Image (Optional)</label>
+                        <div class="file-upload-container" id="fileUploadContainer">
+                            <input type="file" id="imageFileInput" class="custom-file-input" accept=".jpg,.jpeg,.png,.gif" />
+                            <label class="file-upload-label">
+                                <i>📷</i>
+                                <span>Click to upload image</span>
+                                <br />
+                                <small>Supported formats: JPG, PNG, GIF (Max: 5MB)</small>
+                            </label>
+                            <div id="imagePreview" class="file-preview" style="display: none;">
+                                <img id="previewImage" src="#" alt="Preview" />
+                                <div id="fileName" class="file-name"></div>
+                            </div>
+                        </div>
+                        <asp:HiddenField ID="hdnFileName" runat="server" />
+                        <asp:HiddenField ID="hdnFileData" runat="server" />
+                    </div>
                     
                     <div class="form-actions">
                         <asp:Button ID="btnCancel" runat="server" Text="Cancel" CssClass="btn-secondary" OnClientClick="hideModal(); return false;" />
-                        <asp:Button ID="btnSave" runat="server" Text="Add Announcement" CssClass="btn-primary" OnClick="btnSave_Click" />
+                        <asp:Button ID="btnSave" runat="server" Text="Add Announcement" CssClass="btn-primary" OnClick="btnSave_Click" OnClientClick="return prepareFileUpload();" />
                     </div>
                 </ContentTemplate>
             </asp:UpdatePanel>
@@ -485,6 +524,8 @@
     <script type="text/javascript">
         function showModal() {
             document.getElementById('addAnnouncementModal').style.display = 'flex';
+            // Clear any previous preview
+            resetFilePreview();
             // Focus on title field when modal opens
             setTimeout(function () {
                 document.getElementById('<%= txtTitle.ClientID %>').focus();
@@ -497,6 +538,85 @@
             document.getElementById('<%= txtTitle.ClientID %>').value = '';
             document.getElementById('<%= txtContent.ClientID %>').value = '';
             document.getElementById('<%= ddlType.ClientID %>').selectedIndex = 0;
+            resetFilePreview();
+        }
+
+        function resetFilePreview() {
+            document.getElementById('imagePreview').style.display = 'none';
+            document.getElementById('previewImage').src = '#';
+            document.getElementById('fileName').innerText = '';
+            document.getElementById('fileUploadContainer').classList.remove('has-file');
+            document.getElementById('imageFileInput').value = '';
+            document.getElementById('<%= hdnFileName.ClientID %>').value = '';
+            document.getElementById('<%= hdnFileData.ClientID %>').value = '';
+        }
+
+        function previewImage(input) {
+            const preview = document.getElementById('previewImage');
+            const previewContainer = document.getElementById('imagePreview');
+            const fileName = document.getElementById('fileName');
+            const fileUploadContainer = document.getElementById('fileUploadContainer');
+
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                
+                // Validate file type
+                const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+                if (!validTypes.includes(file.type)) {
+                    alert('Please select a valid image file (JPG, PNG, or GIF).');
+                    resetFilePreview();
+                    return;
+                }
+
+                // Validate file size (5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('File size must be less than 5MB.');
+                    resetFilePreview();
+                    return;
+                }
+
+                const reader = new FileReader();
+                
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                    previewContainer.style.display = 'block';
+                    fileName.innerText = file.name;
+                    fileUploadContainer.classList.add('has-file');
+                    
+                    // Store file data in hidden fields
+                    document.getElementById('<%= hdnFileName.ClientID %>').value = file.name;
+                    document.getElementById('<%= hdnFileData.ClientID %>').value = e.target.result;
+                }
+                
+                reader.onerror = function () {
+                    alert('Error reading file. Please try again.');
+                    resetFilePreview();
+                }
+                
+                reader.readAsDataURL(file);
+            } else {
+                resetFilePreview();
+            }
+        }
+
+        function prepareFileUpload() {
+            // Validate required fields
+            var title = document.getElementById('<%= txtTitle.ClientID %>').value;
+            var content = document.getElementById('<%= txtContent.ClientID %>').value;
+
+            if (!title || !content) {
+                alert('Please fill in all required fields.');
+                return false;
+            }
+
+            // If file is selected, we need to handle it via hidden fields
+            var fileInput = document.getElementById('imageFileInput');
+            if (fileInput.files && fileInput.files[0]) {
+                // File data is already in hidden fields from preview function
+                return true;
+            }
+
+            return true;
         }
 
         function confirmDelete(announcementId, title) {
@@ -517,6 +637,16 @@
         document.addEventListener('keydown', function (event) {
             if (event.key === 'Escape') {
                 hideModal();
+            }
+        });
+
+        // Initialize file upload
+        document.addEventListener('DOMContentLoaded', function () {
+            var fileInput = document.getElementById('imageFileInput');
+            if (fileInput) {
+                fileInput.addEventListener('change', function () {
+                    previewImage(this);
+                });
             }
         });
     </script>

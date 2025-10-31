@@ -9,38 +9,28 @@ namespace WAPP
 {
     public partial class user_management : System.Web.UI.Page
     {
-        private string currentFilter = "All";
-        private string searchTerm = "";
-
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
-                // Store initial values in ViewState
-                ViewState["CurrentFilter"] = currentFilter;
-                ViewState["SearchTerm"] = searchTerm;
-
-                LoadUserStats();
+                LoadDashboardStats();
                 LoadUsers();
             }
-            else
+
+            // Handle status change commands
+            if (Request["__EVENTTARGET"] == "DisableUser")
             {
-                // Retrieve values from ViewState
-                currentFilter = ViewState["CurrentFilter"]?.ToString() ?? "All";
-                searchTerm = ViewState["SearchTerm"]?.ToString() ?? "";
+                string userId = Request["__EVENTARGUMENT"];
+                UpdateUserStatus(userId, "Inactive");
+            }
+            else if (Request["__EVENTTARGET"] == "EnableUser")
+            {
+                string userId = Request["__EVENTARGUMENT"];
+                UpdateUserStatus(userId, "Active");
             }
         }
 
-        protected void Page_PreRender(object sender, EventArgs e)
-        {
-            // Rebuild controls on every postback to maintain state
-            if (IsPostBack)
-            {
-                LoadUsers();
-            }
-        }
-
-        private void LoadUserStats()
+        private void LoadDashboardStats()
         {
             string connString = ConfigurationManager.ConnectionStrings["SeaLearnerConnection"].ConnectionString;
 
@@ -51,34 +41,37 @@ namespace WAPP
                     conn.Open();
 
                     // Total Users
-                    string query = "SELECT COUNT(*) FROM Users";
-                    SqlCommand cmd = new SqlCommand(query, conn);
-                    lblTotalUsers.Text = cmd.ExecuteScalar().ToString();
+                    string totalUsersQuery = "SELECT COUNT(*) FROM Users";
+                    SqlCommand totalCmd = new SqlCommand(totalUsersQuery, conn);
+                    lblTotalUsers.Text = totalCmd.ExecuteScalar().ToString();
 
                     // Active Users
-                    query = "SELECT COUNT(*) FROM Users WHERE Status = 'Active'";
-                    cmd = new SqlCommand(query, conn);
-                    lblActiveUsers.Text = cmd.ExecuteScalar().ToString();
+                    string activeUsersQuery = "SELECT COUNT(*) FROM Users WHERE Status = 'Active'";
+                    SqlCommand activeCmd = new SqlCommand(activeUsersQuery, conn);
+                    lblActiveUsers.Text = activeCmd.ExecuteScalar().ToString();
 
                     // Total Students
-                    query = "SELECT COUNT(*) FROM Users WHERE Role = 'student'";
-                    cmd = new SqlCommand(query, conn);
-                    lblTotalStudents.Text = cmd.ExecuteScalar().ToString();
+                    string studentsQuery = "SELECT COUNT(*) FROM Users WHERE Role = 'student'";
+                    SqlCommand studentsCmd = new SqlCommand(studentsQuery, conn);
+                    lblTotalStudents.Text = studentsCmd.ExecuteScalar().ToString();
 
                     // Total Educators
-                    query = "SELECT COUNT(*) FROM Users WHERE Role = 'educator'";
-                    cmd = new SqlCommand(query, conn);
-                    lblTotalEducators.Text = cmd.ExecuteScalar().ToString();
+                    string educatorsQuery = "SELECT COUNT(*) FROM Users WHERE Role = 'educator'";
+                    SqlCommand educatorsCmd = new SqlCommand(educatorsQuery, conn);
+                    lblTotalEducators.Text = educatorsCmd.ExecuteScalar().ToString();
                 }
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error loading user stats: {ex.Message}");
+                ShowError("Error loading dashboard statistics: " + ex.Message);
             }
         }
 
         private void LoadUsers()
         {
+            string searchTerm = txtSearch.Text.Trim();
+            string roleFilter = ViewState["CurrentRole"] as string ?? "All";
+
             string connString = ConfigurationManager.ConnectionStrings["SeaLearnerConnection"].ConnectionString;
 
             try
@@ -87,458 +80,244 @@ namespace WAPP
                 {
                     conn.Open();
 
-                    string userQuery = @"
+                    string query = @"
                         SELECT 
                             Id, 
                             FullName, 
                             Email, 
                             Role, 
+                            Age, 
+                            Gender,
                             Status
                         FROM Users 
-                        WHERE (@SearchTerm = '' OR FullName LIKE '%' + @SearchTerm + '%' OR Email LIKE '%' + @SearchTerm + '%')
-                        AND (@RoleFilter = 'All' OR Role = @RoleFilter)
-                        ORDER BY FullName";
+                        WHERE 1=1";
 
-                    SqlCommand userCmd = new SqlCommand(userQuery, conn);
-                    userCmd.Parameters.AddWithValue("@SearchTerm", string.IsNullOrEmpty(searchTerm) ? "" : searchTerm);
-                    userCmd.Parameters.AddWithValue("@RoleFilter", currentFilter);
+                    if (!string.IsNullOrEmpty(searchTerm))
+                    {
+                        query += " AND (FullName LIKE @SearchTerm OR Email LIKE @SearchTerm)";
+                    }
 
-                    SqlDataAdapter da = new SqlDataAdapter(userCmd);
-                    DataTable userDt = new DataTable();
-                    da.Fill(userDt);
+                    if (roleFilter != "All")
+                    {
+                        query += " AND Role = @Role";
+                    }
+
+                    query += " ORDER BY FullName";
+
+                    SqlCommand cmd = new SqlCommand(query, conn);
+
+                    if (!string.IsNullOrEmpty(searchTerm))
+                    {
+                        cmd.Parameters.AddWithValue("@SearchTerm", "%" + searchTerm + "%");
+                    }
+
+                    if (roleFilter != "All")
+                    {
+                        cmd.Parameters.AddWithValue("@Role", roleFilter);
+                    }
+
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    DataTable dt = new DataTable();
+                    da.Fill(dt);
 
                     pnlUserContainer.Controls.Clear();
-                    lblUsersShown.Text = userDt.Rows.Count.ToString();
 
-                    if (userDt.Rows.Count > 0)
+                    if (dt.Rows.Count > 0)
                     {
-                        foreach (DataRow userRow in userDt.Rows)
+                        foreach (DataRow row in dt.Rows)
                         {
-                            string userId = userRow["Id"].ToString();
-                            string role = userRow["Role"].ToString();
-
-                            if (role == "student")
-                            {
-                                CreateStudentCard(userId, userRow);
-                            }
-                            else if (role == "educator")
-                            {
-                                CreateEducatorCard(userId, userRow);
-                            }
+                            CreateUserCard(
+                                row["Id"].ToString(),
+                                row["FullName"].ToString(),
+                                row["Email"].ToString(),
+                                row["Role"].ToString(),
+                                row["Age"] != DBNull.Value ? row["Age"].ToString() : "N/A",
+                                row["Gender"] != DBNull.Value ? row["Gender"].ToString() : "N/A",
+                                row["Status"].ToString()
+                            );
                         }
                         lblNoUsers.Visible = false;
+                        lblUsersShown.Text = dt.Rows.Count.ToString();
                     }
                     else
                     {
-                        lblNoUsers.Text = "No users found.";
                         lblNoUsers.Visible = true;
+                        lblUsersShown.Text = "0";
                     }
                 }
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error loading users: {ex.Message}");
-                lblNoUsers.Text = "Error loading users. Please try again.";
+                ShowError("Error loading users: " + ex.Message);
                 lblNoUsers.Visible = true;
             }
         }
 
-        private void CreateStudentCard(string userId, DataRow userRow)
+        private void CreateUserCard(string id, string fullName, string email, string role, string age, string gender, string status)
         {
-            string connString = ConfigurationManager.ConnectionStrings["SeaLearnerConnection"].ConnectionString;
-            string school = "Not specified";
-            string coins = "0";
-            string badges = "0";
-
-            try
-            {
-                using (SqlConnection conn = new SqlConnection(connString))
-                {
-                    conn.Open();
-
-                    string studentQuery = @"
-                        SELECT 
-                            ISNULL(School, 'Not specified') as School,
-                            ISNULL(Coins, 0) as Coins,
-                            ISNULL(BadgesEarned, 0) as BadgesEarned
-                        FROM Student 
-                        WHERE UserId = @UserId";
-
-                    SqlCommand studentCmd = new SqlCommand(studentQuery, conn);
-                    studentCmd.Parameters.AddWithValue("@UserId", userId);
-
-                    SqlDataReader reader = studentCmd.ExecuteReader();
-
-                    if (reader.Read())
-                    {
-                        school = reader["School"].ToString();
-                        coins = reader["Coins"].ToString();
-                        badges = reader["BadgesEarned"].ToString();
-                    }
-                    reader.Close();
-                }
-            }
-            catch (Exception ex)
-            {
-                // Continue with default values
-            }
-
-            // Create the student card
             Panel userCard = new Panel();
             userCard.CssClass = "user-card";
 
-            // Main content container
+            // Main content
             Panel mainContent = new Panel();
             mainContent.CssClass = "user-main-content";
 
-            // User header with avatar and info
-            Panel userHeader = new Panel();
-            userHeader.CssClass = "user-header";
+            // Header
+            Panel header = new Panel();
+            header.CssClass = "user-header";
 
             // Avatar
             Panel avatar = new Panel();
             avatar.CssClass = "user-avatar";
-            string firstLetter = userRow["FullName"].ToString().Length > 0 ?
-                userRow["FullName"].ToString()[0].ToString().ToUpper() : "U";
-            avatar.Controls.Add(new LiteralControl(firstLetter));
+            avatar.Controls.Add(new LiteralControl(fullName.Substring(0, 1).ToUpper()));
+            header.Controls.Add(avatar);
 
             // User info
             Panel userInfo = new Panel();
             userInfo.CssClass = "user-info";
 
             Label lblName = new Label();
-            lblName.Text = $"<div class='user-name'>{userRow["FullName"]}</div>";
+            lblName.Text = $"<div class='user-name'>{Server.HtmlEncode(fullName)}</div>";
             userInfo.Controls.Add(lblName);
 
             Label lblRole = new Label();
-            lblRole.Text = $"<span class='user-role student-role'>Student</span>";
+            string roleClass = role.ToLower() == "student" ? "student-role" : "educator-role";
+            lblRole.Text = $"<span class='user-role {roleClass}'>{Server.HtmlEncode(role)}</span>";
             userInfo.Controls.Add(lblRole);
 
-            userHeader.Controls.Add(avatar);
-            userHeader.Controls.Add(userInfo);
-            mainContent.Controls.Add(userHeader);
+            header.Controls.Add(userInfo);
+            mainContent.Controls.Add(header);
 
             // User details
-            Panel userDetails = new Panel();
-            userDetails.CssClass = "user-details";
+            Panel details = new Panel();
+            details.CssClass = "user-details";
 
             // Email
-            Label lblEmail = new Label();
-            lblEmail.Text = $"<div class='user-detail'><i>📧</i>{userRow["Email"]}</div>";
-            userDetails.Controls.Add(lblEmail);
+            Panel emailDetail = new Panel();
+            emailDetail.CssClass = "user-detail";
+            emailDetail.Controls.Add(new LiteralControl($"<i>📧</i> {Server.HtmlEncode(email)}"));
+            details.Controls.Add(emailDetail);
 
-            // School
-            Label lblSchool = new Label();
-            lblSchool.Text = $"<div class='user-detail'><i>🏫</i>{school}</div>";
-            userDetails.Controls.Add(lblSchool);
+            // Age
+            Panel ageDetail = new Panel();
+            ageDetail.CssClass = "user-detail";
+            ageDetail.Controls.Add(new LiteralControl($"<i>👤</i> Age: {Server.HtmlEncode(age)}"));
+            details.Controls.Add(ageDetail);
 
-            mainContent.Controls.Add(userDetails);
+            // Gender
+            Panel genderDetail = new Panel();
+            genderDetail.CssClass = "user-detail";
+            genderDetail.Controls.Add(new LiteralControl($"<i>⚧️</i> Gender: {Server.HtmlEncode(gender)}"));
+            details.Controls.Add(genderDetail);
 
-            // Stats
-            Panel userStats = new Panel();
-            userStats.CssClass = "user-stats";
-
-            // Coins
-            Panel coinsStat = new Panel();
-            coinsStat.CssClass = "stat-item";
-            coinsStat.Controls.Add(new LiteralControl($"<div class='stat-value'>{coins}</div><div class='stat-label'>Coins</div>"));
-            userStats.Controls.Add(coinsStat);
-
-            // Badges
-            Panel badgesStat = new Panel();
-            badgesStat.CssClass = "stat-item";
-            badgesStat.Controls.Add(new LiteralControl($"<div class='stat-value'>{badges}</div><div class='stat-label'>Badges</div>"));
-            userStats.Controls.Add(badgesStat);
-
-            // Completed
-            Panel completedStat = new Panel();
-            completedStat.CssClass = "stat-item";
-            completedStat.Controls.Add(new LiteralControl($"<div class='stat-value'>0</div><div class='stat-label'>Completed</div>"));
-            userStats.Controls.Add(completedStat);
-
-            mainContent.Controls.Add(userStats);
+            mainContent.Controls.Add(details);
             userCard.Controls.Add(mainContent);
 
             // Status section
             Panel statusSection = new Panel();
             statusSection.CssClass = "user-status-section";
 
-            bool isActive = userRow["Status"].ToString() == "Active";
+            // Status text
+            Label lblStatus = new Label();
+            lblStatus.Text = $"<div class='status-text {(status == "Active" ? "" : "disabled")}'>{status}</div>";
+            statusSection.Controls.Add(lblStatus);
 
-            // Create toggle button
-            Button btnToggle = new Button();
-            btnToggle.ID = "btnToggle_" + userId;
-            btnToggle.Text = isActive ? "Disable User" : "Enable User";
-            btnToggle.CssClass = isActive ? "disable-btn" : "enable-btn";
-            btnToggle.CommandArgument = userId + "|" + userRow["Status"].ToString();
-            btnToggle.Click += BtnToggle_Click;
+            // Action buttons
+            Panel actions = new Panel();
+            actions.CssClass = "user-actions";
 
-            statusSection.Controls.Add(btnToggle);
-            userCard.Controls.Add(statusSection);
-
-            pnlUserContainer.Controls.Add(userCard);
-        }
-
-        private void CreateEducatorCard(string userId, DataRow userRow)
-        {
-            string connString = ConfigurationManager.ConnectionStrings["SeaLearnerConnection"].ConnectionString;
-            string university = "Not specified";
-            string courseCount = "0";
-            string students = "0";
-
-            try
+            if (status == "Active")
             {
-                using (SqlConnection conn = new SqlConnection(connString))
-                {
-                    conn.Open();
-
-                    // Get educator university
-                    string educatorQuery = @"
-                        SELECT ISNULL(GraduatedUniversity, 'Not specified') as University
-                        FROM Educator 
-                        WHERE UserId = @UserId";
-
-                    SqlCommand educatorCmd = new SqlCommand(educatorQuery, conn);
-                    educatorCmd.Parameters.AddWithValue("@UserId", userId);
-
-                    SqlDataReader reader = educatorCmd.ExecuteReader();
-
-                    if (reader.Read())
-                    {
-                        university = reader["University"].ToString();
-                    }
-                    reader.Close();
-
-                    // Get course count
-                    string courseQuery = @"
-                        SELECT COUNT(*) as CourseCount 
-                        FROM Course 
-                        WHERE EducatorId IN (SELECT Id FROM Educator WHERE UserId = @UserId)";
-
-                    SqlCommand courseCmd = new SqlCommand(courseQuery, conn);
-                    courseCmd.Parameters.AddWithValue("@UserId", userId);
-                    var courseResult = courseCmd.ExecuteScalar();
-                    if (courseResult != null && courseResult != DBNull.Value)
-                    {
-                        courseCount = courseResult.ToString();
-                    }
-
-                    // Get total students count
-                    string studentsQuery = "SELECT COUNT(*) FROM Student";
-                    SqlCommand studentsCmd = new SqlCommand(studentsQuery, conn);
-                    var studentsResult = studentsCmd.ExecuteScalar();
-                    if (studentsResult != null && studentsResult != DBNull.Value)
-                    {
-                        students = studentsResult.ToString();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                // Continue with default values
-            }
-
-            // Create the educator card
-            Panel userCard = new Panel();
-            userCard.CssClass = "user-card";
-
-            // Main content container
-            Panel mainContent = new Panel();
-            mainContent.CssClass = "user-main-content";
-
-            // User header with avatar and info
-            Panel userHeader = new Panel();
-            userHeader.CssClass = "user-header";
-
-            // Avatar
-            Panel avatar = new Panel();
-            avatar.CssClass = "user-avatar";
-            string firstLetter = userRow["FullName"].ToString().Length > 0 ?
-                userRow["FullName"].ToString()[0].ToString().ToUpper() : "U";
-            avatar.Controls.Add(new LiteralControl(firstLetter));
-
-            // User info
-            Panel userInfo = new Panel();
-            userInfo.CssClass = "user-info";
-
-            Label lblName = new Label();
-            lblName.Text = $"<div class='user-name'>{userRow["FullName"]}</div>";
-            userInfo.Controls.Add(lblName);
-
-            Label lblRole = new Label();
-            lblRole.Text = $"<span class='user-role educator-role'>Educator</span>";
-            userInfo.Controls.Add(lblRole);
-
-            userHeader.Controls.Add(avatar);
-            userHeader.Controls.Add(userInfo);
-            mainContent.Controls.Add(userHeader);
-
-            // User details
-            Panel userDetails = new Panel();
-            userDetails.CssClass = "user-details";
-
-            // Email
-            Label lblEmail = new Label();
-            lblEmail.Text = $"<div class='user-detail'><i>📧</i>{userRow["Email"]}</div>";
-            userDetails.Controls.Add(lblEmail);
-
-            // University
-            Label lblUniversity = new Label();
-            lblUniversity.Text = $"<div class='user-detail'><i>🎓</i>{university}</div>";
-            userDetails.Controls.Add(lblUniversity);
-
-            mainContent.Controls.Add(userDetails);
-
-            // Stats
-            Panel userStats = new Panel();
-            userStats.CssClass = "user-stats";
-
-            // Courses
-            Panel coursesStat = new Panel();
-            coursesStat.CssClass = "stat-item";
-            coursesStat.Controls.Add(new LiteralControl($"<div class='stat-value'>{courseCount}</div><div class='stat-label'>Courses</div>"));
-            userStats.Controls.Add(coursesStat);
-
-            // Students
-            Panel studentsStat = new Panel();
-            studentsStat.CssClass = "stat-item";
-            studentsStat.Controls.Add(new LiteralControl($"<div class='stat-value'>{students}</div><div class='stat-label'>Students</div>"));
-            userStats.Controls.Add(studentsStat);
-
-            // Empty stat for alignment
-            Panel emptyStat = new Panel();
-            emptyStat.CssClass = "stat-item";
-            emptyStat.Controls.Add(new LiteralControl($"<div class='stat-value'>-</div><div class='stat-label'>&nbsp;</div>"));
-            userStats.Controls.Add(emptyStat);
-
-            mainContent.Controls.Add(userStats);
-            userCard.Controls.Add(mainContent);
-
-            // Status section
-            Panel statusSection = new Panel();
-            statusSection.CssClass = "user-status-section";
-
-            bool isActive = userRow["Status"].ToString() == "Active";
-
-            // Create toggle button
-            Button btnToggle = new Button();
-            btnToggle.ID = "btnToggle_" + userId;
-            btnToggle.Text = isActive ? "Disable User" : "Enable User";
-            btnToggle.CssClass = isActive ? "disable-btn" : "enable-btn";
-            btnToggle.CommandArgument = userId + "|" + userRow["Status"].ToString();
-            btnToggle.Click += BtnToggle_Click;
-
-            statusSection.Controls.Add(btnToggle);
-            userCard.Controls.Add(statusSection);
-
-            pnlUserContainer.Controls.Add(userCard);
-        }
-
-        protected void BtnToggle_Click(object sender, EventArgs e)
-        {
-            Button btn = (Button)sender;
-            string[] args = btn.CommandArgument.Split('|');
-            string userId = args[0];
-            string currentStatus = args[1];
-
-            string newStatus = currentStatus == "Active" ? "Inactive" : "Active";
-
-            // Update database
-            bool success = UpdateUserStatus(userId, newStatus);
-
-            if (success)
-            {
-                ShowSuccessMessage($"User status updated to {newStatus} successfully!");
-                LoadUserStats(); // Refresh stats
+                Button btnDisable = new Button();
+                btnDisable.Text = "Disable";
+                btnDisable.CssClass = "disable-btn";
+                btnDisable.OnClientClick = $"return confirmDisable('{id}', '{fullName.Replace("'", "\\'")}');";
+                actions.Controls.Add(btnDisable);
             }
             else
             {
-                ShowErrorMessage("Error updating user status. Please try again.");
+                Button btnEnable = new Button();
+                btnEnable.Text = "Enable";
+                btnEnable.CssClass = "enable-btn";
+                btnEnable.OnClientClick = $"return confirmEnable('{id}', '{fullName.Replace("'", "\\'")}');";
+                actions.Controls.Add(btnEnable);
             }
+
+            statusSection.Controls.Add(actions);
+            userCard.Controls.Add(statusSection);
+
+            pnlUserContainer.Controls.Add(userCard);
         }
 
-        protected void btnTab_Click(object sender, EventArgs e)
+        private void UpdateUserStatus(string userId, string status)
         {
-            LinkButton btn = (LinkButton)sender;
-            currentFilter = btn.CommandArgument;
+            string connString = ConfigurationManager.ConnectionStrings["SeaLearnerConnection"].ConnectionString;
 
-            // Store in ViewState
-            ViewState["CurrentFilter"] = currentFilter;
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connString))
+                {
+                    conn.Open();
 
-            // Update active tab
-            btnAllUsers.CssClass = btnAllUsers.CommandArgument == currentFilter ? "tab active" : "tab";
-            btnStudents.CssClass = btnStudents.CommandArgument == currentFilter ? "tab active" : "tab";
-            btnEducators.CssClass = btnEducators.CommandArgument == currentFilter ? "tab active" : "tab";
+                    string query = "UPDATE Users SET Status = @Status WHERE Id = @Id";
+                    SqlCommand cmd = new SqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@Status", status);
+                    cmd.Parameters.AddWithValue("@Id", userId);
 
-            LoadUsers();
+                    int rowsAffected = cmd.ExecuteNonQuery();
+
+                    if (rowsAffected > 0)
+                    {
+                        ShowSuccess($"User status updated to {status} successfully!");
+                        LoadDashboardStats();
+                        LoadUsers();
+                    }
+                    else
+                    {
+                        ShowError("User not found or update failed.");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ShowError("Error updating user status: " + ex.Message);
+            }
         }
 
         protected void btnSearch_Click(object sender, EventArgs e)
         {
-            searchTerm = txtSearch.Text.Trim();
-            ViewState["SearchTerm"] = searchTerm;
             LoadUsers();
         }
 
         protected void btnClear_Click(object sender, EventArgs e)
         {
             txtSearch.Text = "";
-            searchTerm = "";
-            currentFilter = "All";
-
-            // Store in ViewState
-            ViewState["SearchTerm"] = searchTerm;
-            ViewState["CurrentFilter"] = currentFilter;
-
-            // Reset tabs
-            btnAllUsers.CssClass = "tab active";
-            btnStudents.CssClass = "tab";
-            btnEducators.CssClass = "tab";
-
             LoadUsers();
         }
 
-        private bool UpdateUserStatus(string userId, string status)
+        protected void btnTab_Click(object sender, EventArgs e)
         {
-            try
-            {
-                string connStr = ConfigurationManager.ConnectionStrings["SeaLearnerConnection"].ConnectionString;
-                using (SqlConnection conn = new SqlConnection(connStr))
-                {
-                    string query = "UPDATE Users SET Status = @Status WHERE Id = @UserId";
-                    SqlCommand cmd = new SqlCommand(query, conn);
-                    cmd.Parameters.AddWithValue("@Status", status);
-                    cmd.Parameters.AddWithValue("@UserId", userId);
-                    conn.Open();
-                    int rowsAffected = cmd.ExecuteNonQuery();
+            LinkButton btn = (LinkButton)sender;
+            string role = btn.CommandArgument;
 
-                    if (rowsAffected > 0)
-                    {
-                        System.Diagnostics.Debug.WriteLine($"SUCCESS: Updated user {userId} to {status}");
-                        return true;
-                    }
-                    else
-                    {
-                        System.Diagnostics.Debug.WriteLine($"FAILED: No user found with ID {userId}");
-                        return false;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"ERROR updating user status: {ex.Message}");
-                return false;
-            }
+            // Update active tab
+            btnAllUsers.CssClass = "tab";
+            btnStudents.CssClass = "tab";
+            btnEducators.CssClass = "tab";
+            btn.CssClass = "tab active";
+
+            ViewState["CurrentRole"] = role;
+            LoadUsers();
         }
 
-        private void ShowSuccessMessage(string message)
+        private void ShowSuccess(string message)
         {
             pnlSuccess.Visible = true;
             lblSuccess.Text = message;
             pnlError.Visible = false;
         }
 
-        private void ShowErrorMessage(string message)
+        private void ShowError(string message)
         {
             pnlError.Visible = true;
             lblError.Text = message;
