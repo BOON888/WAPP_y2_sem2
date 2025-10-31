@@ -194,5 +194,38 @@ namespace WAPP
                 Response.Redirect("~/sign_in.aspx");
             }
         }
+
+        protected void btnEdit_Click(object sender, EventArgs e)
+        {
+            txtFullName.ReadOnly = false;
+            txtAge.ReadOnly = false;
+            txtSchool.ReadOnly = false;
+            txtInterestSubject.ReadOnly = false;
+            ddlGender.Enabled = true;
+            fileUploadProfile.Visible = true;
+
+            btnEdit.Visible = false;
+            btnSaveProfile.Visible = true;
+            btnCancel.Visible = true;
+            lblMessage.Text = "";
+        }
+
+        protected void btnCancel_Click(object sender, EventArgs e)
+        {
+            txtFullName.ReadOnly = true;
+            txtAge.ReadOnly = true;
+            txtSchool.ReadOnly = true;
+            txtInterestSubject.ReadOnly = true;
+            ddlGender.Enabled = false;
+            fileUploadProfile.Visible = false;
+
+            btnEdit.Visible = true;
+            btnSaveProfile.Visible = false;
+            btnCancel.Visible = false;
+
+            LoadProfile();
+            lblMessage.Text = "Changes canceled.";
+            lblMessage.ForeColor = System.Drawing.Color.Gray;
+        }
     }
 }
