@@ -14,7 +14,7 @@
 
         body {
             font-family: 'Segoe UI', sans-serif;
-            background: #f8f9fc;
+            background: linear-gradient(135deg, #eaf0ff, #ffffff);
         }
 
         /* 🚀 NEW: Profile Panel Container */

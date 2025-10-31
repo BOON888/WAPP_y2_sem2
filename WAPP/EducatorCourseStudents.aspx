@@ -7,13 +7,13 @@
         /* 1. LAYOUT ADJUSTMENTS */
         body {
             font-family: 'Segoe UI', sans-serif;
-            background-color: #f8f9fc;
+            background: linear-gradient(135deg, #eaf0ff, #ffffff);
         }
 
         .page-wrap {
             max-width: 1100px;
             /* 🚀 FIX: Reduce top margin to pull content closer to the header */
-            margin: 20px auto 40px; 
+            margin: 20px auto 40px;
             padding: 20px;
         }
 
@@ -43,25 +43,25 @@
             transition: all 0.25s ease; /* Smooth transitions */
         }
 
-        .tab-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(0, 30, 255, 0.2);
-            /* 🚀 FIX: Apply white-on-blue hover for consistency (Blue to Blue is acceptable, but this adds lift) */
-            opacity: 0.95; 
-        }
+            .tab-button:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 10px rgba(0, 30, 255, 0.2);
+                /* 🚀 FIX: Apply white-on-blue hover for consistency (Blue to Blue is acceptable, but this adds lift) */
+                opacity: 0.95;
+            }
 
-        .tab-button.active {
-            /* 🚀 FIX: Remove black background, use a stronger blue or inverse style */
-            background-color: white; /* Inverse style for active tab */
-            color: #001eff;
-            border-color: #001eff;
-            box-shadow: 0 4px 10px rgba(0, 30, 255, 0.2);
-        }
-        
-        .tab-button.active:hover {
-            transform: none; /* Prevent active tab from moving */
-            box-shadow: 0 4px 10px rgba(0, 30, 255, 0.2);
-        }
+            .tab-button.active {
+                /* 🚀 FIX: Remove black background, use a stronger blue or inverse style */
+                background-color: white; /* Inverse style for active tab */
+                color: #001eff;
+                border-color: #001eff;
+                box-shadow: 0 4px 10px rgba(0, 30, 255, 0.2);
+            }
+
+                .tab-button.active:hover {
+                    transform: none; /* Prevent active tab from moving */
+                    box-shadow: 0 4px 10px rgba(0, 30, 255, 0.2);
+                }
 
         .info-message {
             text-align: center;
@@ -85,17 +85,17 @@
             justify-content: space-between;
             background: #fff;
             /* 🚀 FIX: Apply the soft glow shadow instead of just a border */
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04); 
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
             border: none;
             border-radius: 10px;
             padding: 12px 16px;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
-        
-        .student-row:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
-        }
+
+            .student-row:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+            }
 
         .student-info {
             display: flex;

@@ -14,7 +14,7 @@
 
         body {
             font-family: 'Segoe UI', sans-serif;
-            background-color: #f9f9fb;
+            background: linear-gradient(135deg, #eaf0ff, #ffffff);
         }
 
         .dashboard-container {
@@ -56,7 +56,6 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            
             box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25);
         }
 
@@ -223,7 +222,6 @@
             min-height: 110px;
             /* 🚀 UPDATED: Use 'all' for smooth color transitions */
             transition: all 0.25s ease;
-
         }
 
             .action-card:hover {
