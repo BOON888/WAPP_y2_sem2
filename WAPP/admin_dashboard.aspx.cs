@@ -200,10 +200,11 @@ namespace WAPP
                     ShowMessage($"Error deleting course: {ex.Message}", "error");
                 }
             }
-            else if (e.CommandName == "ViewCourse")
+            else if (e.CommandName == "ViewCourseContent")
             {
                 string courseId = e.CommandArgument.ToString();
-                Response.Redirect($"CourseDetails.aspx?id={courseId}");
+                // Redirect to StudentCourseContent.aspx with the course ID
+                Response.Redirect($"StudentCourseContent.aspx?courseId={courseId}");
             }
         }
 

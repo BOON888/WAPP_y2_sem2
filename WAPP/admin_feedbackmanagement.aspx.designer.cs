@@ -15,24 +15,6 @@ namespace WAPP
     {
 
         /// <summary>
-        /// btnAddDemoData control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnAddDemoData;
-
-        /// <summary>
-        /// btnClearDemoData control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnClearDemoData;
-
-        /// <summary>
         /// lblTotalFeedback control.
         /// </summary>
         /// <remarks>
@@ -58,15 +40,6 @@ namespace WAPP
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblCompletedFeedback;
-
-        /// <summary>
-        /// lblTechnicalFeedback control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblTechnicalFeedback;
 
         /// <summary>
         /// ddlStatus control.
@@ -130,5 +103,14 @@ namespace WAPP
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblNoFeedback;
+
+        /// <summary>
+        /// lblError control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblError;
     }
 }
