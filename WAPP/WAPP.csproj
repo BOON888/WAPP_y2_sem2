@@ -103,6 +103,7 @@
     <Content Include="admin_communitymanagement.aspx" />
     <Content Include="admin_dashboard.aspx" />
     <Content Include="admin_feedbackmanagement.aspx" />
+    <Content Include="admin_view_course.aspx" />
     <Content Include="App_Data\sealearner.mdf" />
     <Content Include="App_Data\sealearner_log.ldf">
       <DependentUpon>sealearner.mdf</DependentUpon>
@@ -246,6 +247,13 @@
     </Compile>
     <Compile Include="admin_feedbackmanagement.aspx.designer.cs">
       <DependentUpon>admin_feedbackmanagement.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="admin_view_course.aspx.cs">
+      <DependentUpon>admin_view_course.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="admin_view_course.aspx.designer.cs">
+      <DependentUpon>admin_view_course.aspx</DependentUpon>
     </Compile>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="About.aspx.cs">

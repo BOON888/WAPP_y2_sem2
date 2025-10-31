@@ -204,7 +204,7 @@ namespace WAPP
             {
                 string courseId = e.CommandArgument.ToString();
                 // Redirect to StudentCourseContent.aspx with the course ID
-                Response.Redirect($"StudentCourseContent.aspx?courseId={courseId}");
+                Response.Redirect($"admin_view_course.aspx?courseId={courseId}");
             }
         }
 
