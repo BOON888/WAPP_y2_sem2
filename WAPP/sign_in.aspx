@@ -165,7 +165,7 @@
         <a href="forgot_password" class="forgot">Forgot Password?</a>
         <hr />
         <div class="signup-link">
-            Don't have an account? <a href="sign_up.aspx">Sign Un</a>
+            Don't have an account? <a href="sign_up.aspx">Sign Up</a>
         </div>
     </div>
 </asp:Content>

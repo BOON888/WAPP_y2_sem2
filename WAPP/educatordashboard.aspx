@@ -56,7 +56,8 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08), 0 0 5px rgba(0, 0, 0, 0.04);
+            
+            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25);
         }
 
 
@@ -218,10 +219,11 @@
             text-decoration: none;
             /* 🚀 NEW: Ensure text color can be inherited or explicitly set for links */
             color: #111827; /* Default text color for the card content */
-
+            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25);
             min-height: 110px;
             /* 🚀 UPDATED: Use 'all' for smooth color transitions */
             transition: all 0.25s ease;
+
         }
 
             .action-card:hover {
