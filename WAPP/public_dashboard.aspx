@@ -7,12 +7,8 @@
             background: linear-gradient(135deg, #eaf0ff, #ffffff);
         }
 
-        html {
-          scrollbar-width: none; /* Firefox */
-        }
-
         html::-webkit-scrollbar {
-          display: none; /* Chrome, Safari, Edge */
+          display: none; 
         }
 
         .text-center {
@@ -42,7 +38,6 @@
           color: #001eff;
         }
 
-        /* Optional: Make active click feel responsive */
         .btn:active {
           transform: translateY(0);
           box-shadow: 0 3px 8px rgba(0, 30, 255, 0.2);
@@ -53,15 +48,14 @@
           max-width: 900px;
           margin: 40px auto;
           padding: 30px;
-          background: rgba(255, 255, 255, 0.25); /* half-transparent white */
+          background: rgba(255, 255, 255, 0.25); 
           border-radius: 12px;
-          box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25); /* soft blue shadow */
-          backdrop-filter: blur(10px); /* frosted glass effect */
-          -webkit-backdrop-filter: blur(10px); /* Safari support */
-          border: 1px solid rgba(255, 255, 255, 0.3); /* subtle border for glass look */
+          box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25);
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px); 
+          border: 1px solid rgba(255, 255, 255, 0.3); 
         }
 
-        /* ===== Carousel ===== */
         .carousel {
             position: relative;
             overflow: hidden;
@@ -142,13 +136,13 @@
         }
 
         .stats-box {
-            background: rgba(255, 255, 255, 0.25); /* half-transparent white */
+            background: rgba(255, 255, 255, 0.25); 
             border-radius: 10px;
             padding: 20px;
-            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25); /* soft blue shadow */
-            backdrop-filter: blur(10px); /* frosted glass effect */
-            -webkit-backdrop-filter: blur(10px); /* Safari support */
-            border: 1px solid rgba(255, 255, 255, 0.3); /* subtle border for glass look */
+            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25); 
+            backdrop-filter: blur(10px); 
+            -webkit-backdrop-filter: blur(10px); 
+            border: 1px solid rgba(255, 255, 255, 0.3); 
         }
 
         .stats-box p {
@@ -171,7 +165,6 @@
         }
     </style>
 
-    <!-- Welcome Section -->
     <div class="text-center" style="margin-top: 40px;">
         <h1 style="text-align:center"><strong>Welcome to Sea Learner</strong></h1>
         <h2 style="font-size: medium; color: #374151;">
@@ -189,7 +182,6 @@
         </div>
     </div>
 
-    <!-- Latest Updates Section -->
     <div class="section">
         <h2 class="text-center"><strong>Latest Updates & Opportunities</strong></h2>
         <div id="adCarousel" class="carousel">
@@ -208,7 +200,6 @@
         </div>
     </div>
 
-    <!-- Carousel script -->
     <script>
         (function () {
             let index = 0;
@@ -223,17 +214,14 @@
             }
 
             function nextItem() {
-                // Fade to black
                 fadeOverlay.style.opacity = '1';
 
-                // After fade-out (dark), change image
                 setTimeout(() => {
                     index = (index + 1) % items.length;
                     showItem(index);
 
-                    // Fade back in
                     fadeOverlay.style.opacity = '0';
-                }, 800); // fade-out duration (same as CSS)
+                }, 800); 
             }
 
             function startCarousel() {
@@ -257,7 +245,6 @@
         })();
     </script>
 
-    <!-- About Section -->
     <div class="section">
         <h2 class="text-center"><strong>About Sea Learner</strong></h2>
         <h3><strong>Our Mission</strong></h3>

@@ -7,16 +7,12 @@
             background: linear-gradient(135deg, #eaf0ff, #ffffff);
         }
 
-        html {
-          scrollbar-width: none; /* Firefox */
-        }
-
         html::-webkit-scrollbar {
-          display: none; /* Chrome, Safari, Edge */
+            display: none;
         }
 
         .btnSignIn:hover::after, .btnSignUp:hover::after {
-            transform: translate(-50%, -50%) scale(6); /* expands outward like a wave */
+            transform: translate(-50%, -50%) scale(6); 
             opacity: 1;
         }
 
@@ -26,12 +22,12 @@
             width: 400px;
             margin: 80px auto;
             text-align: center;
-            background: rgba(255, 255, 255, 0.25); /* half-transparent white */
+            background: rgba(255, 255, 255, 0.25); 
             border-radius: 12px;
-            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25); /* soft blue shadow */
-            backdrop-filter: blur(10px); /* frosted glass effect */
-            -webkit-backdrop-filter: blur(10px); /* Safari support */
-            border: 1px solid rgba(255, 255, 255, 0.3); /* subtle border for glass look */
+            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px); 
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         h2 {
@@ -63,7 +59,7 @@
             border: 1px solid #d1d5db;
             background-color: #f9fafb;
             box-sizing: border-box;
-            max-width: none;    /* remove inherited max-width if any */
+            max-width: none;   
         }
 
         .btn {
@@ -236,7 +232,6 @@
             </div>
         </div>
 
-        <!-- Student Info -->
         <asp:Panel ID="studentSection" runat="server" Visible="false" CssClass="studentSection">
             <hr />
             <h5 class="section-title">Student Information</h5>
@@ -276,7 +271,6 @@
             </div>
         </asp:Panel>
 
-        <!-- Educator Info -->
         <asp:Panel ID="educatorSection" runat="server" Visible="false" CssClass="educatorSection">
             <hr />
             <h5 class="section-title">Educator Information</h5>

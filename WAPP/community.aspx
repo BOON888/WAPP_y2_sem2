@@ -5,16 +5,10 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
 
     <style>
-
-        /* ===== Remove Scrollbar ===== */
-        html {
-            scrollbar-width: none; /* Firefox */
-        }
         html::-webkit-scrollbar {
             display: none; /* Chrome, Safari, Edge */
         }
 
-        /* ===== General Page Style ===== */
         body {
             font-family: 'Segoe UI', sans-serif;
             background: linear-gradient(135deg, #e9efff, #ffffff);
@@ -36,7 +30,6 @@
             text-align: left;
         }
 
-        /* ===== Container (Main Panel) ===== */
         .signup-container {
             padding: 40px;
             max-width: 1900px;
@@ -50,7 +43,6 @@
             border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
-        /* ===== Buttons ===== */
         .btn {
             background-color: #001eff;
             color: white;
@@ -82,7 +74,6 @@
             opacity: 1;
         }
 
-        /* ===== Delete Button (Red Theme) ===== */
         .btn-delete {
             background-color: white;
             color: red;
@@ -102,7 +93,6 @@
             transform: translateY(-2px);
         }
 
-        /* ===== Card / Post Styling ===== */
         .card {
             background-color: rgba(255, 255, 255, 0.85);
             border-radius: 10px;
@@ -147,10 +137,8 @@
         <h2>Community Forum</h2>
         <p class="text">Ask questions, share knowledge, and connect with other learners</p>
 
-        <!-- My Posts Button -->
         <asp:Button ID="btnMyPosts" runat="server" CssClass="btn btn-post" Text="My Posts" OnClick="btnMyPosts_Click" />
 
-        <!-- Ask a Question Panel -->
         <div class="card">
             <h5>Ask a Question</h5>
             <p class="text">Get help from the community or share your insights</p>
@@ -159,7 +147,6 @@
             <asp:Button ID="btnAsk" runat="server" CssClass="btn" Text="Ask Question" OnClick="btnAsk_Click" />
         </div>
 
-        <!-- Posts Display -->
         <asp:Repeater ID="rptPosts" runat="server" OnItemCommand="rptPosts_ItemCommand" OnItemDataBound="rptPosts_ItemDataBound">
             <ItemTemplate>
                 <div class="card post-card">
@@ -174,7 +161,6 @@
                             </p>
                         </div>
 
-                        <!-- Delete Button -->
                         <asp:LinkButton ID="btnDelete" runat="server"
                             CommandName="DeletePost"
                             CommandArgument='<%# Eval("Id") %>'
@@ -189,7 +175,6 @@
                     <hr />
                     <p><%# Eval("PostContent") %></p>
 
-                    <!-- Replies -->
                     <div class="reply-container">
                         <asp:Repeater ID="rptReplies" runat="server" DataSource='<%# Eval("Replies") %>'>
                             <ItemTemplate>
@@ -203,7 +188,6 @@
                         </asp:Repeater>
                     </div>
 
-                    <!-- Reply Input -->
                     <div class="reply-box">
                         <asp:TextBox ID="txtReply" runat="server" placeholder="Write a reply..."></asp:TextBox>
                         <asp:Button ID="btnReply" runat="server"
@@ -248,7 +232,6 @@
 
                         setTimeout(() => {
                             document.getElementById('confirmDelete').addEventListener('click', function () {
-                                // ✅ Correctly trigger postback with the server's unique ID
                                 __doPostBack(uniqueID, '');
                             });
 

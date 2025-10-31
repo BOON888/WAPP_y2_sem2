@@ -3,15 +3,10 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <style>
 
-        html {
-            scrollbar-width: none; /* Firefox */
-        }
 
         html::-webkit-scrollbar {
-            display: none; /* Chrome, Safari, Edge */
+            display: none; 
         }
-
-        /* ===== General Page Style ===== */
         body {
             font-family: 'Segoe UI', sans-serif;
             background: linear-gradient(135deg, #e9efff, #ffffff);
@@ -34,7 +29,6 @@
             text-align: left;
         }
 
-        /* ===== Container (Main Panel) ===== */
         .my-posts-container {
             padding: 40px;
             max-width: 1200px;
@@ -48,7 +42,6 @@
             border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
-        /* ===== Buttons ===== */
         .btn {
             background-color: #001eff;
             color: white;
@@ -85,7 +78,6 @@
             transform: translateY(-2px);
         }
 
-        /* ===== Card / Post Styling ===== */
         .card {
             background-color: rgba(255, 255, 255, 0.85);
             border-radius: 10px;
@@ -106,7 +98,6 @@
             font-size: 12px;
         }
 
-        /* ===== Replies Section ===== */
         .reply-container {
             background-color: #f9f9f9;
             border: 1px solid #ddd;
@@ -139,7 +130,6 @@
             font-size: 12px;
         }
 
-        /* ===== No Posts Label ===== */
         .text-muted.d-block.text-center {
             color: #777;
         }
@@ -148,7 +138,6 @@
 <div class="my-posts-container mt-4">
     <h2 class="mb-4">My Posts</h2>
 
-    <!-- User Post List -->
     <asp:Repeater ID="rptMyPosts" runat="server" OnItemCommand="rptMyPosts_ItemCommand">
         <ItemTemplate>
             <div class="card">
@@ -169,7 +158,6 @@
                     </div>
                     <p class="mt-2"><%# Eval("PostContent") %></p>
 
-                    <!-- Replies Section -->
                     <div class="mt-3 ps-3 border-start">
                         <h6 class="text-muted">Replies</h6>
                         <div class="reply-container">
@@ -194,9 +182,9 @@
         document.addEventListener('DOMContentLoaded', function () {
             document.querySelectorAll('.delete-post').forEach(function (btn) {
                 btn.addEventListener('click', function (event) {
-                    event.preventDefault(); // stop normal postback
+                    event.preventDefault(); 
 
-                    const uniqueID = btn.getAttribute('data-uniqueid'); // server control UniqueID
+                    const uniqueID = btn.getAttribute('data-uniqueid'); 
 
                     Swal.fire({
                         html: `
@@ -218,7 +206,6 @@
                             allowEscapeKey: false,
                         });
 
-                        // Popup button logic
                         setTimeout(() => {
                             document.getElementById('confirmDelete').addEventListener('click', function () {
                                 __doPostBack(uniqueID, ''); // ✅ triggers ASP.NET DeletePost
@@ -232,7 +219,6 @@
             });
         </script>
 
-    <!-- If no posts -->
     <asp:Label ID="lblNoPosts" runat="server" CssClass="text-muted d-block text-center mt-4" Visible="false">
         You haven’t created any posts yet.
     </asp:Label>

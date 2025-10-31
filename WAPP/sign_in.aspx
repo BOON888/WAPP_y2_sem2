@@ -8,11 +8,11 @@
         }
 
         html {
-          scrollbar-width: none; /* Firefox */
+          scrollbar-width: none;
         }
 
         html::-webkit-scrollbar {
-          display: none; /* Chrome, Safari, Edge */
+          display: none; 
         }
 
         .login-container {
@@ -22,12 +22,12 @@
             margin: 80px auto;
             margin-bottom: 30px;
             text-align: center;
-            background: rgba(255, 255, 255, 0.25); /* half-transparent white */
+            background: rgba(255, 255, 255, 0.25);
             border-radius: 12px;
-            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25); /* soft blue shadow */
-            backdrop-filter: blur(10px); /* frosted glass effect */
-            -webkit-backdrop-filter: blur(10px); /* Safari support */
-            border: 1px solid rgba(255, 255, 255, 0.3); /* subtle border for glass look */
+            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25); 
+            backdrop-filter: blur(10px); 
+            -webkit-backdrop-filter: blur(10px); 
+            border: 1px solid rgba(255, 255, 255, 0.3); 
         }
 
         h2 {
@@ -58,7 +58,7 @@
             border-radius: 6px;
             border: 1px solid #d1d5db;
             background-color: #f9fafb;
-            max-width: none;    /* remove inherited max-width if any */
+            max-width: none;    
         }
 
         .forgot {

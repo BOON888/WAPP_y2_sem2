@@ -13,12 +13,12 @@
             width: 400px;
             margin: 80px auto;
             text-align: center;
-            background: rgba(255, 255, 255, 0.25); /* half-transparent white */
+            background: rgba(255, 255, 255, 0.25); 
             border-radius: 12px;
-            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25); /* soft blue shadow */
-            backdrop-filter: blur(10px); /* frosted glass effect */
-            -webkit-backdrop-filter: blur(10px); /* Safari support */
-            border: 1px solid rgba(255, 255, 255, 0.3); /* subtle border for glass look */
+            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25); 
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px); 
+            border: 1px solid rgba(255, 255, 255, 0.3); 
         }
 
         .btn {
@@ -71,7 +71,7 @@
             border: 1px solid #d1d5db;
             background-color: #f9fafb;
             box-sizing: border-box;
-            max-width: none;    /* remove inherited max-width if any */
+            max-width: none;    
         }
 
         .hidden {
@@ -87,7 +87,6 @@
     <div class="signup-container">
         <h2>Forgot Password</h2>
 
-        <!-- Step 1: Email -->
         <div id="step1">
             <div class="form-group">
                 <label for="txtEmail">Registered Email</label>
@@ -96,7 +95,6 @@
             <button type="button" class="btn" onclick="nextStep(2)">Next</button>
         </div>
 
-        <!-- Step 2: Father & Mother -->
         <div id="step2" class="hidden">
             <div class="form-group">
                 <label for="txtFather">Father Name</label>
@@ -110,7 +108,6 @@
             <button type="button" class="btn btn-back" onclick="prevStep(1)">Back</button>
         </div>
 
-        <!-- Step 3: New Password -->
         <div id="step3" class="hidden">
             <div class="form-group">
                 <label for="txtNewPassword">New Password</label>
@@ -128,7 +125,6 @@
     </div>
 
     <script>
-        // Handle showing/hiding steps
         function nextStep(step) {
             document.querySelectorAll('[id^="step"]').forEach(div => div.classList.add('hidden'));
             document.getElementById('step' + step).classList.remove('hidden');
