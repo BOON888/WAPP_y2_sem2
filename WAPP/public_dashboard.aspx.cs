@@ -36,21 +36,13 @@ namespace WAPP
             using (SqlConnection conn = new SqlConnection(connString))
             {
                 conn.Open();
-
-                // Count students
                 SqlCommand cmdStudents = new SqlCommand("SELECT COUNT(*) FROM student", conn);
                 int studentCount = (int)cmdStudents.ExecuteScalar();
-
-                // Count educators
                 SqlCommand cmdEducators = new SqlCommand("SELECT COUNT(*) FROM educator", conn);
                 int educatorCount = (int)cmdEducators.ExecuteScalar();
-
-                // Count courses
                 SqlCommand cmdCourses = new SqlCommand("SELECT COUNT(*) FROM course", conn);
                 int courseCount = (int)cmdCourses.ExecuteScalar();
-
-                // Display in labels
-                lblStudentCount.Text = studentCount.ToString("N0"); // formatted with commas
+                lblStudentCount.Text = studentCount.ToString("N0"); 
                 lblEducatorCount.Text = educatorCount.ToString("N0");
                 lblCourseCount.Text = courseCount.ToString("N0");
             }

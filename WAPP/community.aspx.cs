@@ -150,15 +150,12 @@ namespace WAPP
                 {
                     conn.Open();
 
-                    //Step 1: Delete all replies linked to this post
                     string deleteReplies = "DELETE FROM Reply WHERE PostId = @PostId";
                     using (SqlCommand cmdReplies = new SqlCommand(deleteReplies, conn))
                     {
                         cmdReplies.Parameters.AddWithValue("@PostId", postId);
                         cmdReplies.ExecuteNonQuery();
                     }
-
-                    //Step 2: Delete the post itself
                     string deletePost = "DELETE FROM CommunityPost WHERE Id = @PostId AND UserId = @UserId";
                     using (SqlCommand cmdPost = new SqlCommand(deletePost, conn))
                     {

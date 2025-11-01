@@ -8,7 +8,6 @@ namespace WAPP
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            // Optional: clear any existing session if returning to login
             if (!IsPostBack)
             {
                 Session.Clear();
@@ -32,7 +31,6 @@ namespace WAPP
             {
                 conn.Open();
 
-                // 🔹 Step 1: Try to find user in Users table
                 string userQuery = "SELECT * FROM Users WHERE Email = @Email AND Password = @Password";
                 SqlCommand userCmd = new SqlCommand(userQuery, conn);
                 userCmd.Parameters.AddWithValue("@Email", email);
@@ -42,9 +40,8 @@ namespace WAPP
 
                 if (reader.Read())
                 {
-                    // ✅ Set sessions for student/educator
                     Session["UserId"] = reader["Id"].ToString();
-                    Session["FullName"] = reader["FullName"].ToString();  // make sure always set
+                    Session["FullName"] = reader["FullName"].ToString();  
                     Session["Email"] = reader["Email"].ToString();
                     Session["Role"] = reader["Role"].ToString().ToLower();
                     Session["ProfilePicture"] = reader["ProfilePicture"].ToString();
@@ -74,15 +71,13 @@ namespace WAPP
 
                     if (adminReader.Read())
                     {
-                        // ✅ Ensure all required sessions are set
                         Session["UserId"] = adminReader["Id"].ToString();
                         Session["Email"] = adminReader["Email"].ToString();
                         Session["Role"] = "admin";
-                        Session["FullName"] = "Administrator"; // <-- this fixes your null issue
+                        Session["FullName"] = "Administrator"; 
 
                         adminReader.Close();
 
-                        // Redirect to admin dashboard
                         Response.Redirect("~/admin_dashboard.aspx");
                     }
                     else
