@@ -154,7 +154,7 @@ namespace WAPP
                 {
                     conn.Open();
 
-                    //Step 1: Check if already joined this course
+                    
                     SqlCommand checkExist = new SqlCommand(
                         "SELECT COUNT(*) FROM StudentCourseProgress WHERE StudentId=@sid AND CourseId=@cid", conn);
                     checkExist.Parameters.AddWithValue("@sid", studentId);
@@ -163,26 +163,30 @@ namespace WAPP
                     int exists = Convert.ToInt32(checkExist.ExecuteScalar());
                     if (exists > 0)
                     {
-                        //Already joined
                         Response.Write("<script>alert('You have already joined this course!');</script>");
                         return;
                     }
 
-                    //Step 2: Check current coins
+                    
                     SqlCommand getCoins = new SqlCommand("SELECT Coins FROM Student WHERE Id=@id", conn);
                     getCoins.Parameters.AddWithValue("@id", studentId);
                     int coins = Convert.ToInt32(getCoins.ExecuteScalar());
 
-                    int cost = 50; // default cost per course
+                    
+                    SqlCommand getCost = new SqlCommand("SELECT ISNULL(Coin, 0) FROM Course WHERE Id=@cid", conn);
+                    getCost.Parameters.AddWithValue("@cid", courseId);
+                    int cost = Convert.ToInt32(getCost.ExecuteScalar());
+
+                    
                     if (coins >= cost)
                     {
-                        //Deduct coins
-                        SqlCommand updateCoins = new SqlCommand("UPDATE Student SET Coins=Coins-@cost WHERE Id=@id", conn);
+                        // Deduct coins
+                        SqlCommand updateCoins = new SqlCommand("UPDATE Student SET Coins = Coins - @cost WHERE Id = @id", conn);
                         updateCoins.Parameters.AddWithValue("@cost", cost);
                         updateCoins.Parameters.AddWithValue("@id", studentId);
                         updateCoins.ExecuteNonQuery();
 
-                        //Enroll course
+                        // Enroll in the course
                         SqlCommand enroll = new SqlCommand(
                             "INSERT INTO StudentCourseProgress (StudentId, CourseId, Status) VALUES (@sid, @cid, 'In Progress')", conn);
                         enroll.Parameters.AddWithValue("@sid", studentId);
@@ -193,7 +197,6 @@ namespace WAPP
                     }
                     else
                     {
-                        //Not enough coins
                         Response.Write("<script>alert('Not enough coins to subscribe.');</script>");
                     }
                 }
