@@ -70,8 +70,8 @@ namespace WAPP
                     SqlCommand totalCmd = new SqlCommand(totalQuery, conn);
                     lblTotalFeedback.Text = totalCmd.ExecuteScalar().ToString();
 
-                    // Pending feedback
-                    string pendingQuery = "SELECT COUNT(*) FROM Feedback WHERE Status IS NULL OR Status = 'pending' OR Status = 'inprogress'";
+                    // Pending feedback (anything not completed)
+                    string pendingQuery = "SELECT COUNT(*) FROM Feedback WHERE Status IS NULL OR Status != 'completed'";
                     SqlCommand pendingCmd = new SqlCommand(pendingQuery, conn);
                     lblPendingFeedback.Text = pendingCmd.ExecuteScalar().ToString();
 
@@ -117,7 +117,7 @@ namespace WAPP
                     {
                         if (ddlStatus.SelectedValue == "pending")
                         {
-                            query += " AND (f.Status IS NULL OR f.Status = 'pending' OR f.Status = 'inprogress')";
+                            query += " AND (f.Status IS NULL OR f.Status != 'completed')";
                         }
                         else
                         {

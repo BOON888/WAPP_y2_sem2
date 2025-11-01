@@ -2,68 +2,6 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <style>
-        /* ===== General Page Style ===== */
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: #f9f9fb;
-            margin: 0;
-            padding: 0;
-        }
-
-        /* ===== Main Container ===== */
-        .management-container {
-            padding: 40px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            width: 90%;
-            max-width: 1400px;
-            margin: 40px auto;
-            text-align: center;
-            background: rgba(255, 255, 255, 0.25);
-            border-radius: 12px;
-            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        /* ===== Navigation Bar ===== */
-        .navbar {
-            background: rgba(255, 255, 255, 0.4);
-            padding: 12px 20px;
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0, 30, 255, 0.15);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            margin-bottom: 30px;
-        }
-        .navbar a,
-        .navbar asp\:LinkButton {
-            color: #111827;
-            text-decoration: none;
-            margin-right: 30px;
-            font-weight: 500;
-            font-size: 16px;
-            transition: color 0.3s ease, transform 0.3s ease;
-            padding: 8px 16px;
-            border-radius: 6px;
-        }
-        .navbar a:hover,
-        .navbar asp\:LinkButton:hover {
-            color: #001eff;
-            transform: translateY(-2px);
-            background: rgba(0, 30, 255, 0.1);
-        }
-        .navbar .active {
-            color: #001eff;
-            background: rgba(0, 30, 255, 0.15);
-            border-bottom: 2px solid #001eff;
-            padding-bottom: 6px;
-        }
-
         /* ===== Card Layout ===== */
         .card-container {
             display: grid !important;
@@ -78,12 +16,14 @@
             box-shadow: 0 4px 15px rgba(0, 30, 255, 0.15);
             padding: 25px;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
+            justify-content: center;
             align-items: center;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             backdrop-filter: blur(5px);
             -webkit-backdrop-filter: blur(5px);
             border: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
         }
         .card:hover {
             transform: translateY(-6px);
@@ -94,18 +34,20 @@
             margin: 0;
             font-size: 1.2rem;
             color: #111827;
-            text-align: left;
+            text-align: center;
         }
         .card-content p {
             font-size: 1.6rem;
             font-weight: bold;
             color: #001eff;
             margin-top: 8px;
-            text-align: left;
+            text-align: center;
+            width: 100%;
         }
         .card-icon {
             font-size: 2.5rem;
             color: #001eff;
+            margin-top: 10px;
         }
 
         /* ===== User Management ===== */
@@ -547,6 +489,21 @@
             
             .card-container {
                 grid-template-columns: 1fr !important;
+            }
+            
+            .card {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+            
+            .card-content {
+                align-items: center;
+            }
+            
+            .card-icon {
+                margin-left: 0;
+                margin-top: 10px;
             }
             
             .navbar {

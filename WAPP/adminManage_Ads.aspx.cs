@@ -100,7 +100,7 @@ namespace WAPP
             string announcementType = "promotion"; // default type
             string announcementContent = content;
 
-            // Parse content format: "Title\n\nContent\n\n[type]"
+            // Parse content format: "Title\n\nContent\n\nType"
             string[] sections = content.Split(new[] { "\n\n" }, StringSplitOptions.RemoveEmptyEntries);
 
             if (sections.Length >= 1)
@@ -109,13 +109,15 @@ namespace WAPP
 
                 if (sections.Length >= 2)
                 {
-                    // Check if last section is the type in brackets
-                    string lastSection = sections[sections.Length - 1].Trim();
-                    if (lastSection.StartsWith("[") && lastSection.EndsWith("]"))
-                    {
-                        announcementType = lastSection.Substring(1, lastSection.Length - 2).ToLower();
+                    // Check if last section is a valid type
+                    string lastSection = sections[sections.Length - 1].Trim().ToLower();
 
-                        // Rebuild content without the type section and title
+                    // If last section is a valid type, use it and remove it from content
+                    if (lastSection == "promotion" || lastSection == "lesson" || lastSection == "partner")
+                    {
+                        announcementType = lastSection;
+
+                        // Rebuild content without the type section
                         if (sections.Length > 2)
                         {
                             announcementContent = string.Join("\n\n", sections, 1, sections.Length - 2);
@@ -127,8 +129,9 @@ namespace WAPP
                     }
                     else
                     {
-                        // No type found, use all sections after title as content
+                        // Last section is not a valid type, so use all sections after title as content
                         announcementContent = string.Join("\n\n", sections, 1, sections.Length - 1);
+                        announcementType = "promotion"; // default type
                     }
                 }
                 else
@@ -252,8 +255,8 @@ namespace WAPP
                 return;
             }
 
-            // Format content: Title + Content + [Type]
-            string formattedContent = $"{title}\n\n{content}\n\n[{type}]";
+            // NEW: Format content as: Title + \n\n + Content + \n\n + Type
+            string formattedContent = $"{title}\n\n{content}\n\n{type}";
 
             string imagePath = null;
 

@@ -52,12 +52,14 @@
             box-shadow: 0 4px 15px rgba(0, 30, 255, 0.15);
             padding: 25px;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
+            justify-content: center;
             align-items: center;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             backdrop-filter: blur(5px);
             -webkit-backdrop-filter: blur(5px);
             border: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
         }
 
         .card:hover {
@@ -65,11 +67,16 @@
             box-shadow: 0 8px 25px rgba(0, 30, 255, 0.25);
         }
 
+        .card-content {
+            width: 100%;
+            text-align: center;
+        }
+
         .card-content h4 {
             margin: 0;
             font-size: 1.1rem;
             color: #333;
-            text-align: left;
+            text-align: center;
         }
 
         .card-content p {
@@ -77,12 +84,14 @@
             font-weight: bold;
             color: #001eff;
             margin-top: 8px;
-            text-align: left;
+            margin-bottom: 5px;
+            text-align: center;
         }
 
         .card-icon {
             font-size: 2.5rem;
             color: #001eff;
+            margin-top: 5px;
         }
 
         /* ===== Buttons ===== */

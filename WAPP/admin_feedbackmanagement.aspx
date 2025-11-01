@@ -330,12 +330,6 @@
             border: 1px solid rgba(40, 167, 69, 0.2);
         }
 
-        .status-inprogress {
-            background: rgba(204, 231, 255, 0.8);
-            color: #004085;
-            border: 1px solid rgba(0, 123, 255, 0.2);
-        }
-
         .feedback-content {
             color: #666;
             line-height: 1.6;
@@ -491,7 +485,6 @@
                     <asp:DropDownList ID="ddlStatus" runat="server" CssClass="filter-control" AutoPostBack="true" OnSelectedIndexChanged="FilterChanged">
                         <asp:ListItem Value="">All Status</asp:ListItem>
                         <asp:ListItem Value="pending">Pending</asp:ListItem>
-                        <asp:ListItem Value="inprogress">In Progress</asp:ListItem>
                         <asp:ListItem Value="completed">Completed</asp:ListItem>
                     </asp:DropDownList>
                 </div>
