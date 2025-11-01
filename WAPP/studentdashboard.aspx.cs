@@ -116,12 +116,13 @@ namespace WAPP
                 rptPublicCourses.DataSource = dtPublic;
                 rptPublicCourses.DataBind();
 
-                // Private
+                //Private Courses
                 SqlDataAdapter daPrivate = new SqlDataAdapter(
-                    @"SELECT c.Id, c.Title, e.EducationQualification AS EducatorName, 50 AS CoinReward 
-                      FROM Course c 
-                      JOIN Educator e ON c.EducatorId=e.Id 
-                      WHERE c.CourseType='Private'", conn);
+                    @"SELECT c.Id, c.Title, e.EducationQualification AS EducatorName, 
+                     ISNULL(c.Coin, 0) AS CoinReward
+                    FROM Course c 
+                    JOIN Educator e ON c.EducatorId = e.Id 
+                    WHERE c.CourseType = 'Private'", conn);
                 DataTable dtPrivate = new DataTable();
                 daPrivate.Fill(dtPrivate);
                 rptPrivateCourses.DataSource = dtPrivate;
