@@ -40,8 +40,20 @@ namespace WAPP
 
                 if (reader.Read())
                 {
+                    string status = reader["Status"].ToString();
+
+                    // Check if user is inactive
+                    if (status.Equals("Inactive", StringComparison.OrdinalIgnoreCase))
+                    {
+                        reader.Close();
+                        lblError.Text = "Your account has been blocked. Please contact support.";
+                        lblError.ForeColor = System.Drawing.Color.Red;
+                        return;
+                    }
+
+                    // Continue login for active users
                     Session["UserId"] = reader["Id"].ToString();
-                    Session["FullName"] = reader["FullName"].ToString();  
+                    Session["FullName"] = reader["FullName"].ToString();
                     Session["Email"] = reader["Email"].ToString();
                     Session["Role"] = reader["Role"].ToString().ToLower();
                     Session["ProfilePicture"] = reader["ProfilePicture"].ToString();
