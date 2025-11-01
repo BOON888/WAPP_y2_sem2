@@ -27,6 +27,18 @@ namespace WAPP
                 DataTable dt = new DataTable();
                 da.Fill(dt);
 
+                // Replace line breaks with <br> tags for HTML display
+                foreach (DataRow row in dt.Rows)
+                {
+                    if (row["AdContent"] != DBNull.Value)
+                    {
+                        row["AdContent"] = row["AdContent"].ToString()
+                            .Replace("\r\n", "<br>")
+                            .Replace("\n", "<br>")
+                            .Replace("\r", "<br>");
+                    }
+                }
+
                 rptAds.DataSource = dt;
                 rptAds.DataBind();
             }
