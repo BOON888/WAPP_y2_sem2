@@ -296,7 +296,7 @@
             <div class="card">
                 <div class="card-left">
                     <div>
-                        <h3>Course Completions</h3>
+                        <h3>Student Course Completed</h3>
                         <div class="stat-value">
                             <asp:Label ID="lblCourseCompletions" runat="server" Text="0" />
                         </div>
