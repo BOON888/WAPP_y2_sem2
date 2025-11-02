@@ -203,7 +203,7 @@ namespace WAPP
 
                     tran.Commit();
 
-                    lblMsg.Text = "✅ Profile updated successfully!";
+                    lblMsg.Text = "Profile updated successfully!";
                     lblMsg.ForeColor = System.Drawing.Color.Green;
 
                     // ✅ Refresh + restore read-only state
