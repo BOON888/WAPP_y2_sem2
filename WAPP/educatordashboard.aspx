@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="Educator Dashboard" Language="C#" MasterPageFile="~/Site.Master"
-    AutoEventWireup="true" CodeBehind="Educator_dashboard.aspx.cs"
+    AutoEventWireup="true" CodeBehind="educatordashboard.aspx.cs"
     Inherits="WAPP.Educator_dashboard" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
@@ -61,25 +61,22 @@
 
 
             .card h3 {
-                /* 🚀 Increased font size for title */
                 color: #001eff;
-                margin: 0 0 4px 0; /* Add bottom margin */
-                font-size: 18px; /* BEFORE: 14px */
+                margin: 0 0 4px 0;
+                font-size: 18px;
                 font-weight: 700;
-                text-align: center; /* Ensure title is centered */
-                width: 100%; /* Important for centering */
+                text-align: center;
+                width: 100%;
             }
 
         .stat-value {
-            /* 🚀 Increased font size for number */
-            font-size: 32px; /* BEFORE: 20px */
+            font-size: 32px;
             font-weight: 700;
             color: #111827;
-            text-align: center; /* Ensure number is centered */
-            width: 100%; /* Important for centering */
+            text-align: center;
+            width: 100%;
         }
 
-        /* Courses */
         .section {
             margin-top: 28px;
         }
@@ -94,19 +91,18 @@
         .create-btn {
             background: #001eff;
             color: white;
-            border: 1px solid #001eff; /* 🚀 ADD THIS BORDER */
+            border: 1px solid #001eff;
             border-radius: 8px;
             padding: 10px 20px;
             text-decoration: none;
             font-weight: 600;
             display: inline-block;
-            transition: all 0.25s ease; /* 🚀 CHANGED TO 'all' for smooth color transition */
+            transition: all 0.25s ease;
         }
 
             .create-btn:hover {
                 transform: translateY(-2px);
                 box-shadow: 0 6px 15px rgba(0, 30, 255, 0.25);
-                /* 🚀 ADDED FIX: Change colors on hover */
                 background: white;
                 color: #001eff;
             }
@@ -170,16 +166,16 @@
         .btn {
             background-color: #001eff;
             color: white;
-            border: none; /* Changed from 1px solid #001eff */
+            border: none;
             border-radius: 6px;
-            padding: 10px 20px; /* Increased padding */
-            font-size: 16px; /* Increased font size */
+            padding: 10px 20px;
+            font-size: 16px;
             cursor: pointer;
-            margin: 5px; /* Added margin */
+            margin: 5px;
             transition: background-color 0.3s ease, color 0.3s ease, transform 0.25s ease, box-shadow 0.25s ease;
-            width: 100%; /* Changed to 100% to fill flex container */
-            max-width: 200px; /* Added max-width for better control */
-            flex-grow: 1; /* Allow buttons to grow in Repeater */
+            width: 100%;
+            max-width: 200px;
+            flex-grow: 1;
         }
 
             .btn:hover {
@@ -188,10 +184,10 @@
                 opacity: 0.95;
             }
 
-        .btn-secondary { /* Renaming .btn-back to .btn-secondary for consistency */
+        .btn-secondary {
             background-color: white;
             color: #001eff;
-            border: 1px solid #001eff; /* Added border to secondary button */
+            border: 1px solid #001eff;
         }
 
         .btn:active {
@@ -200,7 +196,6 @@
             opacity: 1;
         }
 
-        /* Quick actions as full clickable cards */
         .quick-actions {
             margin-top: 18px;
             display: grid;
@@ -210,46 +205,40 @@
 
         .action-card {
             display: block;
-            background: #f9fafb; /* Current background color */
-            border: 1px solid #e5e7eb; /* Current light border */
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
             border-radius: 10px;
             padding: 20px;
             text-align: center;
             text-decoration: none;
-            /* 🚀 NEW: Ensure text color can be inherited or explicitly set for links */
-            color: #111827; /* Default text color for the card content */
+            color: #111827;
             box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25);
             min-height: 110px;
-            /* 🚀 UPDATED: Use 'all' for smooth color transitions */
             transition: all 0.25s ease;
         }
 
             .action-card:hover {
                 transform: translateY(-4px);
                 box-shadow: 0 6px 18px rgba(0,0,0,0.06);
-                /* 🚀 ADDED FIX: Apply the Blue-to-White effect */
-                background: #001eff; /* Change background to blue */
-                color: white; /* Change text color to white for the whole card */
-                border-color: #001eff; /* Make the border blue */
+                background: #001eff;
+                color: white;
+                border-color: #001eff;
             }
 
         .action-title {
-            /* 🚀 FONT FIX: Ensure consistency and better size */
             font-family: 'Segoe UI', sans-serif;
-            font-size: 18px; /* Slightly larger title */
+            font-size: 18px;
             font-weight: 700;
             color: #111827;
             margin-bottom: 6px;
         }
 
         .action-desc {
-            /* 🚀 FONT FIX: Ensure consistency */
             font-family: 'Segoe UI', sans-serif;
             color: #6b7280;
-            font-size: 14px; /* Consistent body size */
+            font-size: 14px;
         }
 
-        /* scrollbar small style */
         .course-list::-webkit-scrollbar {
             height: 8px;
         }

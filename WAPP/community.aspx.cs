@@ -70,7 +70,7 @@ namespace WAPP
                 da.Fill(dtPosts);
             }
 
-            // ✅ Add Replies column
+            // Add Replies column
             if (!dtPosts.Columns.Contains("Replies"))
             {
                 dtPosts.Columns.Add("Replies", typeof(object));

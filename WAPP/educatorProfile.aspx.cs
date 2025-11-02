@@ -13,7 +13,7 @@ namespace WAPP
         {
             if (!IsPostBack)
             {
-                // ✅ Ensure educator is logged in
+                // Ensure educator is logged in
                 if (Session["UserId"] == null || Session["Role"] == null ||
                     Session["Role"].ToString().ToLower() != "educator")
                 {
@@ -34,13 +34,13 @@ namespace WAPP
             {
                 conn.Open();
                 string sql = @"
-            SELECT 
-                e.Id AS EducatorId,
-                u.FullName, u.Age, u.Gender, u.ProfilePicture, u.Email,
-                e.EducationQualification, e.GraduatedUniversity
-            FROM Users u
-            JOIN Educator e ON u.Id = e.UserId
-            WHERE u.Id = @uid";
+                    SELECT 
+                        e.Id AS EducatorId,
+                        u.FullName, u.Age, u.Gender, u.ProfilePicture, u.Email,
+                        e.EducationQualification, e.GraduatedUniversity
+                    FROM Users u
+                    JOIN Educator e ON u.Id = e.UserId
+                    WHERE u.Id = @uid";
 
                 SqlCommand cmd = new SqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@uid", userId);
@@ -48,34 +48,34 @@ namespace WAPP
 
                 if (dr.Read())
                 {
-                    // ✅ Load profile picture
+                    // Load profile picture
                     string profilePic = dr["ProfilePicture"]?.ToString();
                     imgProfile.ImageUrl = string.IsNullOrEmpty(profilePic)
                         ? ResolveUrl("~/Image/default_profile2.png")
                         : ResolveUrl("~/Image/" + profilePic);
 
-                    // ✅ Display educator info
+                    // Display educator info
                     lblFullName.Text = dr["FullName"].ToString();
                     txtFullName.Text = dr["FullName"].ToString();
                     txtAge.Text = dr["Age"].ToString();
                     lblEducatorId.Text = dr["EducatorId"].ToString();
 
-                    // ✅ Email (read-only)
+                    // Email (read-only)
                     txtEmail.Text = dr["Email"].ToString();
 
-                    // ✅ Gender
+                    // Gender
                     string gender = dr["Gender"].ToString();
                     if (!string.IsNullOrEmpty(gender) && ddlGender.Items.FindByValue(gender) != null)
                         ddlGender.SelectedValue = gender;
 
-                    // ✅ Qualification
+                    // Qualification
                     string qual = dr["EducationQualification"].ToString();
                     if (!string.IsNullOrEmpty(qual) && ddlQualification.Items.FindByValue(qual) != null)
                         ddlQualification.SelectedValue = qual;
 
                     txtUniversity.Text = dr["GraduatedUniversity"].ToString();
 
-                    // ✅ Sync Session
+                    // Sync Session
                     Session["EducatorID"] = dr["EducatorId"].ToString();
                     Session["FullName"] = dr["FullName"].ToString();
                     Session["ProfilePicture"] = dr["ProfilePicture"].ToString();
@@ -151,7 +151,7 @@ namespace WAPP
                 catch (Exception fileEx)
                 {
                     // If file upload fails (usually permission), display error and STOP the entire process.
-                    lblMsg.Text = "❌ File Upload Failed: " + fileEx.Message + ". Please check folder permissions.";
+                    lblMsg.Text = "File Upload Failed: " + fileEx.Message + ". Please check folder permissions.";
                     lblMsg.ForeColor = System.Drawing.Color.Red;
                     return;
                 }
@@ -172,7 +172,7 @@ namespace WAPP
                         fileName = Session["ProfilePicture"]?.ToString();
                     }
 
-                    // ✅ Update Users
+                    // Update Users
                     string sqlUser = @"UPDATE Users 
                                SET FullName=@name, Age=@age, Gender=@gender"
                                        + (fileUploadedSuccessfully ? ", ProfilePicture=@pic" : "")
@@ -190,7 +190,7 @@ namespace WAPP
 
                     cmdU.ExecuteNonQuery();
 
-                    // ✅ Update Educator
+                    // Update Educator
                     string sqlEdu = @"UPDATE Educator 
                               SET EducationQualification=@qual, GraduatedUniversity=@uni
                               WHERE UserId=@uid";
@@ -206,7 +206,7 @@ namespace WAPP
                     lblMsg.Text = "Profile updated successfully!";
                     lblMsg.ForeColor = System.Drawing.Color.Green;
 
-                    // ✅ Refresh + restore read-only state
+                    // Refresh + restore read-only state
                     LoadEducatorProfile();
                     txtFullName.ReadOnly = true;
                     txtAge.ReadOnly = true;
@@ -222,8 +222,7 @@ namespace WAPP
                 catch (Exception dbEx)
                 {
                     tran.Rollback();
-                    // This now catches database-specific errors only
-                    lblMsg.Text = "❌ Database Error: " + dbEx.Message;
+                    lblMsg.Text = "Database Error: " + dbEx.Message;
                     lblMsg.ForeColor = System.Drawing.Color.Red;
 
                     // Optional: If the file was saved but the DB update failed, you may want to delete the orphaned file here.

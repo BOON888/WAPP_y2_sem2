@@ -4,16 +4,14 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
 
     <style>
-        /* --- ALL STYLES ARE COPIED IDENTICALLY FROM CREATECOURSE.ASPX --- */
         html {
-            scrollbar-width: none; /* Firefox */
+            scrollbar-width: none;
         }
 
         html::-webkit-scrollbar {
-            display: none; /* Chrome, Safari, Edge */
+            display: none; 
         }
 
-        /* Body is in Site.Master, but this sets the mood */
         body {
             font-family: 'Segoe UI', sans-serif;
             background: linear-gradient(135deg, #eaf0ff, #ffffff);
@@ -23,8 +21,6 @@
             color: #111827;
         }
 
-        /* --- BASE BUTTON STYLE (As requested) --- */
-        /* This is your new "Add" button style */
         .btn {
             background-color: #001eff;
             color: white;
@@ -34,7 +30,7 @@
             font-size: 16px;
             cursor: pointer;
             margin: 5px;
-            font-weight: bold; /* Added from original */
+            font-weight: bold; 
             transition: background-color 0.3s ease, color 0.3s ease, transform 0.25s ease, box-shadow 0.25s ease;
         }
 
@@ -50,17 +46,16 @@
             opacity: 1;
         }
     
-        /* --- UPDATED ORIGINAL STYLES --- */
         .main-box {
             max-width: 100%;
             margin: auto;
             padding: 30px;
-            background: rgba(255, 255, 255, 0.25); /* half-transparent white */
+            background: rgba(255, 255, 255, 0.25); 
             border-radius: 12px;
-            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25); /* soft blue shadow */
-            backdrop-filter: blur(10px); /* frosted glass effect */
-            -webkit-backdrop-filter: blur(10px); /* Safari support */
-            border: 1px solid rgba(255, 255, 255, 0.3); /* subtle border for glass look */
+            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25); 
+            backdrop-filter: blur(10px); 
+            -webkit-backdrop-filter: blur(10px); 
+            border: 1px solid rgba(255, 255, 255, 0.3); 
         }
 
         .form-section {
@@ -68,9 +63,8 @@
         }
 
         .form-section h3 {
-            /* color is set by new h3 style */
             margin-bottom: 15px;
-            border-bottom: 2px solid #001eff; /* Changed color */
+            border-bottom: 2px solid #001eff; 
             display: inline-block;
             padding-bottom: 5px;
         }
@@ -106,8 +100,6 @@
             color: #111827;
         }
 
-        /* --- UPDATED FORM ELEMENTS --- */
-        /* Added input[type=number] to this rule */
         .form-grid input[type=text], .form-grid input[type=number], .form-grid select, textarea,
         .form-grid-full input[type=text], .form-grid-full input[type=number], .form-grid-full select,
         .form-grid-quiz input[type=text], .form-grid-quiz input[type=number], .form-grid-quiz select {
@@ -120,13 +112,11 @@
             color: #111827;
             font-family: 'Segoe UI', sans-serif;
         }
-    
-        /* --- NEW: FILE UPLOAD BUTTON STYLE --- */
-        /* Hides the default "No file chosen" text */
+ 
         input[type="file"] {
             color: transparent;
         }
-        /* Style for modern browsers */
+
         input[type="file"]::file-selector-button {
             background-color: white;
             color: #001eff;
@@ -139,7 +129,7 @@
             font-weight: bold;
             transition: background-color 0.3s ease, color 0.3s ease, transform 0.25s ease, box-shadow 0.25s ease;
         }
-        /* Style for older WebKit browsers */
+    
         input[type="file"]::-webkit-file-upload-button {
             background-color: white;
             color: #001eff;
@@ -153,56 +143,46 @@
             transition: background-color 0.3s ease, color 0.3s ease, transform 0.25s ease, box-shadow 0.25s ease;
         }
 
-        /* Hover effect for file button (matches .btn-cancel:hover) */
         input[type="file"]::file-selector-button:hover,
         input[type="file"]::-webkit-file-upload-button:hover {
             transform: translateY(-2px);
-            background-color: #001eff; /* Solid on hover */
+            background-color: #001eff; 
             color: white;
         }
 
-    
-        /* Placeholder text color */
-        ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+        ::placeholder { 
             color: #555;
-            opacity: 1; /* Firefox */
+            opacity: 1; 
         }
-        :-ms-input-placeholder { /* Internet Explorer 10-11 */
+        :-ms-input-placeholder { 
             color: #555;
         }
-        ::-ms-input-placeholder { /* Microsoft Edge */
+        ::-ms-input-placeholder { 
             color: #555;
         }
 
-
-        /* --- NEW BUTTON VARIATIONS --- */
-    
-        /* Base style is .btn (blue) */
-        /* Primary (Add) / Secondary (Save/Create) - NOW BLUE OUTLINE */
         .btn-primary, .btn-secondary {
             background-color: #001eff;
             color: white;
             border-color: #001eff;
         }
         .btn-primary:hover, .btn-secondary:hover {
-            background-color: white; /* Solid on hover */
+            background-color: white; 
             color: #001eff;
             border-color: #001eff;
         }
 
-        /* Edit Button (Yellow Outline) */
         .btn-edit {
             background-color: white;
-            color: #bdce27; /* Darker yellow for text */
+            color: #bdce27; 
             border-color:#bdce27;
         }
         .btn-edit:hover {
             background-color:#bdce27;
-            color: white; /* Dark text on yellow bg */
+            color: white; 
             border-color: #bdce27;
         }
-        
-        /* Delete Button (Red Outline) */
+ 
         .btn-delete {
             background-color: white;
             color: #ff0000;
@@ -213,9 +193,7 @@
             color: white;
             border-color: #ff0000;
         }
-    
-        /* Cancel Button (Blue Outline) */
-        /* This is the new "opposite" style */
+ 
         .btn-cancel {
             background-color: white;
             color: #001eff;
@@ -227,13 +205,11 @@
             border-color: #001eff;
         }
 
-
         .lesson-list, .quiz-list {
             margin-top: 30px;
             overflow-x: auto;
         }
 
-        /* Updated GridView */
         .gridview {
             width: 100%;
             border-collapse: collapse;
@@ -252,8 +228,7 @@
             background: rgba(0, 30, 255, 0.05);
             font-weight: bold;
         }
-    
-        /* Remove alternating row color for a cleaner glass look */
+   
         .gridview tr:nth-child(even) {
             background: transparent;
         }
@@ -589,7 +564,7 @@
     --%>
     <script type="text/javascript">
         function validateForm() {
-            // Note: CourseTitle and CourseType checks will pass because they are pre-filled
+            // CourseTitle and CourseType checks will pass because they are pre-filled
             var courseTitle = document.getElementById('<%= txtCourseTitle.ClientID %>').value;
             var courseType = document.getElementById('<%= ddlCourseType.ClientID %>').value;
             var lessonCount = parseInt(document.getElementById('<%= lblLessonCount.ClientID %>').innerText);
@@ -598,17 +573,17 @@
             statusLabel.style.color = 'red'; // Set error color
 
             if (courseTitle.trim() === '') {
-                statusLabel.innerText = '❌ Please enter a course title.';
+                statusLabel.innerText = 'Please enter a course title.';
                 return false;
             }
 
             if (courseType === '') {
-                statusLabel.innerText = '❌ Please select a course type.';
+                statusLabel.innerText = 'Please select a course type.';
                 return false;
             }
 
             if (lessonCount === 0) {
-                statusLabel.innerText = '❌ You cannot save a course with zero lessons.';
+                statusLabel.innerText = 'You cannot save a course with zero lessons.';
                 return false;
             }
 
@@ -616,7 +591,7 @@
             if (courseType === 'Private') {
                 var coin = document.getElementById('<%= txtCourseCoin.ClientID %>').value;
                 if (coin.trim() === '' || parseInt(coin) < 0) {
-                    statusLabel.innerText = '❌ Please enter a valid coin amount for private courses.';
+                    statusLabel.innerText = 'Please enter a valid coin amount for private courses.';
                     return false;
                 }
             }
@@ -624,7 +599,7 @@
             statusLabel.innerText = ''; // Clear errors
             statusLabel.style.color = 'green'; // Set success color
 
-            // --- UPDATED MESSAGE ---
+            // UPDATED MESSAGE
             return confirm('Are you sure you want to update this course? All changes to lessons and quizzes will be saved.');
         }
     </script>

@@ -5,11 +5,11 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <style>
         html {
-            scrollbar-width: none; /* Firefox */
+            scrollbar-width: none;
         }
 
             html::-webkit-scrollbar {
-                display: none; /* Chrome, Safari, Edge */
+                display: none;
             }
 
         body {
@@ -17,18 +17,15 @@
             background: linear-gradient(135deg, #eaf0ff, #ffffff);
         }
 
-        /* 🚀 NEW: Profile Panel Container */
         .profile-panel {
             background-color: white;
             border-radius: 12px;
             padding: 24px;
-            /* Consistent soft glow shadow */
             box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25);
             max-width: 1000px;
-            margin: 40px auto 20px; /* Positions panel below master page header */
+            margin: 40px auto 20px;
         }
 
-        /* ===== MAIN PAGE ===== */
         .page-wrap {
             max-width: 1000px;
             margin: 0 auto;
@@ -46,12 +43,10 @@
             margin-bottom: 20px;
         }
 
-        /* ===== PROFILE HEADER (Adjusted for panel) ===== */
         .profile-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            /* 🛑 REMOVED EXTERNAL MARGINS as it's now inside .profile-panel */
             margin: 0;
             max-width: 100%;
         }
@@ -59,7 +54,7 @@
         .profile-info {
             display: flex;
             align-items: center;
-            gap: 20px; /* Slightly increased gap for better spacing */
+            gap: 20px;
         }
 
         .profile-pic-container {
@@ -74,7 +69,7 @@
             width: 120px;
             height: 120px;
             border-radius: 50%;
-            border: 4px solid #f3f4f6; /* Slightly thicker border for definition */
+            border: 4px solid #f3f4f6;
             object-fit: cover;
             box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25);
         }
@@ -82,10 +77,10 @@
         .file-upload::file-selector-button {
             background: #001eff;
             color: white;
-            padding: 1px 8px; /* 🔹 Much smaller size */
-            font-size: 10px; /* 🔹 Tiny text */
+            padding: 1px 8px;
+            font-size: 10px;
             border: 1px solid #001eff;
-            border-radius: 4px; /* 🔹 Subtle curve */
+            border-radius: 4px;
             cursor: pointer;
             font-weight: 600;
             box-shadow: 0 2px 6px rgba(0, 30, 255, 0.15);
@@ -93,11 +88,11 @@
         }
 
         .file-upload {
-            font-size: 10px; /* 🔹 Shrinks BOTH the label and text */
-            width: 100px; /* 🔹 Makes the entire input narrower */
-            height: 23px; /* 🔹 Tiny height */
-            padding: 2px; /* 🔹 Compact spacing */
-            overflow: hidden; /* Prevents long text overflow */
+            font-size: 10px;
+            width: 100px;
+            height: 23px;
+            padding: 2px;
+            overflow: hidden;
         }
 
             .file-upload:hover::file-selector-button {
@@ -108,7 +103,6 @@
             }
 
             .file-upload:hover {
-                /* Apply the hover effect/shadow to the visible area */
                 box-shadow: 0 6px 15px rgba(0, 30, 255, 0.25);
                 border-color: #001eff;
             }
@@ -138,13 +132,11 @@
 
         .header-actions {
             text-align: right;
-            /* 🚀 FIX: Ensure buttons are vertically centered and laid out correctly */
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
-        /* ===== BUTTONS WITH HOVER EFFECTS (DASHBOARD STYLE) ===== */
         .btn-base {
             padding: 10px 18px;
             border-radius: 8px;
@@ -180,15 +172,12 @@
                 background: #001eff;
                 color: white;
             }
-        /* ===== END BUTTONS ===== */
 
-
-        /* ===== SECTION (Added soft shadow for consistency) ===== */
         .section {
             background: #fff;
             border-radius: 12px;
             padding: 24px;
-            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25); /* Soft glow shadow */
+            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25);
             margin-top: 20px;
         }
 
@@ -205,7 +194,6 @@
             text-align: center;
         }
 
-        /* ===== INFO GRID ===== */
         .info-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -221,10 +209,9 @@
             color: #111827;
         }
 
-        /* ===== INPUTS & DROPDOWNS (Added focus style) ===== */
         input, select {
             width: 100%;
-            padding: 10px; /* Slightly more padding */
+            padding: 10px;
             border: 1px solid #d1d5db;
             border-radius: 6px;
             background: #f9fafb;
@@ -244,34 +231,32 @@
                 background: #f3f4f6;
                 border-color: #e5e7eb;
             }
-        /* ===== END INPUTS ===== */
 
-        /* ===== STATS (Match Dashboard look) ===== */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 16px;
-            max-width: 700px; /* Constrain grid size */
+            max-width: 700px;
             margin: 0 auto;
         }
 
         .stat-card {
-            background: #fff; /* White background for better contrast */
+            background: #fff;
             border-radius: 10px;
             padding: 20px;
             text-align: center;
-            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25); /* Soft glow shadow */
+            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25);
             border: none;
         }
 
         .stat-number {
-            font-size: 32px; /* Increased size to match dashboard */
+            font-size: 32px;
             font-weight: 700;
             color: #111827;
         }
 
         .stat-label {
-            color: #001eff; /* Make label blue */
+            color: #001eff;
             font-weight: 600;
             font-size: 14px;
         }
@@ -334,7 +319,7 @@
                 </div>
 
 
-                <!-- 🆕 Added Email field (read-only) -->
+                <!-- Added Email field (read-only) -->
                 <div>
                     <label>Email</label>
                     <asp:TextBox ID="txtEmail" runat="server" ReadOnly="true" />

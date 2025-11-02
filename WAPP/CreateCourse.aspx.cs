@@ -41,7 +41,6 @@ namespace WAPP
         {
             try
             {
-                // ... (File size check and lesson title check - same as your original code) ...
                 if (fuContentFile.HasFile && fuContentFile.PostedFile.ContentLength > 52428800) // 50MB
                 {
                     lblStatus.ForeColor = System.Drawing.Color.Red;
@@ -56,8 +55,7 @@ namespace WAPP
                     return;
                 }
 
-                // ... (File upload logic - same as your original code) ...
-                string contentType = "Document"; // You might want to detect this based on file type
+                string contentType = "Document"; 
                 string contentFile = txtTextContent.Text.Trim();
                 string filePath = "";
 
@@ -82,7 +80,6 @@ namespace WAPP
                         return;
                     }
                 }
-                // ... (End of file upload logic) ...
 
                 int lessonNumber = lessonList.Count + 1;
                 lessonList.Add(new Lesson
@@ -102,8 +99,7 @@ namespace WAPP
                 // Clear lesson form
                 txtLessonTitle.Text = "";
                 txtTextContent.Text = "";
-                // fuContentFile.Dispose(); // Note: Dispose might not clear the selection
-
+           
                 lblStatus.ForeColor = System.Drawing.Color.Green;
                 lblStatus.Text = "Lesson added successfully!";
             }
@@ -126,9 +122,6 @@ namespace WAPP
             lblLessonCount.Text = lessonList.Count.ToString();
         }
 
-        // --- gvLessons GridView Events (Edit, Update, Cancel, Delete) ---
-        // ... (gvLessons_RowEditing, gvLessons_RowUpdating, gvLessons_RowCancelingEdit are same as your code) ...
-
         protected void gvLessons_RowEditing(object sender, GridViewEditEventArgs e)
         {
             gvLessons.EditIndex = e.NewEditIndex;
@@ -137,7 +130,6 @@ namespace WAPP
 
         protected void gvLessons_RowUpdating(object sender, GridViewUpdateEventArgs e)
         {
-            // ... (Same as your original code) ...
             try
             {
                 int lessonNumber = Convert.ToInt32(gvLessons.DataKeys[e.RowIndex].Value);
@@ -153,7 +145,6 @@ namespace WAPP
 
                     if (fuEditFile.HasFile)
                     {
-                        // ... (file validation and save logic - same as your code) ...
                         if (fuEditFile.PostedFile.ContentLength > 52428800)
                         {
                             lblStatus.ForeColor = System.Drawing.Color.Red;
@@ -216,7 +207,6 @@ namespace WAPP
             }
         }
 
-        // --- NEW --- Show Quiz Status in Lesson Grid
         protected void gvLessons_RowDataBound(object sender, GridViewRowEventArgs e)
         {
             if (e.Row.RowType == DataControlRowType.DataRow)
@@ -237,7 +227,6 @@ namespace WAPP
             }
         }
 
-        // --- NEW --- Handle "Edit Quiz" / "Delete Quiz" from Lesson Grid
         protected void gvLessons_RowCommand(object sender, GridViewCommandEventArgs e)
         {
             if (e.CommandName == "EditQuiz" || e.CommandName == "DeleteQuiz")
@@ -265,10 +254,9 @@ namespace WAPP
                 }
                 else if (e.CommandName == "DeleteQuiz")
                 {
-                    // Confirm deletion (already done by OnClientClick)
                     lesson.LessonQuiz = null;
                     BindLessonGrid(); // Re-binds lesson grid, RowDataBound updates status
-                    lblStatus.Text = "✅ Quiz removed from lesson.";
+                    lblStatus.Text = "Quiz removed from lesson.";
                     lblStatus.ForeColor = System.Drawing.Color.Green;
                 }
             }
@@ -277,7 +265,7 @@ namespace WAPP
 
         #region Quiz & Question Methods
 
-        // --- NEW --- Populates the "Select Lesson" dropdown
+        // Populates the "Select Lesson" dropdown
         private void BindQuizLessonDropdown()
         {
             ddlQuizLesson.DataSource = lessonList;
@@ -287,7 +275,7 @@ namespace WAPP
             ddlQuizLesson.Items.Insert(0, new ListItem("Select Lesson...", ""));
         }
 
-        // --- NEW --- Binds the temporary question list grid
+        // Binds the temporary question list grid
         private void BindTempQuestionGrid()
         {
             gvTempQuestions.DataKeyNames = new string[] { "QuestionNumber" };
@@ -295,7 +283,7 @@ namespace WAPP
             gvTempQuestions.DataBind();
         }
 
-        // --- NEW --- Clears the question input form
+        // Clears the question input form
         private void ClearQuestionForm()
         {
             txtQuestionText.Text = "";
@@ -306,7 +294,7 @@ namespace WAPP
             ddlCorrectAnswer.SelectedIndex = 0;
         }
 
-        // --- NEW --- Adds a question to the temporary list
+        // Adds a question to the temporary list
         protected void btnAddQuestion_Click(object sender, EventArgs e)
         {
             // Validate
@@ -346,7 +334,7 @@ namespace WAPP
             }
         }
 
-        // --- NEW --- Saves the temp question list as a Quiz object on the selected Lesson
+        // Saves the temp question list as a Quiz object on the selected Lesson
         protected void btnSaveQuiz_Click(object sender, EventArgs e)
         {
             int lessonNumber;
@@ -430,7 +418,7 @@ namespace WAPP
             }
         }
 
-        // --- NEW --- Button to clear the quiz form
+        // Button to clear the quiz form
         protected void btnCancelQuizEdit_Click(object sender, EventArgs e)
         {
             ClearQuestionForm();
@@ -447,9 +435,6 @@ namespace WAPP
             lblQuizStatus.ForeColor = System.Drawing.Color.Gray;
         }
 
-
-        // --- gvTempQuestions GridView Events (Edit, Update, Cancel, Delete) ---
-        // --- NEW ---
         protected void gvTempQuestions_RowEditing(object sender, GridViewEditEventArgs e)
         {
             gvTempQuestions.EditIndex = e.NewEditIndex;
@@ -521,7 +506,6 @@ namespace WAPP
         protected void btnCreateCourse_Click(object sender, EventArgs e)
         {
             // --- VALIDATION ---
-            // (Add client-side validation for this too)
             if (string.IsNullOrWhiteSpace(txtCourseTitle.Text) || ddlCourseType.SelectedValue == "" || lessonList.Count == 0)
             {
                 lblStatus.ForeColor = System.Drawing.Color.Red;
@@ -535,8 +519,6 @@ namespace WAPP
                 return;
             }
             // --- END VALIDATION ---
-
-
             string connStr = ConfigurationManager.ConnectionStrings["SeaLearnerConnection"].ConnectionString;
             SqlConnection con = null;
             SqlTransaction transaction = null;
@@ -548,7 +530,7 @@ namespace WAPP
                     con.Open();
                     transaction = con.BeginTransaction(); // Start a transaction
 
-                    // ✅ 1. Find EducatorId using Session["UserId"]
+                    // 1. Find EducatorId using Session["UserId"]
                     int userId = Convert.ToInt32(Session["UserId"]);
                     int educatorId = 0;
                     string findEducatorQuery = "SELECT Id FROM Educator WHERE UserId = @UserId";
@@ -562,7 +544,7 @@ namespace WAPP
                             throw new Exception("Educator record not found for this user.");
                     }
 
-                    // ✅ 2. Insert Course
+                    // 2. Insert Course
                     string insertCourseQuery = @"
                         INSERT INTO Course (Title, EducatorId, CourseType, CoursePicture, Status, Coin)
                         OUTPUT INSERTED.Id
@@ -584,7 +566,7 @@ namespace WAPP
                         courseId = (int)cmdCourse.ExecuteScalar();
                     }
 
-                    // ✅ 3. Insert Lessons, Quizzes, and Questions
+                    // 3. Insert Lessons, Quizzes, and Questions
                     foreach (Lesson lesson in lessonList)
                     {
                         // 3a. Insert Lesson
@@ -649,7 +631,7 @@ namespace WAPP
                     transaction.Commit();
 
                     lblStatus.ForeColor = System.Drawing.Color.Green;
-                    lblStatus.Text = "✅ Course, lessons, and quizzes saved successfully!";
+                    lblStatus.Text = "Course, lessons, and quizzes saved successfully!";
 
                     // Clear everything
                     lessonList.Clear();

@@ -4,7 +4,6 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <style>
-        /* 1. LAYOUT ADJUSTMENTS */
         body {
             font-family: 'Segoe UI', sans-serif;
             background: linear-gradient(135deg, #eaf0ff, #ffffff);
@@ -12,7 +11,6 @@
 
         .page-wrap {
             max-width: 1100px;
-            /* 🚀 FIX: Reduce top margin to pull content closer to the header */
             margin: 20px auto 40px;
             padding: 20px;
         }
@@ -21,45 +19,42 @@
             font-size: 28px;
             font-weight: 700;
             margin-bottom: 10px;
-            color: #111827; /* Ensure clear title color */
+            color: #111827;
         }
 
-        /* 2. TAB BUTTONS (Implementing Blue Hover Effect) */
         .tab-buttons {
             display: flex;
             justify-content: center;
-            gap: 15px; /* Slightly reduced gap */
+            gap: 15px;
             margin: 20px 0;
         }
 
         .tab-button {
             background-color: #001eff;
             color: white;
-            border: 1px solid #001eff; /* Add border for consistency */
+            border: 1px solid #001eff;
             padding: 10px 24px;
-            border-radius: 8px; /* Slightly larger radius */
+            border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
-            transition: all 0.25s ease; /* Smooth transitions */
+            transition: all 0.25s ease;
         }
 
             .tab-button:hover {
                 transform: translateY(-2px);
                 box-shadow: 0 4px 10px rgba(0, 30, 255, 0.2);
-                /* 🚀 FIX: Apply white-on-blue hover for consistency (Blue to Blue is acceptable, but this adds lift) */
                 opacity: 0.95;
             }
 
             .tab-button.active {
-                /* 🚀 FIX: Remove black background, use a stronger blue or inverse style */
-                background-color: white; /* Inverse style for active tab */
+                background-color: white;
                 color: #001eff;
                 border-color: #001eff;
                 box-shadow: 0 4px 10px rgba(0, 30, 255, 0.2);
             }
 
                 .tab-button.active:hover {
-                    transform: none; /* Prevent active tab from moving */
+                    transform: none;
                     box-shadow: 0 4px 10px rgba(0, 30, 255, 0.2);
                 }
 
@@ -71,11 +66,10 @@
             font-style: italic;
         }
 
-        /* 3. STUDENT LIST STYLING (Applying Soft Shadow) */
         .students-list {
             display: flex;
             flex-direction: column;
-            gap: 12px; /* Slightly increased gap for visual separation */
+            gap: 12px;
             margin-top: 15px;
         }
 
@@ -84,7 +78,6 @@
             align-items: center;
             justify-content: space-between;
             background: #fff;
-            /* 🚀 FIX: Apply the soft glow shadow instead of just a border */
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
             border: none;
             border-radius: 10px;
@@ -132,10 +125,9 @@
             color: #6b7280;
         }
 
-        /* 4. STATUS LABELS */
         .status-label {
             padding: 5px 10px;
-            border-radius: 12px; /* Pill shape */
+            border-radius: 12px;
             font-size: 12px;
             font-weight: 700;
             text-transform: uppercase;
@@ -143,12 +135,12 @@
 
         .status-complete {
             background-color: #dcfce7;
-            color: #047857; /* Darker green for readability */
+            color: #047857; 
         }
 
         .status-incomplete {
             background-color: #fee2e2;
-            color: #b91c1c; /* Darker red for readability */
+            color: #b91c1c; 
         }
 
         .no-data {

@@ -11,8 +11,6 @@ namespace WAPP
     // Make sure to change the class name to match the file
     public partial class editCourse : System.Web.UI.Page
     {
-        // Static lists to hold data before saving to DB
-        // This pattern is shared from createcourse.aspx
         private static List<Lesson> lessonList = new List<Lesson>();
         private static List<Question> tempQuestionList = new List<Question>(); // For building a quiz
 
@@ -24,7 +22,7 @@ namespace WAPP
                 lessonList.Clear();
                 tempQuestionList.Clear();
 
-                // --- NEW EDIT LOGIC ---
+                // NEW EDIT LOGIC
                 if (Request.QueryString["id"] != null && int.TryParse(Request.QueryString["id"], out int courseId))
                 {
                     // Store the CourseId to use it in the Update button click
@@ -38,12 +36,9 @@ namespace WAPP
                     // No ID provided, show error and hide content
                     lblMainStatus.ForeColor = System.Drawing.Color.Red;
                     lblMainStatus.Text = "Error: No course ID provided or invalid ID. Please go back and select a course to edit.";
-                    // You might want to hide the main form content here
-                    // mainFormContent.Visible = false; // (Assuming you have a panel)
                     btnUpdateCourse.Enabled = false;
                     return;
                 }
-                // --- END NEW EDIT LOGIC ---
 
                 // Bind all grids and dropdowns with the loaded data
                 BindLessonGrid();
@@ -53,8 +48,6 @@ namespace WAPP
             }
         }
 
-        // --- NEW METHOD TO LOAD ALL DATA ---
-        // --- NEW METHOD TO LOAD ALL DATA ---
         private void LoadCourseData(int courseId)
         {
             // 1. Get EducatorId from Session to verify ownership
@@ -127,7 +120,7 @@ namespace WAPP
                                 ContentType = lessonReader["ContentType"].ToString(),
                                 ContentFilePath = lessonReader["ContentFilePath"].ToString(),
                                 ContentFile = lessonReader["ContentFile"].ToString(),
-                                LessonQuiz = null // Will be populated next
+                                LessonQuiz = null
                             };
                             lessonList.Add(lesson);
                             lessonsById.Add(Convert.ToInt32(lessonReader["Id"]), lesson); // Map DB Id to the object
@@ -136,10 +129,6 @@ namespace WAPP
                 }
 
                 // 4. Load Quizzes and Questions
-
-                // --- THIS QUERY IS THE FIX ---
-                // Removed 'qn.QuestionNumber' from SELECT
-                // Changed 'ORDER BY qn.QuestionNumber' to 'ORDER BY qn.Id'
                 string quizQuery = @"
                     SELECT 
                         q.Id AS QuizId, q.LessonId, q.QuizRewardCoins,
@@ -182,7 +171,6 @@ namespace WAPP
                             {
                                 Question question = new Question
                                 {
-                                    // This part is correct, it re-creates the number
                                     QuestionNumber = currentQuiz.Questions.Count + 1,
                                     QuestionText = quizReader["QuestionText"].ToString(),
                                     OptionA = quizReader["OptionA"].ToString(),
@@ -199,7 +187,7 @@ namespace WAPP
             }
         }
 
-        // --- NEW HELPER METHOD ---
+        // NEW HELPER METHOD
         private int GetEducatorId(int userId)
         {
             string connStr = ConfigurationManager.ConnectionStrings["SeaLearnerConnection"].ConnectionString;
@@ -228,14 +216,12 @@ namespace WAPP
         #endregion
 
         #region Lesson Methods
-        // --- THIS REGION IS COPIED IDENTICALLY FROM CREATECOURSE.ASPX.CS ---
-        // --- It operates on the 'lessonList' in memory, which is now populated ---
+        
 
         protected void btnAddLesson_Click(object sender, EventArgs e)
         {
             try
             {
-                // ... (File size check and lesson title check - same as your original code) ...
                 if (fuContentFile.HasFile && fuContentFile.PostedFile.ContentLength > 52428800) // 50MB
                 {
                     lblMainStatus.ForeColor = System.Drawing.Color.Red;
@@ -250,8 +236,7 @@ namespace WAPP
                     return;
                 }
 
-                // ... (File upload logic - same as your original code) ...
-                string contentType = "Document"; // You might want to detect this based on file type
+                string contentType = "Document"; 
                 string contentFile = txtTextContent.Text.Trim();
                 string filePath = "";
 
@@ -276,7 +261,7 @@ namespace WAPP
                         return;
                     }
                 }
-                // ... (End of file upload logic) ...
+                // End of file upload logic
 
                 int lessonNumber = lessonList.Count + 1;
                 lessonList.Add(new Lesson
@@ -296,7 +281,6 @@ namespace WAPP
                 // Clear lesson form
                 txtLessonTitle.Text = "";
                 txtTextContent.Text = "";
-                // fuContentFile.Dispose(); // Note: Dispose might not clear the selection
 
                 lblMainStatus.ForeColor = System.Drawing.Color.Green;
                 lblMainStatus.Text = "Lesson added to list. Remember to click 'Update Course' to save all changes.";
@@ -320,9 +304,6 @@ namespace WAPP
             lblLessonCount.Text = lessonList.Count.ToString();
         }
 
-        // --- gvLessons GridView Events (Edit, Update, Cancel, Delete) ---
-        // ... (gvLessons_RowEditing, gvLessons_RowUpdating, gvLessons_RowCancelingEdit are same as your code) ...
-
         protected void gvLessons_RowEditing(object sender, GridViewEditEventArgs e)
         {
             gvLessons.EditIndex = e.NewEditIndex;
@@ -331,7 +312,6 @@ namespace WAPP
 
         protected void gvLessons_RowUpdating(object sender, GridViewUpdateEventArgs e)
         {
-            // ... (Same as your original code) ...
             try
             {
                 int lessonNumber = Convert.ToInt32(gvLessons.DataKeys[e.RowIndex].Value);
@@ -347,7 +327,6 @@ namespace WAPP
 
                     if (fuEditFile.HasFile)
                     {
-                        // ... (file validation and save logic - same as your code) ...
                         if (fuEditFile.PostedFile.ContentLength > 52428800)
                         {
                             lblMainStatus.ForeColor = System.Drawing.Color.Red;
@@ -410,7 +389,7 @@ namespace WAPP
             }
         }
 
-        // --- NEW --- Show Quiz Status in Lesson Grid
+        // Show Quiz Status in Lesson Grid
         protected void gvLessons_RowDataBound(object sender, GridViewRowEventArgs e)
         {
             if (e.Row.RowType == DataControlRowType.DataRow)
@@ -431,7 +410,7 @@ namespace WAPP
             }
         }
 
-        // --- NEW --- Handle "Edit Quiz" / "Delete Quiz" from Lesson Grid
+        // Handle "Edit Quiz" / "Delete Quiz" from Lesson Grid
         protected void gvLessons_RowCommand(object sender, GridViewCommandEventArgs e)
         {
             if (e.CommandName == "EditQuiz" || e.CommandName == "DeleteQuiz")
@@ -459,10 +438,10 @@ namespace WAPP
                 }
                 else if (e.CommandName == "DeleteQuiz")
                 {
-                    // Confirm deletion (already done by OnClientClick)
+                    // Confirm deletion
                     lesson.LessonQuiz = null;
                     BindLessonGrid(); // Re-binds lesson grid, RowDataBound updates status
-                    lblMainStatus.Text = "✅ Quiz removed from lesson. Remember to click 'Update Course' to save.";
+                    lblMainStatus.Text = "Quiz removed from lesson. Remember to click 'Update Course' to save.";
                     lblMainStatus.ForeColor = System.Drawing.Color.Green;
                 }
             }
@@ -470,9 +449,7 @@ namespace WAPP
         #endregion
 
         #region Quiz & Question Methods
-        // --- THIS REGION IS COPIED IDENTICALLY FROM CREATECOURSE.ASPX.CS ---
-
-        // --- NEW --- Populates the "Select Lesson" dropdown
+        
         private void BindQuizLessonDropdown()
         {
             ddlQuizLesson.DataSource = lessonList;
@@ -482,7 +459,7 @@ namespace WAPP
             ddlQuizLesson.Items.Insert(0, new ListItem("Select Lesson...", ""));
         }
 
-        // --- NEW --- Binds the temporary question list grid
+        // Binds the temporary question list grid
         private void BindTempQuestionGrid()
         {
             gvTempQuestions.DataKeyNames = new string[] { "QuestionNumber" };
@@ -490,7 +467,7 @@ namespace WAPP
             gvTempQuestions.DataBind();
         }
 
-        // --- NEW --- Clears the question input form
+        // Clears the question input form
         private void ClearQuestionForm()
         {
             txtQuestionText.Text = "";
@@ -501,7 +478,7 @@ namespace WAPP
             ddlCorrectAnswer.SelectedIndex = 0;
         }
 
-        // --- NEW --- Adds a question to the temporary list
+        // Adds a question to the temporary list
         protected void btnAddQuestion_Click(object sender, EventArgs e)
         {
             // Validate
@@ -541,7 +518,7 @@ namespace WAPP
             }
         }
 
-        // --- NEW --- Saves the temp question list as a Quiz object on the selected Lesson
+        // Saves the temp question list as a Quiz object on the selected Lesson
         protected void btnSaveQuiz_Click(object sender, EventArgs e)
         {
             int lessonNumber;
@@ -625,7 +602,7 @@ namespace WAPP
             }
         }
 
-        // --- NEW --- Button to clear the quiz form
+        // Button to clear the quiz form
         protected void btnCancelQuizEdit_Click(object sender, EventArgs e)
         {
             ClearQuestionForm();
@@ -643,8 +620,7 @@ namespace WAPP
         }
 
 
-        // --- gvTempQuestions GridView Events (Edit, Update, Cancel, Delete) ---
-        // --- NEW ---
+       
         protected void gvTempQuestions_RowEditing(object sender, GridViewEditEventArgs e)
         {
             gvTempQuestions.EditIndex = e.NewEditIndex;
@@ -713,19 +689,16 @@ namespace WAPP
         #endregion
 
         #region Update Course Button (Main Save)
-        // --- THIS IS THE REPLACEMENT FOR 'btnCreateCourse_Click' ---
         protected void btnUpdateCourse_Click(object sender, EventArgs e)
         {
-            // --- VALIDATION ---
+            // VALIDATION
             if (lessonList.Count == 0)
             {
                 lblMainStatus.ForeColor = System.Drawing.Color.Red;
                 lblMainStatus.Text = "You cannot save a course with zero lessons.";
                 return;
             }
-            // Course-level validation (title, type, coin) is skipped
-            // as those fields are read-only.
-            // --- END VALIDATION ---
+            // END VALIDATION
 
             // Get the CourseId and EducatorId to update
             if (ViewState["CourseId"] == null || Session["UserId"] == null)
@@ -756,7 +729,7 @@ namespace WAPP
                     con.Open();
                     transaction = con.BeginTransaction(); // Start a transaction
 
-                    // ✅ 1. Verify ownership again (security check)
+                    // 1. Verify ownership again (security check)
                     string checkOwnerQuery = "SELECT COUNT(*) FROM Course WHERE Id = @CourseId AND EducatorId = @EducatorId";
                     using (SqlCommand checkCmd = new SqlCommand(checkOwnerQuery, con, transaction))
                     {
@@ -769,10 +742,8 @@ namespace WAPP
                         }
                     }
 
-                    // ✅ 2. Delete ALL existing children of this course
-                    // We must delete in the correct order: StudentProgress -> Question -> Quiz -> Lesson
-
-                    // --- THIS IS THE NEW CODE ---
+                    // 2. Delete ALL existing children of this course
+                    
                     // Delete StudentQuizProgress first
                     string deleteProgressQuery = @"
                         DELETE sqp FROM StudentQuizProgress sqp
@@ -784,7 +755,6 @@ namespace WAPP
                         delProgCmd.Parameters.AddWithValue("@CourseId", courseId);
                         delProgCmd.ExecuteNonQuery();
                     }
-                    // --- END OF NEW CODE ---
 
                     // Delete Questions
                     string deleteQuestionsQuery = @"
@@ -818,8 +788,8 @@ namespace WAPP
                     }
 
 
-                    // ✅ 3. Re-Insert Lessons, Quizzes, and Questions from the 'lessonList'
-                    // This is the EXACT same logic from btnCreateCourse_Click
+                    // 3. Re-Insert Lessons, Quizzes, and Questions from the 'lessonList'
+                    
                     foreach (Lesson lesson in lessonList)
                     {
                         // 3a. Insert Lesson
@@ -884,9 +854,8 @@ namespace WAPP
                     transaction.Commit();
 
                     lblMainStatus.ForeColor = System.Drawing.Color.Green;
-                    lblMainStatus.Text = "✅ Course, lessons, and quizzes updated successfully!";
+                    lblMainStatus.Text = "Course, lessons, and quizzes updated successfully!";
 
-                    // We don't clear the lists, just rebind to show the saved state
                     BindLessonGrid();
                     BindTempQuestionGrid();
                     BindQuizLessonDropdown();
@@ -912,7 +881,7 @@ namespace WAPP
         #endregion
 
         #region Data Models (Classes)
-        // --- COPIED IDENTICALLY ---
+        // COPIED IDENTICALLY
         public class Lesson
         {
             public int LessonNumber { get; set; }

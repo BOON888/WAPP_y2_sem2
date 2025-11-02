@@ -15,14 +15,14 @@ namespace WAPP
         {
             if (!IsPostBack)
             {
-                // ✅ Must be logged in as educator
+                // Must be logged in as educator
                 if (Session["UserId"] == null || Session["Role"] == null || Session["Role"].ToString().ToLower() != "educator")
                 {
                     Response.Redirect("sign_in.aspx");
                     return;
                 }
 
-                // ✅ Load EducatorID if not already set
+                // Load EducatorID if not already set
                 if (Session["EducatorID"] == null)
                 {
                     int userId = Convert.ToInt32(Session["UserId"]);
@@ -40,7 +40,6 @@ namespace WAPP
                         }
                         else
                         {
-                            // optional: create educator profile if not found
                             SqlCommand insert = new SqlCommand(
                                 "INSERT INTO Educator (UserId, EducationQualification) VALUES (@uid, 'Not Set'); SELECT SCOPE_IDENTITY();",
                                 conn
@@ -54,7 +53,7 @@ namespace WAPP
                     }
                 }
 
-                // ✅ Use the real EducatorID now
+                // Use the real EducatorID now
                 _educatorId = Convert.ToInt32(Session["EducatorID"]);
                 lblEducatorName.Text = Session["FullName"]?.ToString() ?? "Educator";
 
@@ -76,7 +75,6 @@ namespace WAPP
             }
             else if (e.CommandName == "Edit")
             {
-                // Keep your original Edit logic
                 Response.Redirect($"~/EditCourse.aspx?id={Server.UrlEncode(courseId)}");
             }
         }
