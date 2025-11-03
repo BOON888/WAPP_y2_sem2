@@ -578,7 +578,7 @@
         <asp:Label ID="lblStatus" runat="server" CssClass="status-label" EnableViewState="false"></asp:Label>
     </div>
 
-    <%-- *** UPDATED JAVASCRIPT (No more alerts) *** --%>
+ 
     <script type="text/javascript">
         function validateForm() {
             var courseTitle = document.getElementById('<%= txtCourseTitle.ClientID %>').value;
