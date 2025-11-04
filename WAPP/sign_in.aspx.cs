@@ -42,7 +42,6 @@ namespace WAPP
                 {
                     string status = reader["Status"].ToString();
 
-                    // Check if user is inactive
                     if (status.Equals("Inactive", StringComparison.OrdinalIgnoreCase))
                     {
                         reader.Close();
@@ -51,7 +50,6 @@ namespace WAPP
                         return;
                     }
 
-                    // Continue login for active users
                     Session["UserId"] = reader["Id"].ToString();
                     Session["FullName"] = reader["FullName"].ToString();
                     Session["Email"] = reader["Email"].ToString();
@@ -61,7 +59,6 @@ namespace WAPP
                     string role = reader["Role"].ToString().ToLower();
                     reader.Close();
 
-                    // Redirect by role
                     if (role == "student")
                         Response.Redirect("~/studentdashboard.aspx");
                     else if (role == "educator")
@@ -73,7 +70,6 @@ namespace WAPP
                 {
                     reader.Close();
 
-                    // 🔹 Step 2: If not found in Users, check Admin table
                     string adminQuery = "SELECT * FROM Admin WHERE Email = @Email AND Password = @Password";
                     SqlCommand adminCmd = new SqlCommand(adminQuery, conn);
                     adminCmd.Parameters.AddWithValue("@Email", email);

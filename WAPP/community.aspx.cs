@@ -183,7 +183,6 @@ namespace WAPP
                 int postUserId = Convert.ToInt32(drv["UserId"]);
                 int currentUserId = Convert.ToInt32(Session["UserId"]);
 
-                // Only owner sees delete
                 if (postUserId == currentUserId)
                 {
                     btnDelete.Visible = true;

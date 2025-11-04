@@ -6,7 +6,7 @@
 
     <style>
         html::-webkit-scrollbar {
-            display: none; /* Chrome, Safari, Edge */
+            display: none; 
         }
 
         body {

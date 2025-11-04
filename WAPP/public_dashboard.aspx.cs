@@ -27,7 +27,6 @@ namespace WAPP
                 DataTable dt = new DataTable();
                 da.Fill(dt);
 
-                // Replace line breaks with <br> tags for HTML display
                 foreach (DataRow row in dt.Rows)
                 {
                     if (row["AdContent"] != DBNull.Value)

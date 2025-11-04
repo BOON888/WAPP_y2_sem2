@@ -22,7 +22,6 @@ namespace WAPP
                 studentSection.Visible = true;
                 educatorSection.Visible = false;
 
-                // Add CSS class to trigger animation
                 studentSection.CssClass = "studentSection visible";
                 educatorSection.CssClass = "educatorSection";
             }
@@ -31,7 +30,6 @@ namespace WAPP
                 studentSection.Visible = false;
                 educatorSection.Visible = true;
 
-                // Add CSS class to trigger animation
                 studentSection.CssClass = "studentSection";
                 educatorSection.CssClass = "educatorSection visible";
             }
@@ -69,7 +67,6 @@ namespace WAPP
 
                 try
                 {
-                    // Insert into Users table with father and mother columns
                     string insertUserQuery = @"INSERT INTO Users 
                         (FullName, Email, Password, Role, Age, Gender, father, mother, Status)
                         OUTPUT INSERTED.Id
@@ -101,14 +98,11 @@ namespace WAPP
                     cmdUser.Parameters.AddWithValue("@Age", age);
                     cmdUser.Parameters.AddWithValue("@Gender", gender);
 
-                    // New fields for father and mother
                     cmdUser.Parameters.AddWithValue("@Father", txtFatherName.Text.Trim());
                     cmdUser.Parameters.AddWithValue("@Mother", txtMotherName.Text.Trim());
 
-                    // Execute and retrieve new UserId
                     int userId = Convert.ToInt32(cmdUser.ExecuteScalar());
 
-                    // Insert into Student or Educator table
                     if (rblRole.SelectedValue == "student")
                     {
                         string insertStudentQuery = @"INSERT INTO Student (UserId, School, InterestSubject)
@@ -141,7 +135,6 @@ namespace WAPP
                 }
             }
 
-            // Redirect only after successful transaction
             if (success)
             {
                 Response.Redirect("sign_in.aspx?message=AccountCreated");

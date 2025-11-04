@@ -41,7 +41,6 @@ namespace WAPP
                 da.Fill(dtPosts);
             }
 
-            // ✅ Add Replies column before loop
             if (!dtPosts.Columns.Contains("Replies"))
                 dtPosts.Columns.Add("Replies", typeof(object));
 
@@ -85,7 +84,7 @@ namespace WAPP
         {
             LinkButton btn = (LinkButton)sender;
             btn.Attributes["data-uniqueid"] = btn.UniqueID;
-            btn.Visible = true; // Make it visible after assigning the attribute
+            btn.Visible = true; 
         }
 
 
@@ -99,7 +98,6 @@ namespace WAPP
                 {
                     conn.Open();
 
-                    // Delete replies first to maintain foreign key integrity
                     string deleteReplies = "DELETE FROM Reply WHERE PostId = @PostId";
                     using (SqlCommand cmd = new SqlCommand(deleteReplies, conn))
                     {
@@ -107,7 +105,6 @@ namespace WAPP
                         cmd.ExecuteNonQuery();
                     }
 
-                    // ✅ Delete the main post now
                     string deletePost = "DELETE FROM CommunityPost WHERE Id = @PostId";
                     using (SqlCommand cmd = new SqlCommand(deletePost, conn))
                     {
@@ -118,7 +115,6 @@ namespace WAPP
                     conn.Close();
                 }
 
-                // Reload updated list
                 LoadMyPosts();
             }
         }

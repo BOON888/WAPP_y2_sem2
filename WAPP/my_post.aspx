@@ -208,7 +208,7 @@
 
                         setTimeout(() => {
                             document.getElementById('confirmDelete').addEventListener('click', function () {
-                                __doPostBack(uniqueID, ''); // ✅ triggers ASP.NET DeletePost
+                                __doPostBack(uniqueID, '');
                             });
                             document.getElementById('cancelDelete').addEventListener('click', function () {
                                 Swal.close();
