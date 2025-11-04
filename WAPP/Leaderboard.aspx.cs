@@ -48,7 +48,7 @@ namespace WAPP
                 rptLeaderboard.DataSource = dt;
                 rptLeaderboard.DataBind();
 
-                // 🔹 Top Stats Section
+                //Top Stats Section
                 lblTotalStudents.Text = dt.Rows.Count.ToString();
 
                 for (int i = 0; i < dt.Rows.Count; i++)
@@ -100,7 +100,7 @@ namespace WAPP
             }
         }
 
-        // Avatar color gradient per rank
+        
         public string GetAvatarColor(int rank)
         {
             switch (rank)
