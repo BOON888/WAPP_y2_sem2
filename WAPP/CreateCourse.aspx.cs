@@ -182,17 +182,20 @@ namespace WAPP
             }
         }
 
-        protected void gvLessons_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)
+        protected void gvLessons_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e) // Cancels the edit mode for a lesson in the GridView
         {
             gvLessons.EditIndex = -1;
             BindLessonGrid();
         }
 
-        protected void gvLessons_RowDeleting(object sender, GridViewDeleteEventArgs e)
+        protected void gvLessons_RowDeleting(object sender, GridViewDeleteEventArgs e) // Deletes a selected lesson from the list
         {
             try
             {
+                // Get the LessonNumber of the row to delete
                 int lessonNumber = Convert.ToInt32(gvLessons.DataKeys[e.RowIndex].Value);
+
+                // Remove the lesson with that LessonNumber from the list
                 lessonList.RemoveAll(l => l.LessonNumber == lessonNumber);
 
                 // Re-number remaining lessons
@@ -201,9 +204,11 @@ namespace WAPP
                     lessonList[i].LessonNumber = i + 1;
                 }
 
+                // Refresh the GridView and related UI
                 BindLessonGrid();
                 UpdateLessonCountLabel();
                 BindQuizLessonDropdown(); // Update quiz dropdown
+
                 lblStatus.ForeColor = System.Drawing.Color.Green;
                 lblStatus.Text = "Lesson deleted successfully!";
             }
