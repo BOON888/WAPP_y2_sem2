@@ -10,27 +10,33 @@ namespace WAPP
 {
     public partial class createcourse : System.Web.UI.Page
     {
-        // Static lists to hold data before saving to DB
-        private static List<Lesson> lessonList = new List<Lesson>();
-        private static List<Question> tempQuestionList = new List<Question>(); // For building a quiz
+        private static List<Lesson> lessonList = new List<Lesson>(); // Stores all lessons temporarily before saving to the database
+        private static List<Question> tempQuestionList = new List<Question>(); // Stores quiz questions temporarily while building a quiz
 
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
-                // Clear all temporary data on initial page load
+                // Clears old lesson and question data
                 lessonList.Clear();
                 tempQuestionList.Clear();
 
+                // Displays lesson list in the table (GridView)
                 BindLessonGrid();
+
+                // Updates the total number of lessons label
                 UpdateLessonCountLabel();
+
+                // Refreshes the dropdown list for selecting quiz lessons
                 BindQuizLessonDropdown();
+
+                // Displays the temporary question list in the table
                 BindTempQuestionGrid();
             }
         }
 
         #region Course Methods
-        protected void ddlCourseType_SelectedIndexChanged(object sender, EventArgs e)
+        protected void ddlCourseType_SelectedIndexChanged(object sender, EventArgs e) // Shows coin field only for private courses
         {
             // Show or hide the coin input based on course type
             coinDiv.Visible = ddlCourseType.SelectedValue == "Private";
@@ -219,55 +225,70 @@ namespace WAPP
             }
         }
 
-        protected void gvLessons_RowDataBound(object sender, GridViewRowEventArgs e)
+        protected void gvLessons_RowDataBound(object sender, GridViewRowEventArgs e) // Updates the quiz status display for each lesson row in the GridView
         {
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
                 Lesson lesson = (Lesson)e.Row.DataItem;
+
+                // Find the label control in the row that shows quiz status
                 Label lblQuizStatus = (Label)e.Row.FindControl("lblQuizStatus");
 
+                // If the lesson has a quiz and at least one question
                 if (lesson.LessonQuiz != null && lesson.LessonQuiz.Questions.Count > 0)
                 {
+                    // Show “Yes” with question count
                     lblQuizStatus.Text = $"Yes ({lesson.LessonQuiz.Questions.Count} Qs)";
                     lblQuizStatus.ForeColor = System.Drawing.Color.Green;
                 }
                 else
                 {
+                    // Otherwise, show “No”
                     lblQuizStatus.Text = "No";
                     lblQuizStatus.ForeColor = System.Drawing.Color.Gray;
                 }
             }
         }
 
-        protected void gvLessons_RowCommand(object sender, GridViewCommandEventArgs e)
+        protected void gvLessons_RowCommand(object sender, GridViewCommandEventArgs e) // Handles custom button actions in the Lesson GridView (EditQuiz or DeleteQuiz)
         {
-            if (e.CommandName == "EditQuiz" || e.CommandName == "DeleteQuiz")
+            if (e.CommandName == "EditQuiz" || e.CommandName == "DeleteQuiz") // Check if the command is for editing or deleting a quiz
             {
                 int lessonNumber = Convert.ToInt32(e.CommandArgument);
+
+                // Find the lesson in the list
                 Lesson lesson = lessonList.FirstOrDefault(l => l.LessonNumber == lessonNumber);
                 if (lesson == null) return;
 
+                // ================== EDIT QUIZ ==================
                 if (e.CommandName == "EditQuiz")
                 {
                     // Load quiz data into the quiz form
                     ddlQuizLesson.SelectedValue = lesson.LessonNumber.ToString();
                     txtQuizRewardCoins.Text = lesson.LessonQuiz?.QuizRewardCoins?.ToString() ?? "";
 
-                    // Copy questions to temp list
+                    // Copy the existing quiz questions into the temporary list for editing
                     tempQuestionList = (lesson.LessonQuiz != null) ? new List<Question>(lesson.LessonQuiz.Questions) : new List<Question>();
-                    BindTempQuestionGrid();
+                    BindTempQuestionGrid(); // Show questions in the grid
 
-                    // Set edit mode
+                    // Mark that we are editing this lesson’s quiz
                     ViewState["QuizEditLessonNumber"] = lessonNumber;
+
+                    // Update the UI to reflect edit mode
                     btnSaveQuiz.Text = "Update Quiz";
                     ddlQuizLesson.Enabled = false; // Don't allow changing lesson while editing quiz
                     lblStatus.Text = $"Editing quiz for: {lesson.LessonTitle}";
                     lblStatus.ForeColor = System.Drawing.Color.Blue;
                 }
+
+                // ================== DELETE QUIZ ==================
                 else if (e.CommandName == "DeleteQuiz")
                 {
+                    // Remove the quiz from this lesson
                     lesson.LessonQuiz = null;
-                    BindLessonGrid(); // Re-binds lesson grid, RowDataBound updates status
+
+                    BindLessonGrid(); // Refresh GridView so the quiz status changes to “No”
+
                     lblStatus.Text = "Quiz removed from lesson.";
                     lblStatus.ForeColor = System.Drawing.Color.Green;
                 }
@@ -277,25 +298,22 @@ namespace WAPP
 
         #region Quiz & Question Methods
 
-        // Populates the "Select Lesson" dropdown
-        private void BindQuizLessonDropdown()
+        private void BindQuizLessonDropdown() // Populates the "Select Lesson" dropdown
         {
-            ddlQuizLesson.DataSource = lessonList;
-            ddlQuizLesson.DataTextField = "LessonTitle";
+            ddlQuizLesson.DataSource = lessonList;  // Use the current lesson list as the data source
+            ddlQuizLesson.DataTextField = "LessonTitle"; // Display each lesson's title in the dropdown
             ddlQuizLesson.DataValueField = "LessonNumber";
-            ddlQuizLesson.DataBind();
+            ddlQuizLesson.DataBind(); // Bind data to refresh the dropdown list
             ddlQuizLesson.Items.Insert(0, new ListItem("Select Lesson...", ""));
         }
 
-        // Binds the temporary question list grid
-        private void BindTempQuestionGrid()
+        private void BindTempQuestionGrid() // Displays the temporary quiz questions in the GridView
         {
-            gvTempQuestions.DataKeyNames = new string[] { "QuestionNumber" };
-            gvTempQuestions.DataSource = tempQuestionList;
-            gvTempQuestions.DataBind();
+            gvTempQuestions.DataKeyNames = new string[] { "QuestionNumber" }; // Set QuestionNumber as the unique key for each row
+            gvTempQuestions.DataSource = tempQuestionList; // Use the temporary question list as the data source
+            gvTempQuestions.DataBind(); // Bind data to refresh the GridView display
         }
 
-        
         private void ClearQuestionForm() // Clears the question input form
         {
             txtQuestionText.Text = "";
@@ -448,21 +466,25 @@ namespace WAPP
             lblQuizStatus.ForeColor = System.Drawing.Color.Gray;
         }
 
-        protected void gvTempQuestions_RowEditing(object sender, GridViewEditEventArgs e)
+        protected void gvTempQuestions_RowEditing(object sender, GridViewEditEventArgs e) // Enables edit mode for a selected quiz question in the GridView
         {
-            gvTempQuestions.EditIndex = e.NewEditIndex;
-            BindTempQuestionGrid();
+            gvTempQuestions.EditIndex = e.NewEditIndex; // Set the selected row into edit mode
+            BindTempQuestionGrid(); // Refresh the GridView to show editable fields
         }
 
-        protected void gvTempQuestions_RowUpdating(object sender, GridViewUpdateEventArgs e)
+        protected void gvTempQuestions_RowUpdating(object sender, GridViewUpdateEventArgs e) // Updates an edited quiz question in the temporary question list
         {
             try
             {
+                // Get the question number (unique key) of the row being updated
                 int qNumber = Convert.ToInt32(gvTempQuestions.DataKeys[e.RowIndex].Value);
+
+                // Find the corresponding question in the temp list
                 Question qToUpdate = tempQuestionList.FirstOrDefault(q => q.QuestionNumber == qNumber);
 
                 if (qToUpdate != null)
                 {
+                    // Retrieve the updated values from the edit controls in the GridView row
                     qToUpdate.QuestionText = ((TextBox)gvTempQuestions.Rows[e.RowIndex].FindControl("txtEditQuestionText")).Text.Trim();
                     qToUpdate.OptionA = ((TextBox)gvTempQuestions.Rows[e.RowIndex].FindControl("txtEditOptionA")).Text.Trim();
                     qToUpdate.OptionB = ((TextBox)gvTempQuestions.Rows[e.RowIndex].FindControl("txtEditOptionB")).Text.Trim();
@@ -471,8 +493,10 @@ namespace WAPP
                     qToUpdate.CorrectAnswer = ((DropDownList)gvTempQuestions.Rows[e.RowIndex].FindControl("ddlEditCorrectAnswer")).SelectedValue;
                 }
 
+                // Exit edit mode and refresh the GridView
                 gvTempQuestions.EditIndex = -1;
                 BindTempQuestionGrid();
+
                 lblQuizStatus.Text = "Question updated in temp list.";
                 lblQuizStatus.ForeColor = System.Drawing.Color.Green;
             }
@@ -483,26 +507,31 @@ namespace WAPP
             }
         }
 
-        protected void gvTempQuestions_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)
+        protected void gvTempQuestions_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e) // Cancels the edit mode for a quiz question in the GridView
         {
             gvTempQuestions.EditIndex = -1;
             BindTempQuestionGrid();
         }
 
-        protected void gvTempQuestions_RowDeleting(object sender, GridViewDeleteEventArgs e)
+        protected void gvTempQuestions_RowDeleting(object sender, GridViewDeleteEventArgs e) // Deletes a selected quiz question from the temporary question list
         {
             try
             {
+                // Get the QuestionNumber (unique ID) of the row to delete
                 int qNumber = Convert.ToInt32(gvTempQuestions.DataKeys[e.RowIndex].Value);
+
+                // Remove the matching question from the temp list
                 tempQuestionList.RemoveAll(q => q.QuestionNumber == qNumber);
 
-                // Re-number
+                // Re-number remaining questions (so numbering stays in order)
                 for (int i = 0; i < tempQuestionList.Count; i++)
                 {
                     tempQuestionList[i].QuestionNumber = i + 1;
                 }
 
+                // Refresh the grid
                 BindTempQuestionGrid();
+
                 lblQuizStatus.Text = "Question removed from temp list.";
                 lblQuizStatus.ForeColor = System.Drawing.Color.Green;
             }
@@ -683,7 +712,7 @@ namespace WAPP
         #endregion
 
         #region Data Models (Classes)
-        public class Lesson
+        public class Lesson // Structure of lesson
         {
             public int LessonNumber { get; set; }
             public string LessonTitle { get; set; }
@@ -693,18 +722,18 @@ namespace WAPP
             public Quiz LessonQuiz { get; set; } // Can hold one quiz
         }
 
-        public class Quiz
+        public class Quiz // Structure of quiz
         {
             public int? QuizRewardCoins { get; set; }
             public List<Question> Questions { get; set; }
 
-            public Quiz()
+            public Quiz() // Initializes an empty question list when a new quiz is created
             {
                 Questions = new List<Question>();
             }
         }
 
-        public class Question
+        public class Question // Structure of question
         {
             public int QuestionNumber { get; set; } // Temporary ID for the list
             public string QuestionText { get; set; }
