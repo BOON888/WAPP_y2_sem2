@@ -32,22 +32,23 @@ namespace WAPP
         #region Course Methods
         protected void ddlCourseType_SelectedIndexChanged(object sender, EventArgs e)
         {
+            // Show or hide the coin input based on course type
             coinDiv.Visible = ddlCourseType.SelectedValue == "Private";
         }
         #endregion
 
         #region Lesson Methods
-        protected void btnAddLesson_Click(object sender, EventArgs e)
+        protected void btnAddLesson_Click(object sender, EventArgs e) //Button when educator click the add lesson
         {
             try
             {
-                if (fuContentFile.HasFile && fuContentFile.PostedFile.ContentLength > 52428800) // 50MB
+                if (fuContentFile.HasFile && fuContentFile.PostedFile.ContentLength > 52428800) // If greater than 50MB
                 {
-                    lblStatus.ForeColor = System.Drawing.Color.Red;
+                    lblStatus.ForeColor = System.Drawing.Color.Red; // Display red error message
                     lblStatus.Text = "Lesson File: Size exceeds 50MB limit.";
-                    return;
+                    return; // Stop execution
                 }
-                string lessonTitle = txtLessonTitle.Text.Trim();
+                string lessonTitle = txtLessonTitle.Text.Trim(); // Get lesson title and ensure it's not empty
                 if (string.IsNullOrEmpty(lessonTitle))
                 {
                     lblStatus.ForeColor = System.Drawing.Color.Red;
@@ -59,6 +60,7 @@ namespace WAPP
                 string contentFile = txtTextContent.Text.Trim();
                 string filePath = "";
 
+                // Handle file upload
                 if (fuContentFile.HasFile)
                 {
                     try
@@ -81,6 +83,7 @@ namespace WAPP
                     }
                 }
 
+                // Create new lesson record and add it to temporary list
                 int lessonNumber = lessonList.Count + 1;
                 lessonList.Add(new Lesson
                 {
@@ -92,11 +95,12 @@ namespace WAPP
                     LessonQuiz = null // New lessons have no quiz initially
                 });
 
-                BindLessonGrid();
-                UpdateLessonCountLabel();
+                // Update all UI elements after adding lesson
+                BindLessonGrid(); // Update lesson table
+                UpdateLessonCountLabel(); // Update lesson count label
                 BindQuizLessonDropdown(); // Update the quiz dropdown
 
-                // Clear lesson form
+                // Clear form inputs for next lesson entry
                 txtLessonTitle.Text = "";
                 txtTextContent.Text = "";
            
@@ -105,35 +109,36 @@ namespace WAPP
             }
             catch (Exception ex)
             {
+                // Handle any unexpected errors
                 lblStatus.ForeColor = System.Drawing.Color.Red;
                 lblStatus.Text = "Error adding lesson: " + ex.Message;
             }
         }
 
-        private void BindLessonGrid()
+        private void BindLessonGrid() // Binds the current lesson list to the GridView to display all lessons
         {
-            gvLessons.DataKeyNames = new string[] { "LessonNumber" };
-            gvLessons.DataSource = lessonList;
+            gvLessons.DataKeyNames = new string[] { "LessonNumber" }; // Set primary key for identifying each row
+            gvLessons.DataSource = lessonList; // Use lessonList as the data source
             gvLessons.DataBind();
         }
 
-        private void UpdateLessonCountLabel()
+        private void UpdateLessonCountLabel() // Updates the lesson count label to show how many lessons are currently added
         {
             lblLessonCount.Text = lessonList.Count.ToString();
         }
 
-        protected void gvLessons_RowEditing(object sender, GridViewEditEventArgs e)
+        protected void gvLessons_RowEditing(object sender, GridViewEditEventArgs e) // Enables edit mode for the selected lesson row in the GridView
         {
             gvLessons.EditIndex = e.NewEditIndex;
             BindLessonGrid();
         }
 
-        protected void gvLessons_RowUpdating(object sender, GridViewUpdateEventArgs e)
+        protected void gvLessons_RowUpdating(object sender, GridViewUpdateEventArgs e) // Updates the edited lesson details in the temporary list
         {
             try
             {
-                int lessonNumber = Convert.ToInt32(gvLessons.DataKeys[e.RowIndex].Value);
-                Lesson lessonToUpdate = lessonList.FirstOrDefault(l => l.LessonNumber == lessonNumber);
+                int lessonNumber = Convert.ToInt32(gvLessons.DataKeys[e.RowIndex].Value); //Get the LessonNumber (unique ID) of the selected row
+                Lesson lessonToUpdate = lessonList.FirstOrDefault(l => l.LessonNumber == lessonNumber); // Find the matching lesson in the temporary list
                 if (lessonToUpdate != null)
                 {
                     TextBox txtEditTitle = (TextBox)gvLessons.Rows[e.RowIndex].FindControl("txtEditLessonTitle");
@@ -143,7 +148,7 @@ namespace WAPP
                     lessonToUpdate.LessonTitle = txtEditTitle.Text.Trim();
                     lessonToUpdate.ContentFile = txtEditContent.Text.Trim();
 
-                    if (fuEditFile.HasFile)
+                    if (fuEditFile.HasFile) // Handle file re-upload if a new file is provided
                     {
                         if (fuEditFile.PostedFile.ContentLength > 52428800)
                         {
@@ -151,6 +156,7 @@ namespace WAPP
                             lblStatus.Text = "File size exceeds 50MB limit.";
                             return;
                         }
+                        // Save new file to server
                         string fileName = System.IO.Path.GetFileName(fuEditFile.FileName);
                         string uploadsFolder = Server.MapPath("~/Uploads/");
                         if (!System.IO.Directory.Exists(uploadsFolder))
@@ -162,9 +168,10 @@ namespace WAPP
                         lessonToUpdate.ContentFilePath = "~/Uploads/" + fileName;
                     }
                 }
+                // Exit edit mode and refresh the GridView
                 gvLessons.EditIndex = -1;
                 BindLessonGrid();
-                BindQuizLessonDropdown(); // Update dropdown in case title changed
+                BindQuizLessonDropdown(); // Update dropdown if lesson title changed
                 lblStatus.ForeColor = System.Drawing.Color.Green;
                 lblStatus.Text = "Lesson updated successfully!";
             }
@@ -283,8 +290,8 @@ namespace WAPP
             gvTempQuestions.DataBind();
         }
 
-        // Clears the question input form
-        private void ClearQuestionForm()
+        
+        private void ClearQuestionForm() // Clears the question input form
         {
             txtQuestionText.Text = "";
             txtOptionA.Text = "";
@@ -294,15 +301,15 @@ namespace WAPP
             ddlCorrectAnswer.SelectedIndex = 0;
         }
 
-        // Adds a question to the temporary list
-        protected void btnAddQuestion_Click(object sender, EventArgs e)
+        protected void btnAddQuestion_Click(object sender, EventArgs e) // Adds a new quiz question to the temporary question list
         {
-            // Validate
+            // Validate required fields before adding the question
             if (string.IsNullOrWhiteSpace(txtQuestionText.Text) ||
                 string.IsNullOrWhiteSpace(txtOptionA.Text) ||
                 string.IsNullOrWhiteSpace(txtOptionB.Text) ||
                 ddlCorrectAnswer.SelectedValue == "")
             {
+                // Show error if any required input is missing
                 lblQuizStatus.ForeColor = System.Drawing.Color.Red;
                 lblQuizStatus.Text = "Please fill in Question Text, Option A, Option B, and select a Correct Answer.";
                 return;
@@ -318,12 +325,15 @@ namespace WAPP
                     OptionB = txtOptionB.Text.Trim(),
                     OptionC = txtOptionC.Text.Trim(),
                     OptionD = txtOptionD.Text.Trim(),
-                    CorrectAnswer = ddlCorrectAnswer.SelectedValue
+                    CorrectAnswer = ddlCorrectAnswer.SelectedValue // Store correct option (A–D)
                 };
-
+                // Add new question to the temporary question list
                 tempQuestionList.Add(newQ);
-                BindTempQuestionGrid();
-                ClearQuestionForm();
+
+                // Refresh grid and clear input form
+                BindTempQuestionGrid(); // Display updated question list
+                ClearQuestionForm(); // Clear form for next question
+
                 lblQuizStatus.Text = "Question added to temp list.";
                 lblQuizStatus.ForeColor = System.Drawing.Color.Green;
             }
@@ -334,8 +344,7 @@ namespace WAPP
             }
         }
 
-        // Saves the temp question list as a Quiz object on the selected Lesson
-        protected void btnSaveQuiz_Click(object sender, EventArgs e)
+        protected void btnSaveQuiz_Click(object sender, EventArgs e) // Saves the temp question list as a Quiz object on the selected Lesson
         {
             int lessonNumber;
 
@@ -418,8 +427,7 @@ namespace WAPP
             }
         }
 
-        // Button to clear the quiz form
-        protected void btnCancelQuizEdit_Click(object sender, EventArgs e)
+        protected void btnCancelQuizEdit_Click(object sender, EventArgs e) // Button to clear the quiz form
         {
             ClearQuestionForm();
             tempQuestionList.Clear();
@@ -503,15 +511,17 @@ namespace WAPP
         #endregion
 
         #region Create Course Button (Main Save)
-        protected void btnCreateCourse_Click(object sender, EventArgs e)
+        protected void btnCreateCourse_Click(object sender, EventArgs e) // Saves the entire course (lessons, quizzes, and questions) to the database
         {
             // --- VALIDATION ---
+            // Ensure course title, type, and at least one lesson are provided
             if (string.IsNullOrWhiteSpace(txtCourseTitle.Text) || ddlCourseType.SelectedValue == "" || lessonList.Count == 0)
             {
                 lblStatus.ForeColor = System.Drawing.Color.Red;
                 lblStatus.Text = "Please provide a Course Title, Type, and add at least one Lesson.";
                 return;
             }
+            // If course is private, ensure coin value is entered
             if (ddlCourseType.SelectedValue == "Private" && string.IsNullOrWhiteSpace(txtCourseCoin.Text))
             {
                 lblStatus.ForeColor = System.Drawing.Color.Red;
@@ -519,6 +529,8 @@ namespace WAPP
                 return;
             }
             // --- END VALIDATION ---
+
+            // Get connection string from Web.config
             string connStr = ConfigurationManager.ConnectionStrings["SeaLearnerConnection"].ConnectionString;
             SqlConnection con = null;
             SqlTransaction transaction = null;
@@ -544,7 +556,7 @@ namespace WAPP
                             throw new Exception("Educator record not found for this user.");
                     }
 
-                    // 2. Insert Course
+                    // 2. Insert Course information into the database
                     string insertCourseQuery = @"
                         INSERT INTO Course (Title, EducatorId, CourseType, CoursePicture, Status, Coin)
                         OUTPUT INSERTED.Id
@@ -563,7 +575,7 @@ namespace WAPP
                         cmdCourse.Parameters.AddWithValue("@CoursePicture", DBNull.Value); // Placeholder
                         cmdCourse.Parameters.AddWithValue("@Status", "Active");
                         cmdCourse.Parameters.AddWithValue("@Coin", coin);
-                        courseId = (int)cmdCourse.ExecuteScalar();
+                        courseId = (int)cmdCourse.ExecuteScalar(); // Get the newly created Course ID
                     }
 
                     // 3. Insert Lessons, Quizzes, and Questions
@@ -587,7 +599,7 @@ namespace WAPP
                             lessonId = (int)cmdLesson.ExecuteScalar(); // Get the new Lesson ID
                         }
 
-                        // 3b. Check for and Insert Quiz
+                        // 3b. If the lesson has a quiz, insert it
                         if (lesson.LessonQuiz != null && lesson.LessonQuiz.Questions.Count > 0)
                         {
                             // 3c. Insert Quiz
@@ -605,7 +617,7 @@ namespace WAPP
                                 quizId = (int)cmdQuiz.ExecuteScalar(); // Get the new Quiz ID
                             }
 
-                            // 3d. Insert Questions
+                            // 3d. Insert each Question under that Quiz
                             foreach (Question question in lesson.LessonQuiz.Questions)
                             {
                                 string insertQuestionQuery = @"
@@ -627,13 +639,13 @@ namespace WAPP
                         }
                     }
 
-                    // If all successful, commit the transaction
+                    // Commit all database operations if no errors occur
                     transaction.Commit();
 
                     lblStatus.ForeColor = System.Drawing.Color.Green;
                     lblStatus.Text = "Course, lessons, and quizzes saved successfully!";
 
-                    // Clear everything
+                    // Clear all temporary data and reset form
                     lessonList.Clear();
                     tempQuestionList.Clear();
                     BindLessonGrid();
@@ -648,7 +660,7 @@ namespace WAPP
             }
             catch (Exception ex)
             {
-                // Something went wrong, roll back
+                // If an error occurs, roll back all changes
                 try
                 {
                     if (transaction != null)
