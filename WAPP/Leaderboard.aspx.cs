@@ -16,7 +16,8 @@ namespace WAPP
             {
                 if (Session["StudentID"] == null)
                 {
-                    
+                    Response.Redirect("sign_in.aspx");
+                    return;
                 }
 
                 LoadLeaderboard();

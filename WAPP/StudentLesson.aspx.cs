@@ -101,7 +101,7 @@ namespace WAPP
                     }
                     else if (contentType.Equals("Text", StringComparison.OrdinalIgnoreCase))
                     {
-                        // Pure text lesson: content is handled by pnlTextContent. No embed needed.
+                        
                     }
                     else
                     {
@@ -124,7 +124,7 @@ namespace WAPP
 
         private void CheckForNextLesson(SqlConnection conn)
         {
-            // Query 2: Look for the next sequential lesson
+            //Look for the next sequential lesson
             string nextLessonQuery = @"
                 SELECT TOP 1 Id AS NextLessonId
                 FROM Lesson
