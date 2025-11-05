@@ -8,9 +8,9 @@
             scrollbar-width: none;
         }
 
-        html::-webkit-scrollbar {
-            display: none; 
-        }
+            html::-webkit-scrollbar {
+                display: none;
+            }
 
         body {
             font-family: 'Segoe UI', sans-serif;
@@ -30,134 +30,136 @@
             font-size: 16px;
             cursor: pointer;
             margin: 5px;
-            font-weight: bold; 
+            font-weight: bold;
             transition: background-color 0.3s ease, color 0.3s ease, transform 0.25s ease, box-shadow 0.25s ease;
         }
 
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(0, 30, 255, 0.25);
-            opacity: 0.95;
-        }
-    
-        .btn:active {
-            transform: translateY(0);
-            box-shadow: 0 3px 8px rgba(0, 30, 255, 0.2);
-            opacity: 1;
-        }
-    
+            .btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 15px rgba(0, 30, 255, 0.25);
+                opacity: 0.95;
+            }
+
+            .btn:active {
+                transform: translateY(0);
+                box-shadow: 0 3px 8px rgba(0, 30, 255, 0.2);
+                opacity: 1;
+            }
+
         .main-box {
             max-width: 100%;
             margin: auto;
             padding: 30px;
-            background: rgba(255, 255, 255, 0.25); 
+            background: rgba(255, 255, 255, 0.25);
             border-radius: 12px;
-            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25); 
-            backdrop-filter: blur(10px); 
-            -webkit-backdrop-filter: blur(10px); 
-            border: 1px solid rgba(255, 255, 255, 0.3); 
+            box-shadow: 0 4px 25px rgba(0, 30, 255, 0.25);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         .form-section {
             margin-bottom: 30px;
         }
 
-        .form-section h3 {
-            margin-bottom: 15px;
-            border-bottom: 2px solid #001eff; 
-            display: inline-block;
-            padding-bottom: 5px;
-        }
-    
-        .form-section h4 {
-            color: #333;
-            margin-top: 20px;
-            margin-bottom: 10px;
-        }
+            .form-section h3 {
+                margin-bottom: 15px;
+                border-bottom: 2px solid #001eff;
+                display: inline-block;
+                padding-bottom: 5px;
+            }
+
+            .form-section h4 {
+                color: #333;
+                margin-top: 20px;
+                margin-bottom: 10px;
+            }
 
         .form-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 20px;
         }
-    
+
         .form-grid-full {
             display: grid;
             grid-template-columns: 1fr;
             gap: 15px;
         }
-    
+
         .form-grid-quiz {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 15px;
         }
 
-        .form-grid label, .form-grid-full label, .form-grid-quiz label {
-            font-weight: bold;
-            display: block;
-            margin-bottom: 5px;
-            color: #111827;
-        }
+            .form-grid label, .form-grid-full label, .form-grid-quiz label {
+                font-weight: bold;
+                display: block;
+                margin-bottom: 5px;
+                color: #111827;
+            }
 
-        .form-grid input[type=text], .form-grid input[type=number], .form-grid select, textarea,
-        .form-grid-full input[type=text], .form-grid-full input[type=number], .form-grid-full select,
-        .form-grid-quiz input[type=text], .form-grid-quiz input[type=number], .form-grid-quiz select {
-            width: 100%;
-            padding: 10px;
-            border-radius: 6px;
-            border: 1px solid rgba(0, 30, 255, 0.3);
-            box-sizing: border-box;
-            background: rgba(255, 255, 255, 0.5);
-            color: #111827;
-            font-family: 'Segoe UI', sans-serif;
-        }
- 
+            .form-grid input[type=text], .form-grid input[type=number], .form-grid select, textarea,
+            .form-grid-full input[type=text], .form-grid-full input[type=number], .form-grid-full select,
+            .form-grid-quiz input[type=text], .form-grid-quiz input[type=number], .form-grid-quiz select {
+                width: 100%;
+                padding: 10px;
+                border-radius: 6px;
+                border: 1px solid rgba(0, 30, 255, 0.3);
+                box-sizing: border-box;
+                background: rgba(255, 255, 255, 0.5);
+                color: #111827;
+                font-family: 'Segoe UI', sans-serif;
+            }
+
         input[type="file"] {
             color: transparent;
         }
 
-        input[type="file"]::file-selector-button {
-            background-color: white;
-            color: #001eff;
-            border: 1px solid #001eff;
-            border-radius: 6px;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            margin: 5px;
-            font-weight: bold;
-            transition: background-color 0.3s ease, color 0.3s ease, transform 0.25s ease, box-shadow 0.25s ease;
-        }
-    
-        input[type="file"]::-webkit-file-upload-button {
-            background-color: white;
-            color: #001eff;
-            border: 1px solid #001eff;
-            border-radius: 6px;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            margin: 5px;
-            font-weight: bold;
-            transition: background-color 0.3s ease, color 0.3s ease, transform 0.25s ease, box-shadow 0.25s ease;
+            input[type="file"]::file-selector-button {
+                background-color: white;
+                color: #001eff;
+                border: 1px solid #001eff;
+                border-radius: 6px;
+                padding: 10px 20px;
+                font-size: 16px;
+                cursor: pointer;
+                margin: 5px;
+                font-weight: bold;
+                transition: background-color 0.3s ease, color 0.3s ease, transform 0.25s ease, box-shadow 0.25s ease;
+            }
+
+            input[type="file"]::-webkit-file-upload-button {
+                background-color: white;
+                color: #001eff;
+                border: 1px solid #001eff;
+                border-radius: 6px;
+                padding: 10px 20px;
+                font-size: 16px;
+                cursor: pointer;
+                margin: 5px;
+                font-weight: bold;
+                transition: background-color 0.3s ease, color 0.3s ease, transform 0.25s ease, box-shadow 0.25s ease;
+            }
+
+                input[type="file"]::file-selector-button:hover,
+                input[type="file"]::-webkit-file-upload-button:hover {
+                    transform: translateY(-2px);
+                    background-color: #001eff;
+                    color: white;
+                }
+
+        ::placeholder {
+            color: #555;
+            opacity: 1;
         }
 
-        input[type="file"]::file-selector-button:hover,
-        input[type="file"]::-webkit-file-upload-button:hover {
-            transform: translateY(-2px);
-            background-color: #001eff; 
-            color: white;
+        :-ms-input-placeholder {
+            color: #555;
         }
 
-        ::placeholder { 
-            color: #555;
-            opacity: 1; 
-        }
-        :-ms-input-placeholder { 
-            color: #555;
-        }
-        ::-ms-input-placeholder { 
+        ::-ms-input-placeholder {
             color: #555;
         }
 
@@ -166,44 +168,48 @@
             color: white;
             border-color: #001eff;
         }
-        .btn-primary:hover, .btn-secondary:hover {
-            background-color: white; 
-            color: #001eff;
-            border-color: #001eff;
-        }
+
+            .btn-primary:hover, .btn-secondary:hover {
+                background-color: white;
+                color: #001eff;
+                border-color: #001eff;
+            }
 
         .btn-edit {
             background-color: white;
-            color: #bdce27; 
-            border-color:#bdce27;
-        }
-        .btn-edit:hover {
-            background-color:#bdce27;
-            color: white; 
+            color: #bdce27;
             border-color: #bdce27;
         }
- 
+
+            .btn-edit:hover {
+                background-color: #bdce27;
+                color: white;
+                border-color: #bdce27;
+            }
+
         .btn-delete {
             background-color: white;
             color: #ff0000;
             border-color: #ff0000;
         }
-        .btn-delete:hover {
-            background-color:#ff0000;
-            color: white;
-            border-color: #ff0000;
-        }
- 
+
+            .btn-delete:hover {
+                background-color: #ff0000;
+                color: white;
+                border-color: #ff0000;
+            }
+
         .btn-cancel {
             background-color: white;
             color: #001eff;
             border-color: #001eff;
         }
-        .btn-cancel:hover {
-            background-color: #001eff;
-            color: white;
-            border-color: #001eff;
-        }
+
+            .btn-cancel:hover {
+                background-color: #001eff;
+                color: white;
+                border-color: #001eff;
+            }
 
         .lesson-list, .quiz-list {
             margin-top: 30px;
@@ -217,24 +223,25 @@
             background: transparent;
         }
 
-        .gridview th, .gridview td {
-            border: 1px solid rgba(0, 30, 255, 0.2);
-            padding: 12px;
-            text-align: left;
-            vertical-align: top;
-        }
+            .gridview th, .gridview td {
+                border: 1px solid rgba(0, 30, 255, 0.2);
+                padding: 12px;
+                text-align: left;
+                vertical-align: top;
+            }
 
-        .gridview th {
-            background: rgba(0, 30, 255, 0.05);
-            font-weight: bold;
-        }
-   
-        .gridview tr:nth-child(even) {
-            background: transparent;
-        }
-        .gridview tr:hover {
-            background: rgba(0, 30, 255, 0.03);
-        }
+            .gridview th {
+                background: rgba(0, 30, 255, 0.05);
+                font-weight: bold;
+            }
+
+            .gridview tr:nth-child(even) {
+                background: transparent;
+            }
+
+            .gridview tr:hover {
+                background: rgba(0, 30, 255, 0.03);
+            }
 
         .status-label {
             font-weight: bold;
@@ -271,17 +278,13 @@
             <div class="form-grid">
                 <div>
                     <label class="required-field">Course Title</label>
-                    <%-- 
-                        CHANGE 2: Add ReadOnly="true" 
-                    --%>
+                    
                     <asp:TextBox ID="txtCourseTitle" runat="server" placeholder="Enter course title" ReadOnly="true"></asp:TextBox>
                 </div>
                 <div>
                     <label class="required-field">Course Type</label>
-                    <%-- 
-                        CHANGE 3: Add Enabled="false" 
-                    --%>
-                    <asp:DropDownList ID="ddlCourseType" runat="server" AutoPostBack="True" 
+                   
+                    <asp:DropDownList ID="ddlCourseType" runat="server" AutoPostBack="True"
                         OnSelectedIndexChanged="ddlCourseType_SelectedIndexChanged" Enabled="false">
                         <asp:ListItem Text="Select Type" Value=""></asp:ListItem>
                         <asp:ListItem Text="Public" Value="Public"></asp:ListItem>
@@ -290,10 +293,8 @@
                 </div>
                 <div id="coinDiv" runat="server" visible="false">
                     <label class="required-field">Course Coin</label>
-                    <%-- 
-                        CHANGE 2: Add ReadOnly="true" 
-                    --%>
-                    <asp:TextBox ID="txtCourseCoin" runat="server" placeholder="Enter coin (only for private)" 
+                   
+                    <asp:TextBox ID="txtCourseCoin" runat="server" placeholder="Enter coin (only for private)"
                         TextMode="Number" min="0" ReadOnly="true"></asp:TextBox>
                 </div>
             </div>
@@ -326,15 +327,16 @@
         </div>
 
         <div class="lesson-list">
-            <h3>Lesson List (<asp:Label ID="lblLessonCount" runat="server" Text="0"></asp:Label> lessons)</h3>
+            <h3>Lesson List (<asp:Label ID="lblLessonCount" runat="server" Text="0"></asp:Label>
+                lessons)</h3>
             <asp:GridView ID="gvLessons" runat="server" CssClass="gridview" AutoGenerateColumns="False"
                 OnRowEditing="gvLessons_RowEditing" OnRowUpdating="gvLessons_RowUpdating"
                 OnRowCancelingEdit="gvLessons_RowCancelingEdit" OnRowDeleting="gvLessons_RowDeleting"
                 OnRowDataBound="gvLessons_RowDataBound" OnRowCommand="gvLessons_RowCommand"
-                GridLines="None" >
+                GridLines="None">
                 <Columns>
                     <asp:BoundField DataField="LessonNumber" HeaderText="No." ReadOnly="true" ItemStyle-Width="50px" />
-                    
+
                     <asp:TemplateField HeaderText="Lesson Title">
                         <ItemTemplate>
                             <asp:Label ID="lblLessonTitle" runat="server" Text='<%# Eval("LessonTitle") %>'></asp:Label>
@@ -343,7 +345,7 @@
                             <asp:TextBox ID="txtEditLessonTitle" runat="server" Text='<%# Bind("LessonTitle") %>' Width="95%" />
                         </EditItemTemplate>
                     </asp:TemplateField>
-                    
+
                     <asp:TemplateField HeaderText="Content">
                         <ItemTemplate>
                             <asp:Label ID="lblContentFile" runat="server" Text='<%# Eval("ContentFile") != null && ((string)Eval("ContentFile")).Length > 50 ? ((string)Eval("ContentFile")).Substring(0, 50) + "..." : Eval("ContentFile") %>'></asp:Label>
@@ -352,7 +354,7 @@
                             <asp:TextBox ID="txtEditContentFile" runat="server" Text='<%# Bind("ContentFile") %>' TextMode="MultiLine" Rows="3" Width="95%" />
                         </EditItemTemplate>
                     </asp:TemplateField>
-                    
+
                     <asp:TemplateField HeaderText="File Path">
                         <ItemTemplate>
                             <asp:Label ID="lblContentFilePath" runat="server" Text='<%# Eval("ContentFilePath") %>'></asp:Label>
@@ -360,7 +362,8 @@
                         <EditItemTemplate>
                             <asp:FileUpload ID="fuEditContentFile" runat="server" />
                             <div class="file-upload-note">
-                                Current: <asp:Label ID="lblCurrentFile" runat="server" Text='<%# Eval("ContentFilePath") %>'></asp:Label>
+                                Current:
+                                <asp:Label ID="lblCurrentFile" runat="server" Text='<%# Eval("ContentFilePath") %>'></asp:Label>
                             </div>
                         </EditItemTemplate>
                     </asp:TemplateField>
@@ -386,14 +389,14 @@
                             </div>
                         </EditItemTemplate>
                     </asp:TemplateField>
-                    
+
                     <asp:TemplateField HeaderText="Quiz Actions" ItemStyle-Width="200px">
                         <ItemTemplate>
                             <div class="action-buttons">
-                                <asp:Button ID="btnEditQuiz" runat="server" CommandName="EditQuiz" Text='<%# (Eval("LessonQuiz") != null) ? "Edit Quiz" : "Add Quiz" %>' 
+                                <asp:Button ID="btnEditQuiz" runat="server" CommandName="EditQuiz" Text='<%# (Eval("LessonQuiz") != null) ? "Edit Quiz" : "Add Quiz" %>'
                                     CommandArgument='<%# Eval("LessonNumber") %>' CssClass="btn btn-primary" />
-                                <asp:Button ID="btnDeleteQuiz" runat="server" CommandName="DeleteQuiz" Text="Delete Quiz" 
-                                    CommandArgument='<%# Eval("LessonNumber") %>' CssClass="btn btn-delete" 
+                                <asp:Button ID="btnDeleteQuiz" runat="server" CommandName="DeleteQuiz" Text="Delete Quiz"
+                                    CommandArgument='<%# Eval("LessonNumber") %>' CssClass="btn btn-delete"
                                     Visible='<%# Eval("LessonQuiz") != null %>'
                                     OnClientClick="return confirm('Are you sure you want to delete the quiz for this lesson?');" />
                             </div>
@@ -473,34 +476,45 @@
                     GridLines="None">
                     <Columns>
                         <asp:BoundField DataField="QuestionNumber" HeaderText="No." ReadOnly="true" ItemStyle-Width="50px" />
-                        
+
                         <asp:TemplateField HeaderText="Question">
-                            <ItemTemplate><asp:Label ID="lblQText" runat="server" Text='<%# Eval("QuestionText") %>'></asp:Label></ItemTemplate>
-                            <EditItemTemplate><asp:TextBox ID="txtEditQuestionText" runat="server" Text='<%# Bind("QuestionText") %>' TextMode="MultiLine" Rows="3" Width="95%"></asp:TextBox></EditItemTemplate>
+                            <ItemTemplate>
+                                <asp:Label ID="lblQText" runat="server" Text='<%# Eval("QuestionText") %>'></asp:Label></ItemTemplate>
+                            <EditItemTemplate>
+                                <asp:TextBox ID="txtEditQuestionText" runat="server" Text='<%# Bind("QuestionText") %>' TextMode="MultiLine" Rows="3" Width="95%"></asp:TextBox></EditItemTemplate>
                         </asp:TemplateField>
 
                         <asp:TemplateField HeaderText="A">
-                            <ItemTemplate><asp:Label ID="lblOptA" runat="server" Text='<%# Eval("OptionA") %>'></asp:Label></ItemTemplate>
-                            <EditItemTemplate><asp:TextBox ID="txtEditOptionA" runat="server" Text='<%# Bind("OptionA") %>' Width="90%"></asp:TextBox></EditItemTemplate>
+                            <ItemTemplate>
+                                <asp:Label ID="lblOptA" runat="server" Text='<%# Eval("OptionA") %>'></asp:Label></ItemTemplate>
+                            <EditItemTemplate>
+                                <asp:TextBox ID="txtEditOptionA" runat="server" Text='<%# Bind("OptionA") %>' Width="90%"></asp:TextBox></EditItemTemplate>
                         </asp:TemplateField>
 
                         <asp:TemplateField HeaderText="B">
-                            <ItemTemplate><asp:Label ID="lblOptB" runat="server" Text='<%# Eval("OptionB") %>'></asp:Label></ItemTemplate>
-                            <EditItemTemplate><asp:TextBox ID="txtEditOptionB" runat="server" Text='<%# Bind("OptionB") %>' Width="90%"></asp:TextBox></EditItemTemplate>
+                            <ItemTemplate>
+                                <asp:Label ID="lblOptB" runat="server" Text='<%# Eval("OptionB") %>'></asp:Label></ItemTemplate>
+                            <EditItemTemplate>
+                                <asp:TextBox ID="txtEditOptionB" runat="server" Text='<%# Bind("OptionB") %>' Width="90%"></asp:TextBox></EditItemTemplate>
                         </asp:TemplateField>
 
                         <asp:TemplateField HeaderText="C">
-                            <ItemTemplate><asp:Label ID="lblOptC" runat="server" Text='<%# Eval("OptionC") %>'></asp:Label></ItemTemplate>
-                            <EditItemTemplate><asp:TextBox ID="txtEditOptionC" runat="server" Text='<%# Bind("OptionC") %>' Width="90%"></asp:TextBox></EditItemTemplate>
+                            <ItemTemplate>
+                                <asp:Label ID="lblOptC" runat="server" Text='<%# Eval("OptionC") %>'></asp:Label></ItemTemplate>
+                            <EditItemTemplate>
+                                <asp:TextBox ID="txtEditOptionC" runat="server" Text='<%# Bind("OptionC") %>' Width="90%"></asp:TextBox></EditItemTemplate>
                         </asp:TemplateField>
 
                         <asp:TemplateField HeaderText="D">
-                            <ItemTemplate><asp:Label ID="lblOptD" runat="server" Text='<%# Eval("OptionD") %>'></asp:Label></ItemTemplate>
-                            <EditItemTemplate><asp:TextBox ID="txtEditOptionD" runat="server" Text='<%# Bind("OptionD") %>' Width="90%"></asp:TextBox></EditItemTemplate>
+                            <ItemTemplate>
+                                <asp:Label ID="lblOptD" runat="server" Text='<%# Eval("OptionD") %>'></asp:Label></ItemTemplate>
+                            <EditItemTemplate>
+                                <asp:TextBox ID="txtEditOptionD" runat="server" Text='<%# Bind("OptionD") %>' Width="90%"></asp:TextBox></EditItemTemplate>
                         </asp:TemplateField>
 
                         <asp:TemplateField HeaderText="Answer" ItemStyle-Width="80px">
-                            <ItemTemplate><asp:Label ID="lblAns" runat="server" Text='<%# Eval("CorrectAnswer") %>'></asp:Label></ItemTemplate>
+                            <ItemTemplate>
+                                <asp:Label ID="lblAns" runat="server" Text='<%# Eval("CorrectAnswer") %>'></asp:Label></ItemTemplate>
                             <EditItemTemplate>
                                 <asp:DropDownList ID="ddlEditCorrectAnswer" runat="server" SelectedValue='<%# Bind("CorrectAnswer") %>'>
                                     <asp:ListItem Text="A" Value="A"></asp:ListItem>
@@ -534,34 +548,26 @@
                     </EmptyDataTemplate>
                 </asp:GridView>
             </div>
-            
+
             <br />
             <div>
-                 <asp:Button ID="btnSaveQuiz" runat="server" Text="Save Quiz to Lesson" CssClass="btn btn-secondary" OnClick="btnSaveQuiz_Click" />
-                 <asp:Button ID="btnCancelQuizEdit" runat="server" Text="Cancel" CssClass="btn btn-cancel" OnClick="btnCancelQuizEdit_Click" CausesValidation="false" />
+                <asp:Button ID="btnSaveQuiz" runat="server" Text="Save Quiz to Lesson" CssClass="btn btn-secondary" OnClick="btnSaveQuiz_Click" />
+                <asp:Button ID="btnCancelQuizEdit" runat="server" Text="Cancel" CssClass="btn btn-cancel" OnClick="btnCancelQuizEdit_Click" CausesValidation="false" />
             </div>
         </div>
 
         <hr />
-        
+
         <br />
         <div style="text-align: center;">
-            <%-- 
-                CHANGE 4: Update Button ID, Text, and OnClick 
-            --%>
+            
             <asp:Button ID="btnUpdateCourse" runat="server" Text="Update Course" CssClass="btn btn-secondary"
                 OnClick="btnUpdateCourse_Click" OnClientClick="return validateForm();" />
         </div>
 
-        <%-- 
-            CHANGE 6: Renamed to lblMainStatus 
-        --%>
         <asp:Label ID="lblMainStatus" runat="server" CssClass="status-label" EnableViewState="false"></asp:Label>
     </div>
 
-    <%-- 
-        CHANGE 5: Updated JavaScript confirmation message
-    --%>
     <script type="text/javascript">
         function validateForm() {
             // CourseTitle and CourseType checks will pass because they are pre-filled
@@ -599,7 +605,7 @@
             statusLabel.innerText = ''; // Clear errors
             statusLabel.style.color = 'green'; // Set success color
 
-            // UPDATED MESSAGE
+            // Updated message
             return confirm('Are you sure you want to update this course? All changes to lessons and quizzes will be saved.');
         }
     </script>

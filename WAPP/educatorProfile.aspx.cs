@@ -7,6 +7,7 @@ namespace WAPP
 {
     public partial class educatorProfile : System.Web.UI.Page
     {
+        // Database connect
         string connStr = ConfigurationManager.ConnectionStrings["SeaLearnerConnection"].ConnectionString;
 
         protected void Page_Load(object sender, EventArgs e)
@@ -21,8 +22,8 @@ namespace WAPP
                     return;
                 }
 
-                LoadEducatorProfile();
-                LoadTeachingStats();
+                LoadEducatorProfile(); // Load educator personal details
+                LoadTeachingStats(); // Load teaching statistics
             }
         }
 
@@ -33,6 +34,7 @@ namespace WAPP
             using (SqlConnection conn = new SqlConnection(connStr))
             {
                 conn.Open();
+                // Get educator profile info from Users and Educator tables
                 string sql = @"
                     SELECT 
                         e.Id AS EducatorId,
@@ -73,9 +75,10 @@ namespace WAPP
                     if (!string.IsNullOrEmpty(qual) && ddlQualification.Items.FindByValue(qual) != null)
                         ddlQualification.SelectedValue = qual;
 
+                    // University
                     txtUniversity.Text = dr["GraduatedUniversity"].ToString();
 
-                    // Sync Session
+                    // Update session with latest educator data
                     Session["EducatorID"] = dr["EducatorId"].ToString();
                     Session["FullName"] = dr["FullName"].ToString();
                     Session["ProfilePicture"] = dr["ProfilePicture"].ToString();
@@ -84,9 +87,9 @@ namespace WAPP
             }
         }
 
-
         protected void btnEdit_Click(object sender, EventArgs e)
         {
+            // Make profile fields editable
             txtFullName.ReadOnly = false;
             txtAge.ReadOnly = false;
             txtUniversity.ReadOnly = false;
@@ -94,6 +97,7 @@ namespace WAPP
             ddlQualification.Enabled = true;
             fileUploadProfile.Visible = true;
 
+            // Show Save/Cancel buttons
             btnEdit.Visible = false;
             btnSave.Visible = true;
             btnCancel.Visible = true;
@@ -102,6 +106,7 @@ namespace WAPP
 
         protected void btnCancel_Click(object sender, EventArgs e)
         {
+            // Revert to read-only mode
             txtFullName.ReadOnly = true;
             txtAge.ReadOnly = true;
             txtUniversity.ReadOnly = true;
@@ -109,11 +114,12 @@ namespace WAPP
             ddlQualification.Enabled = false;
             fileUploadProfile.Visible = false;
 
+            // Show Edit button again
             btnEdit.Visible = true;
             btnSave.Visible = false;
             btnCancel.Visible = false;
 
-            LoadEducatorProfile();
+            LoadEducatorProfile(); // Reload profile from database
             lblMsg.Text = "Changes canceled.";
             lblMsg.ForeColor = System.Drawing.Color.Gray;
         }
@@ -129,14 +135,14 @@ namespace WAPP
 
             string fileName = null;
 
-            // Use a flag to track if a new file was uploaded
-            bool fileUploadedSuccessfully = false;
+            bool fileUploadedSuccessfully = false; // Track file upload success
 
-            // 1. FILE UPLOAD LOGIC (Moved outside the using block for better flow, but inside its own try block)
+            // --- File Upload ---
             if (fileUploadProfile.HasFile)
             {
                 try
                 {
+                    // Generate a unique file name for uploaded profile picture
                     string extension = Path.GetExtension(fileUploadProfile.FileName);
                     fileName = "educator_" + userId + "_" + DateTime.Now.Ticks + extension;
 
@@ -144,35 +150,34 @@ namespace WAPP
                     if (!Directory.Exists(folderPath))
                         Directory.CreateDirectory(folderPath);
 
-                    // This is the critical line where permission issues occur
+                    // Save the uploaded file to Image folder
                     fileUploadProfile.SaveAs(Path.Combine(folderPath, fileName));
-                    fileUploadedSuccessfully = true; // Set flag on success
+                    fileUploadedSuccessfully = true; 
                 }
                 catch (Exception fileEx)
                 {
-                    // If file upload fails (usually permission), display error and STOP the entire process.
+                    // Display upload error message
                     lblMsg.Text = "File Upload Failed: " + fileEx.Message + ". Please check folder permissions.";
                     lblMsg.ForeColor = System.Drawing.Color.Red;
                     return;
                 }
             }
 
-            // 2. Database Logic
+            // --- Update Database ---
             using (SqlConnection conn = new SqlConnection(connStr))
             {
                 conn.Open();
-                SqlTransaction tran = conn.BeginTransaction();
+                SqlTransaction tran = conn.BeginTransaction(); // Start a transaction
 
                 try
                 {
-                    // If no new file was uploaded, we need to preserve the existing filename (if any).
+                    // Keep old picture if no new upload
                     if (!fileUploadedSuccessfully)
                     {
-                        // Get the existing file name from the session or database before updating.
                         fileName = Session["ProfilePicture"]?.ToString();
                     }
 
-                    // Update Users
+                    // Update Users table
                     string sqlUser = @"UPDATE Users 
                                SET FullName=@name, Age=@age, Gender=@gender"
                                        + (fileUploadedSuccessfully ? ", ProfilePicture=@pic" : "")
@@ -184,13 +189,12 @@ namespace WAPP
                     cmdU.Parameters.AddWithValue("@gender", gender);
                     cmdU.Parameters.AddWithValue("@uid", userId);
 
-                    // Only add the @pic parameter if a new file was uploaded successfully
                     if (fileUploadedSuccessfully)
                         cmdU.Parameters.AddWithValue("@pic", fileName);
 
                     cmdU.ExecuteNonQuery();
 
-                    // Update Educator
+                    // Update Educator table
                     string sqlEdu = @"UPDATE Educator 
                               SET EducationQualification=@qual, GraduatedUniversity=@uni
                               WHERE UserId=@uid";
@@ -201,12 +205,12 @@ namespace WAPP
                     cmdE.Parameters.AddWithValue("@uid", userId);
                     cmdE.ExecuteNonQuery();
 
-                    tran.Commit();
+                    tran.Commit(); // Commit changes
 
                     lblMsg.Text = "Profile updated successfully!";
                     lblMsg.ForeColor = System.Drawing.Color.Green;
 
-                    // Refresh + restore read-only state
+                    // Refresh and lock the form again
                     LoadEducatorProfile();
                     txtFullName.ReadOnly = true;
                     txtAge.ReadOnly = true;
@@ -221,14 +225,13 @@ namespace WAPP
                 }
                 catch (Exception dbEx)
                 {
-                    tran.Rollback();
+                    tran.Rollback(); // Undo if error occurs
                     lblMsg.Text = "Database Error: " + dbEx.Message;
                     lblMsg.ForeColor = System.Drawing.Color.Red;
-
-                    // Optional: If the file was saved but the DB update failed, you may want to delete the orphaned file here.
                 }
             }
         }
+
         private void LoadTeachingStats()
         {
             int userId = Convert.ToInt32(Session["UserId"]);
@@ -238,13 +241,14 @@ namespace WAPP
             {
                 conn.Open();
 
-                // Get EducatorId
+                // Get educator ID
                 SqlCommand getEid = new SqlCommand("SELECT Id FROM Educator WHERE UserId=@uid", conn);
                 getEid.Parameters.AddWithValue("@uid", userId);
                 object eidObj = getEid.ExecuteScalar();
 
                 if (eidObj == null)
                 {
+                    // No data then show zeros
                     lblCoursesCreated.Text = "0";
                     lblTotalStudents.Text = "0";
                     lblCompletions.Text = "0";
@@ -253,12 +257,12 @@ namespace WAPP
 
                 educatorId = Convert.ToInt32(eidObj);
 
-                // Courses Created
+                // Count courses created
                 SqlCommand cmdCourses = new SqlCommand("SELECT COUNT(*) FROM Course WHERE EducatorId=@eid", conn);
                 cmdCourses.Parameters.AddWithValue("@eid", educatorId);
                 lblCoursesCreated.Text = cmdCourses.ExecuteScalar()?.ToString() ?? "0";
 
-                // Total Students
+                // Count total students enrolled
                 SqlCommand cmdStudents = new SqlCommand(@"
                     SELECT COUNT(DISTINCT scp.StudentId)
                     FROM StudentCourseProgress scp
@@ -267,7 +271,7 @@ namespace WAPP
                 cmdStudents.Parameters.AddWithValue("@eid", educatorId);
                 lblTotalStudents.Text = cmdStudents.ExecuteScalar()?.ToString() ?? "0";
 
-                // Completed Courses
+                // Count completed courses
                 SqlCommand cmdCompleted = new SqlCommand(@"
                     SELECT COUNT(*)
                     FROM StudentCourseProgress scp
