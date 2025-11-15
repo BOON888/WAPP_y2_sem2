@@ -22,7 +22,6 @@ namespace WAPP
                 lessonList.Clear();
                 tempQuestionList.Clear();
 
-                // NEW EDIT LOGIC
                 if (Request.QueryString["id"] != null && int.TryParse(Request.QueryString["id"], out int courseId))
                 {
                     // Store the CourseId to use it in the Update button click
@@ -187,7 +186,6 @@ namespace WAPP
             }
         }
 
-        // NEW HELPER METHOD
         private int GetEducatorId(int userId)
         {
             string connStr = ConfigurationManager.ConnectionStrings["SeaLearnerConnection"].ConnectionString;

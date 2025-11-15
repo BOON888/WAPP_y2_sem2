@@ -570,7 +570,6 @@
 
     <script type="text/javascript">
         function validateForm() {
-            // CourseTitle and CourseType checks will pass because they are pre-filled
             var courseTitle = document.getElementById('<%= txtCourseTitle.ClientID %>').value;
             var courseType = document.getElementById('<%= ddlCourseType.ClientID %>').value;
             var lessonCount = parseInt(document.getElementById('<%= lblLessonCount.ClientID %>').innerText);
